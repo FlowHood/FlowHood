@@ -19,3 +19,8 @@ NO PUSHEAR NADA A LA RAMA `DEVELOP` NI A LA RAMA `MAIN`, solo trabajar en ramas 
 - Arduino se trabaja en la carpeta `Doors`
 - Datos falsos de BD se trabaja en la carpeta `Data`
 - Spring boot se trabaja en la carpeta `Server`
+
+## Indicaciones del código
+
+- Instalarse la extensión de **Prettier - Code formatter** en VSCode para React.
+- Correr el programa con `yarn dev` o `npm run dev`  
