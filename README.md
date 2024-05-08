@@ -23,4 +23,4 @@ NO PUSHEAR NADA A LA RAMA `DEVELOP` NI A LA RAMA `MAIN`, solo trabajar en ramas 
 ## Indicaciones del código
 
 - Instalarse la extensión de **Prettier - Code formatter** en VSCode para React.
-- Correr el programa con `yarn dev` o `npm run dev`  
+- Correr el programa con `npm run dev`  
