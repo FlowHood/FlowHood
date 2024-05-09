@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nbi-container {
+    @apply flex flex-col items-center justify-center p-3 font-B612 font-bold rounded-t-lg gap-1 text-sm;
+
+    &:hover {
+      @apply bg-royal-amethyst text-white;
+    }
+  }
+}
