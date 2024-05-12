@@ -6,6 +6,7 @@ export default {
       colors: {
         "royal-amethyst": "#3335FB",
         "icy-lilac": "#f2f1ff",
+        tanzanite: "#5D5EEF",
         white: "#FFF",
         black: "#161515",
       },
