@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationBarItem from "../NavigationBarItem/NavigationBarItem";
+import NavigationBarItem from "../navigationBarItem/NavigationBarItem";
 import "./NavigationBar.css";
 
 import { TiHome } from "react-icons/ti";
@@ -9,9 +9,14 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { MdGrading } from "react-icons/md";
 
 export default function NavigationBar({ isOwner = false, className = "" }) {
+
+  //TODO: get path and select one
+
+  let selected = "HOME"
+
   return (
     <nav className={`nb-container ${className}`}>
-      <NavigationBarItem textDescription={"Inicio"} to={"#"}>
+      <NavigationBarItem textDescription={"Inicio"} to={"#"} isSelected={selected === "HOME"}>
         <TiHome className="nb-icon" />
       </NavigationBarItem>
 
