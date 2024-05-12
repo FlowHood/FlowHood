@@ -3,8 +3,39 @@ import LogoutButton from "../../components/buttons/LogoutButton";
 import { LogoInitialsIcon, PeopleIcon, QRIcon } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
+import InfoResidentCard from "../../components/cards/InfoResidentCard";
+
+let UserROL = "RST" //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
+
+let homeInformation = {
+  homeIdentifier: "123",
+  homeName: "Familia Rios",
+  homeAddress: "Residencial HLVS, calle principal, pasaje 25, casa #24",
+  homeMembers: 3
+}
+
+//TODO: do this on hook
+const HandlerInformationByRol = (rol = "") =>{
+  switch(UserROL){
+    case "RST":
+      return <InfoResidentCard 
+        homeIdentifier={homeInformation.homeIdentifier} 
+        homeName={homeInformation.homeName} 
+          homeAddress={homeInformation.homeAddress}
+          homeMembers={homeInformation.homeMembers}
+        />
+    break;
+    case "VGT":
+      return <InfoScheduleCard turno="Turno Vespertino" />
+      break;
+    
+  }
+
+}
 
 const SecurityHome = () => {
+  //TODO: add service to know current rol user
+
   return (
     <div className="flex min-h-screen flex-col justify-center gap-8 px-8 py-10 text-black md:gap-10 lg:gap-12">
       <div className="relative flex flex-col items-center justify-evenly gap-5 text-[2.3125rem] font-bold leading-[1.8125rem] lg:flex-row ">
@@ -14,7 +45,10 @@ const SecurityHome = () => {
             Bienvenido,
             <span className="text-royal-amethyst ">Juan Ramos</span>
           </p>
-          <InfoScheduleCard turno="Turno Vespertino" />
+
+          {
+            HandlerInformationByRol(UserROL)
+          }
         </div>
 
         <div className="w-full max-w-[480px] lg:max-w-[400px] text-start">

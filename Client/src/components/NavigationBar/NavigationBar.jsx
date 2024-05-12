@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationBarItem from "../NavigationBarItem/NavigationBarItem";
+import NavigationBarItem from "../navigationBarItem/NavigationBarItem";
 import "./NavigationBar.css";
 
 import { TiHome } from "react-icons/ti";
