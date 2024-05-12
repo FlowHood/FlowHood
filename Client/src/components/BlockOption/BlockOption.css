@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .bo-container {
+    @apply flex flex-col items-center justify-between bg-tanzanite text-white p-4 rounded-xl min-h-36;
+
+    &:hover {
+      @apply bg-white text-black;
+    }
+  }
+  .bo-row {
+    @apply w-full min-w-28 flex flex-row font-Inter font-semibold;
+  }
+  .bo-row > p {
+    @apply max-w-20 text-end;
+  }
+}
+
+@layer utilities {
+  .bo-row.start {
+    @apply justify-start text-5xl;
+  }
+  .bo-row.end {
+    @apply justify-end text-sm;
+  }
+}
