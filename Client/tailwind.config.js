@@ -3,6 +3,13 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        sm: "40rem",
+        md: "48rem",
+        lg: "64rem",
+        xl: "80rem",
+        "2xl": "96rem",
+      },
       colors: {
         "royal-amethyst": "#3335FB",
         "icy-lilac": "#f2f1ff",

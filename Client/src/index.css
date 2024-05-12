@@ -3,3 +3,9 @@
 @tailwind utilities;
 
 /* Clases personalizadas usando Tailwind */
+@layer base {
+    body {
+        @apply font-['Inter'];
+    }
+}
+      
