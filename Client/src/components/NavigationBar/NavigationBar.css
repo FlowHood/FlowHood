@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .nb-container {
+    @apply flex w-full flex-row justify-around items-center bg-icy-lilac sm:hidden;
+  }
+  .nb-icon {
+    @apply text-xl;
+  }
+}

@@ -1,0 +1,13 @@
+/*Fonts:*/
+@font-face {
+  font-family: "Inter";
+  src: url("../src/assets/fonts/Inter/Inter-VariableFont_slnt\,wght.ttf");
+}
+
+@font-face {
+  font-family: "B612";
+  src: url("../src/assets/fonts/B612/B612-Bold.ttf"),
+    url("../src/assets/fonts/B612/B612-BoldItalic.ttf"),
+    url("../src/assets/fonts/B612/B612-Italic.ttf"),
+    url("../src/assets/fonts/B612/B612-Regular.ttf");
+}
