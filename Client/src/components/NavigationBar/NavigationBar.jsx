@@ -9,9 +9,14 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { MdGrading } from "react-icons/md";
 
 export default function NavigationBar({ isOwner = false, className = "" }) {
+
+  //TODO: get path and select one
+
+  let selected = "HOME"
+
   return (
     <nav className={`nb-container ${className}`}>
-      <NavigationBarItem textDescription={"Inicio"} to={"#"}>
+      <NavigationBarItem textDescription={"Inicio"} to={"#"} isSelected={selected === "HOME"}>
         <TiHome className="nb-icon" />
       </NavigationBarItem>
 
