@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }) => {
       <SideBar />
       <div className="bg-[#f2f1ff]/[.30]">
         <NavigatorBar />
-        <Container className="mt-20 overflow-x-hidden p-8 pt-0">
+        <Container className="overflow-x-hidden !pt-0">
           {children}
         </Container>
       </div>
