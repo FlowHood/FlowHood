@@ -5,7 +5,91 @@
 /* Clases personalizadas usando Tailwind */
 @layer base {
     body {
-        @apply font-['Inter'];
+        @apply font-['Inter'] relative overflow-x-hidden;
     }
 }
-      
+
+@layer components {
+    .selected-item::before {
+        content: '';
+        @apply absolute top-0 left-0 flex-shrink-0 w-[0.5625rem] h-full bg-[#5d5eef];
+    }
+    
+    /* ------------------------------------ */
+    /*             Overlay Styles           */
+    /* ------------------------------------ */
+
+    .blocked {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    .blocked::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: rgba(167, 167, 167, 0.5);
+    }
+
+
+    /* ------------------------------------ */
+    /*      Toggle Navbar Visibility        */
+    /* ------------------------------------ */
+
+    .menu {
+        transition:
+        right 0.5s ease-in-out,
+        visibility 0.5s ease-in-out;
+        @apply invisible -right-full sm:visible sm:right-0 overflow-y-auto h-full overflow-x-hidden;
+    }
+
+
+
+
+
+
+    body.menu-open  .menu {
+        @apply visible right-0;
+    }
+
+    
+    /* .menu {
+        @apply !block;
+    } */
+
+    /* ------------------------------------ */
+    /*         Hamburger Menu Styles        */
+    /* ------------------------------------ */
+
+    button[aria-expanded="true"] .bar1 {
+        @apply translate-y-2 rotate-45;
+    }
+
+    button[aria-expanded="true"] .bar2 {
+        @apply opacity-0;
+    }
+
+    button[aria-expanded="true"] .bar3 {
+        @apply -translate-y-2 -rotate-45;
+    }
+
+    /* ------------------------------------ */
+    /*        Mobile Device Menu Styles     */
+    /* ------------------------------------ */
+
+    .menu-options {
+        /* max-width:!important 170px; */
+
+        min-height: 100vh;
+        min-height: 100dvh;
+        z-index: 10;
+        @apply absolute top-0  w-full flex-col items-center bg-white p-6 pt-20 sm:relative sm:min-h-fit sm:max-w-none sm:p-0;
+    }
+
+    @media screen(sm) {
+        .menu-options {
+            @apply block w-full flex-row bg-transparent;
+        }
+    }
+}
