@@ -7,10 +7,12 @@ const SectionIntro = ({
   subtitle = null,
   subtitleAs: SubtitleComponent = "p",
   generalClassName = "",
+  small = false,
 }) => {
+  const titleSize = small ? "text-3xl" : "text-[2rem]";
   return (
     <div className={cn("py-8 leading-[normal] text-black", generalClassName)}>
-      <TitleComponent className="text-[2rem] font-semibold">
+      <TitleComponent className={cn("font-semibold", titleSize)}>
         {title}
       </TitleComponent>
       {subtitle && (
