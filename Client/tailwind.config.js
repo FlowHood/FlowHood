@@ -16,7 +16,7 @@ export default {
         tanzanite: "#5D5EEF",
         white: "#FFF",
         black: "#161515",
-        "light-gray": "#9BAAB7"
+        "light-gray": "#9BAAB7",
       },
 
       fontFamily: {
