@@ -3,6 +3,7 @@ import "./App.css";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import SecurityHome from "./pages/home/SecurityHome";
+import CreateQR from "./pages/qr/CreateQR";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/securityHome" element={<SecurityHome />} />
+          <Route path="/security-home" element={<SecurityHome />} />
+          <Route path="/create-qr" element={<CreateQR />} />
         </Routes>
       </BrowserRouter>
     </>
