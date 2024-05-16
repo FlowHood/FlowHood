@@ -17,5 +17,9 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "react/prop-types": "off",
+    "react/jsx-uses-vars": "error",
+    "react/jsx-uses-react": "error",
+    "quotes": ["error", "double"],
   },
 }

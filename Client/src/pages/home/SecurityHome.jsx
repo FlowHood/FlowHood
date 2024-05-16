@@ -4,9 +4,9 @@ import { LogoInitialsIcon, PeopleIcon, QRIcon } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
 import InfoResidentCard from "../../components/cards/InfoResidentCard";
-import NavigationBar from "../../components/navigationBar/NavigationBar";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
-let UserROL = "RST" //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
+let UserROL = "VGT" //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
 
 let homeInformation = {
   homeIdentifier: "123",
@@ -41,7 +41,7 @@ const SecurityHome = () => {
     <main>
       <div className="flex min-h-screen flex-col justify-center gap-8 px-8 py-10 text-black md:gap-10 lg:gap-12">
         <div className="relative flex flex-col items-center justify-evenly gap-5 text-[2.3125rem] font-bold leading-[1.8125rem] lg:flex-row ">
-          <div className="mt-10 flex flex-col items-center gap-9 text-center md:gap-14 lg:mt-0">
+          <div className="mt-14 flex flex-col items-center gap-9 text-center md:gap-14 lg:mt-0">
             <LogoInitialsIcon />
             <p className="inline-flex flex-col gap-2.5 text-[2.4375rem] font-semibold ">
               Bienvenido,
@@ -64,7 +64,7 @@ const SecurityHome = () => {
               ¿Qué haremos hoy?
             </p>
             
-            <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-1 lg:pl-10">
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-1 lg:pl-10">
               <OptionLink
                 texto="Lector de QR de entrada"
                 Icono={QRIcon}

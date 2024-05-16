@@ -7,7 +7,7 @@ const LogoutButton = ({ action, className = "" }) => {
       type="button"
       onClick={action}
       className={cn(
-        "w-fit items-center justify-center rounded-full bg-black px-[1.5625rem] py-[0.5625rem] text-[.8125rem] font-semibold text-white",
+        "w-fit items-center justify-center rounded-full bg-black px-[1.5625rem] py-[0.5625rem] text-xs md:text-[.8125rem] font-semibold text-white",
         className,
       )}
     >

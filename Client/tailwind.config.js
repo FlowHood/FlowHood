@@ -18,10 +18,12 @@ export default {
         black: "#161515",
         "light-gray": "#9BAAB7",
       },
-
       fontFamily: {
         B612: "B612",
         Inter: "Inter",
+      },
+      boxShadow: {
+        "card": " 0px 8px 30px 0px rgba(0, 0, 0, 0.10)",
       },
     },
   },
