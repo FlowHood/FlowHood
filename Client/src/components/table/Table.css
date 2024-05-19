@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .table-chip.A {
+    @apply bg-purple-alt text-purple;
+  }
+  .table-chip.B {
+    @apply bg-sky-alt text-sky;
+  }
+  .table-chip.C {
+    @apply bg-magenta-alt text-magenta;
+  }
+  .table-chip.default {
+    @apply bg-gray-100 text-gray-600;
+  }
+  .table-chip.active {
+    @apply bg-green-alt text-green;
+  }
+  .table-chip.inactive {
+    @apply bg-secondary-alt text-secondary;
+  }
+  .circle-state-chip.active {
+    @apply bg-green;
+  }
+  .circle-state-chip.inactive {
+    @apply bg-secondary;
+  }
+  .circle-state-chip.none {
+    @apply hidden;
+  }
+  .table-chip.operador {
+    @apply bg-sky-alt text-sky;
+  }
+  .table-chip.administrador {
+    @apply bg-magenta-alt text-magenta;
+  }
+}
