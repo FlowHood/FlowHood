@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 /*Icons*/
 
 /*Components*/
-import BlockOption from "../../components/BlockOption/BlockOption";
+import BlockOption from "../../components/blockOption/BlockOption";
 import { MdQrCode2 } from "react-icons/md";
-import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import NavigationBar from "../../components/navigationBar/NavigationBar";
 
 const Home = () => {
   return (
-    <div className="bg-white flex min-h-svh flex-1 items-center flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-svh flex-1 flex-col items-center justify-center bg-white py-12 sm:px-6 lg:px-8">
       <NavigationBar isOwner={false} />
       <BlockOption
         to={"#"}
