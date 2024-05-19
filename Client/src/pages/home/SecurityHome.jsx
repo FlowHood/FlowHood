@@ -4,35 +4,35 @@ import { LogoInitialsIcon, PeopleIcon, QRIcon } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
 import InfoResidentCard from "../../components/cards/InfoResidentCard";
-import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import NavigationBar from "../../components/navigationBar/NavigationBar";
 
-let UserROL = "VGT" //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
+let UserROL = "VGT"; //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
 
 let homeInformation = {
   homeIdentifier: "123",
   homeName: "Familia Rios",
   homeAddress: "Residencial HLVS, calle principal, pasaje 25, casa #24",
-  homeMembers: 3
-}
+  homeMembers: 3,
+};
 
 //TODO: do this on hook
-const HandlerInformationByRol = (rol = "") =>{
-  switch(UserROL){
+const HandlerInformationByRol = (rol = "") => {
+  switch (UserROL) {
     case "RST":
-      return <InfoResidentCard 
-        homeIdentifier={homeInformation.homeIdentifier} 
-        homeName={homeInformation.homeName} 
+      return (
+        <InfoResidentCard
+          homeIdentifier={homeInformation.homeIdentifier}
+          homeName={homeInformation.homeName}
           homeAddress={homeInformation.homeAddress}
           homeMembers={homeInformation.homeMembers}
         />
-    break;
-    case "VGT":
-      return <InfoScheduleCard turno="Turno Vespertino" />
+      );
       break;
-    
+    case "VGT":
+      return <InfoScheduleCard turno="Turno Vespertino" />;
+      break;
   }
-
-}
+};
 
 const SecurityHome = () => {
   //TODO: add service to know current rol user
@@ -47,13 +47,11 @@ const SecurityHome = () => {
               Bienvenido,
               <span className="text-royal-amethyst ">Juan Ramos</span>
             </p>
-    
-            {
-              HandlerInformationByRol(UserROL)
-            }
+
+            {HandlerInformationByRol(UserROL)}
           </div>
-          
-          <div className="w-full max-w-[480px] lg:max-w-[400px] text-start">
+
+          <div className="w-full max-w-[480px] text-start lg:max-w-[400px]">
             <LogoutButton
               action={() => {
                 console.log("Cerrar Sesión");
@@ -63,8 +61,8 @@ const SecurityHome = () => {
             <p className="text-[1.0625rem] font-medium text-[#0c1522]">
               ¿Qué haremos hoy?
             </p>
-            
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-1 lg:pl-10">
+
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 lg:pl-10">
               <OptionLink
                 texto="Lector de QR de entrada"
                 Icono={QRIcon}
@@ -80,7 +78,6 @@ const SecurityHome = () => {
         </div>
       </div>
       <NavigationBar className="sticky bottom-0" />
-
     </main>
   );
 };
