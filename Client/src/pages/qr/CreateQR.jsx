@@ -6,10 +6,10 @@ import GeneralButton from "../../components/buttons/GeneralButton";
 //Icons
 import { MdArrowBackIos } from "react-icons/md";
 import codeQR from "../../assets/images/ex_qr.jpg";
+import { QRCodeSVG } from "qrcode.react";
 
-export default function CreateQR() {
+export default function CreateQR({ qrInformation = "123" }) {
   //TODO: handle qr code generation
-  let isQr = true;
   return (
     <main className="min-h-screen">
       <div className="flex flex-col items-center justify-start px-8 py-10 text-black sm:gap-20 md:gap-10 lg:gap-12">
@@ -32,14 +32,14 @@ export default function CreateQR() {
             <div className="absolute -left-2 -top-2 h-4 w-4 border-[3px] border-b-0 border-r-0 border-black"></div>
             <div className="absolute -bottom-2 -left-2 h-4 w-4 border-[3px] border-r-0 border-t-0 border-black"></div>
             <div className="absolute -bottom-2 -right-2 h-4 w-4 border-[3px] border-l-0 border-t-0 border-black"></div>
-            {isQr ? (
+            {qrInformation == "" ? (
               <img
                 src={codeQR}
                 alt="QR code"
                 className="min-h-28 min-w-28 max-w-40 "
               />
             ) : (
-              <></>
+              <QRCodeSVG value={qrInformation} />
             )}
           </div>
           <GeneralButton textDescription={"Generar llave QR"} />
