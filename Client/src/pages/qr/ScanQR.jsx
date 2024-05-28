@@ -14,6 +14,7 @@ export default function ScanQR() {
   const handleScan = (result) => {
     console.log({ result });
     if (result != null) setScanQr(!isScanQR);
+    if (result != null) alert(result.text);
   };
 
   const handleError = (err) => {
