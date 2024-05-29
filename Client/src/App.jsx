@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -11,7 +12,7 @@ import ScanQR from "./pages/qr/ScanQR";
 
 function App() {
   return (
-    <>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIEND_ID}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -25,7 +26,7 @@ function App() {
           <Route path="/scan-qr" element={<ScanQR />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </GoogleOAuthProvider>
   );
 }
 

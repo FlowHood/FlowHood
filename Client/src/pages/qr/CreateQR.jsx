@@ -1,5 +1,5 @@
 import React from "react";
-import NavigationBar from "../../components/navigationBar/NavigationBar";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import { Link } from "react-router-dom";
 import GeneralButton from "../../components/buttons/GeneralButton";
 

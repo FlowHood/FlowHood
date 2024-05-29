@@ -4,7 +4,7 @@ import { LogoInitialsIcon, PeopleIcon, QRIcon } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
 import InfoResidentCard from "../../components/cards/InfoResidentCard";
-import NavigationBar from "../../components/navigationBar/NavigationBar";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 let UserROL = "VGT"; //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
 
