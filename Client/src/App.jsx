@@ -9,6 +9,7 @@ import PageTest from "./pages/PageTest";
 import PageNotFound from "./pages/PageNotFound";
 import CreateQR from "./pages/qr/CreateQR";
 import ScanQR from "./pages/qr/ScanQR";
+import ResidentAccountView from "./pages/account/ResidentAccountView";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/security-home" element={<SecurityHome />} />
           <Route path="/create-qr" element={<CreateQR />} />
           <Route path="/scan-qr" element={<ScanQR />} />
+          <Route path="/myaccount" element={<ResidentAccountView />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
