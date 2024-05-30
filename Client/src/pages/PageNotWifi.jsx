@@ -11,6 +11,7 @@ const PageNotWifi = () => {
       <SectionIntro
         title="¡Oh, no!"
         subtitle="Al parecer no tienes conexión a Internet"
+        text="Intentalo más tarde"
         generalClassName="max-w-[30ch]"
       />
 

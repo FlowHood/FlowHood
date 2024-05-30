@@ -6,6 +6,8 @@ const SectionIntro = ({
   titleAs: TitleComponent = "h1",
   subtitle = null,
   subtitleAs: SubtitleComponent = "p",
+  text = null,
+  textAs: TextMessageComponent = "p",
   generalClassName = "",
   small = false,
 }) => {
@@ -20,6 +22,10 @@ const SectionIntro = ({
           {subtitle}
         </SubtitleComponent>
       )}
+      {text && 
+        <TextMessageComponent className="mt-3 font-extralight">{text}
+        </TextMessageComponent>
+        }
     </div>
   );
 };
