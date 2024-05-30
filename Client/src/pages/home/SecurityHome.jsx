@@ -52,12 +52,7 @@ const SecurityHome = () => {
           </div>
 
           <div className="w-full max-w-[480px] text-start lg:max-w-[400px]">
-            <LogoutButton
-              action={() => {
-                console.log("Cerrar Sesión");
-              }}
-              className="absolute left-0 top-0 leading-normal lg:relative lg:mb-10 lg:ml-10"
-            />
+            <LogoutButton className="absolute left-0 top-0 leading-normal lg:relative lg:mb-10 lg:ml-10" />
             <p className="text-[1.0625rem] font-medium text-[#0c1522]">
               ¿Qué haremos hoy?
             </p>

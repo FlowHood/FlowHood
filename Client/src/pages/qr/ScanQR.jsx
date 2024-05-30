@@ -25,12 +25,7 @@ export default function ScanQR() {
     <main className="min-h-screen">
       <div className="flex flex-col items-center justify-start px-8 py-10 text-black sm:gap-20 md:gap-10 lg:gap-12">
         <div className="flex min-h-[2vh] flex-col gap-3 self-start sm:px-7">
-          <LogoutButton
-            action={() => {
-              console.log("Cerrar Sesión");
-            }}
-            className="ml-5 leading-normal lg:relative lg:mb-10 lg:ml-10"
-          />
+          <LogoutButton className="ml-5 leading-normal lg:relative lg:mb-10 lg:ml-10" />
           <Link to="/security-home" className="ml-5 lg:ml-10">
             <MdArrowBackIos size={30} />
           </Link>
