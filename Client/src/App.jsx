@@ -6,8 +6,9 @@ import SecurityHome from "./pages/home/SecurityHome";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import PageTest from "./pages/PageTest";
 import PageNotFound from "./pages/PageNotFound";
-import CreateQR from "./pages/qr/CreateQR";
+import CreateQRHome from "./pages/qr/CreateQRHome";
 import ScanQR from "./pages/qr/ScanQR";
+import AllRequest from "./pages/home/AllRequest";
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
           <Route path="/test" element={<PageTest />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="/security-home" element={<SecurityHome />} />
-          <Route path="/create-qr" element={<CreateQR />} />
+          <Route path="/create-qr" element={<CreateQRHome />} />
           <Route path="/scan-qr" element={<ScanQR />} />
+          <Route path="/request" element={<AllRequest />} />
         </Routes>
       </BrowserRouter>
     </>
