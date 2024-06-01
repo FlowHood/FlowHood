@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import { useTable } from "@/hooks/useTable";
+import { useTable } from "../../hook/useTable";
 
 const dummyData = [
   {

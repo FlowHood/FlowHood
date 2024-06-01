@@ -1,10 +1,10 @@
-import { colorTableDictionary } from "@/util/colorTable.dictionary";
-import { Chip } from "@/components/Chip/Chip.component";
+import { colorTableDictionary } from "../lib/tableUtils";
+import { Chip } from "../components/chip/Chip";
 import { useEffect, useRef, useState } from "react";
 import { Button, Input, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-import "@/components/Table/Table.component.css";
+import "../components/table/Table.css";
 
 export const useTable = (
   data = [],
