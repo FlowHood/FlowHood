@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import NavigationBar from "../navigationBar/NavigationBar";
+import NavigationBar from "./navigationBar/NavigationBar";
 import LogoutButton from "../buttons/LogoutButton";
 
 import { MdArrowBackIos } from "react-icons/md";
 
 export default function UserLayout({
+  showBack = true,
   showLogout = true,
   navigate = "/security-home",
   children,
@@ -22,14 +23,16 @@ export default function UserLayout({
               className="ml-5 leading-normal lg:relative lg:mb-10 lg:ml-10"
             />
           )}
-          <Link to={navigate} className="ml-5 lg:ml-10">
-            <MdArrowBackIos size={20} />
-          </Link>
+          {showBack && (
+            <Link to={navigate} className="ml-5 lg:ml-10">
+              <MdArrowBackIos size={20} />
+            </Link>
+          )}
         </div>
 
         {children}
       </div>
-      <NavigationBar className="fixed bottom-0 " />
+      <NavigationBar className="fixed bottom-0" />
     </main>
   );
 }
