@@ -15,6 +15,9 @@ import ModalTest from "./pages/ModalTest";
 import ResidentAccountView from "./pages/account/ResidentAccountView";
 import AllRequest from "./pages/home/AllRequest";
 import { VIEWS } from "./lib/views";
+import UserList from "./pages/admin/UserList";
+import HouseList from "./pages/admin/HouseList";
+import RequestList from "./pages/admin/RequestList";
 
 function App() {
   return (
@@ -25,7 +28,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="*" element={<PageNotFound />} />
             <Route path={VIEWS.login} element={<Login />} />
-            <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
             <Route path={VIEWS.test} element={<PageTest />} />
             <Route path={VIEWS.myAccount} element={<ResidentAccountView />} />
             <Route path={VIEWS.securityHome} element={<SecurityHome />} />
@@ -34,6 +36,10 @@ function App() {
             <Route path={VIEWS.request} element={<AllRequest />} />
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
+            <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
+            <Route path={VIEWS.houseList} element={<HouseList  />} />
+            <Route path={VIEWS.userList} element={<UserList />} />
+            <Route path={VIEWS.requestList} element={<RequestList />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

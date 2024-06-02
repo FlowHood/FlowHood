@@ -1,12 +1,13 @@
 import React from "react";
 import DashboardLayout from "./DashboardLayout";
 import QuickAction from "../QuickAction";
+import ChartsContainer from "./ChartsContainer";
 
 const AdminDashboard = () => {
   return (
     <DashboardLayout>
       <QuickAction />
-      <h1>Admin Dashboard</h1>
+      <ChartsContainer />
     </DashboardLayout>
   );
 };

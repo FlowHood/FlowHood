@@ -12,12 +12,13 @@ import {
 } from "../Icons";
 import LogoImage from "../../assets/images/logo_horizontal.svg";
 import { cn } from "../../lib/utils";
+import { VIEWS } from "../../lib/views";
 
 const navigation = [
-  { name: "Inicio", href: "/dashboard", icon: HomeIcon, current: true },
-  { name: "Usuarios", href: "/users", icon: UserIcon, current: false },
-  { name: "Entradas", href: "/entrances", icon: EntrancesIcon, current: false },
-  { name: "Casas", href: "/houses", icon: HouseIcon, current: false },
+  { name: "Inicio", href: VIEWS.dashboard, icon: HomeIcon, current: true },
+  { name: "Usuarios", href:  VIEWS.userList, icon: UserIcon, current: false },
+  { name: "Entradas", href: VIEWS.requestList, icon: EntrancesIcon, current: false },
+  { name: "Casas", href: VIEWS.houseList, icon: HouseIcon, current: false },
   { name: "Historial", href: "/history", icon: HistoryIcon, current: false },
   { name: "Estadísticas", href: "/stats", icon: StatsIcon, current: false },
   { name: "Cuenta", href: "/account", icon: AccountIcon, current: false },
@@ -56,7 +57,7 @@ const Sidebar = () => {
               {navigation.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href={item.href}
+                    to={item.href}
                     className={classNames(
                       "flex items-center gap-5 px-[1.625rem] py-4 hover:bg-[#f2f1ff]",
                       checkCurrent(item.href)
