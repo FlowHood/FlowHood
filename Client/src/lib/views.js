@@ -9,4 +9,6 @@ export const VIEWS = {
   scanQR: "/scan-qr",
   request: "/request",
   myAccount: "/myaccount",
+  loader: "/loader",
+  modal: "/modal",
 };

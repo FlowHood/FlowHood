@@ -1,13 +1,16 @@
 import React from "react";
 import { cn } from "../../lib/utils";
+import { useAuth } from "../../context/AuthContext";
 
-const LogoutButton = ({ action, className = "" }) => {
+const LogoutButton = ({ className = "" }) => {
+  const { logout } = useAuth();
+
   return (
     <button
       type="button"
-      onClick={action}
+      onClick={logout} // Cambiado para pasar la función en lugar de ejecutarla
       className={cn(
-        "w-fit items-center justify-center rounded-full bg-black px-[1.5625rem] py-[0.5625rem] text-xs md:text-[.8125rem] font-semibold text-white",
+        "w-fit items-center justify-center rounded-full bg-black px-[1.5625rem] py-[0.5625rem] text-xs font-semibold text-white md:text-[.8125rem]",
         className,
       )}
     >
