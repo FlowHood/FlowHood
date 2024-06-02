@@ -1,61 +1,79 @@
 import React from "react";
+import { FaCog, FaUser, FaFolderOpen, FaSignOutAlt, FaHome, FaCalendarAlt } from "react-icons/fa";
+import SectionIntro from "../../components/SectionIntro";
+import { Container } from "../../components/Container";
+import { Link } from "react-router-dom";
 
+let UserROL = "VST"; //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
+const getOptionsByRole = (role) => {
+  const commonOptions = [
+    { icon: FaUser, text: "Información Personal", to: "/informacion-personal" },
+    { icon: FaFolderOpen, text: "Contacto con administrador", to: "/contacto-administrador" },
+  ];
+
+  const roleSpecificOptions = {
+    ECG: [
+      { icon: FaCalendarAlt, text: "Registros de entrada", to: "/registros-entrada" },
+      { icon: FaHome, text: "Administrar hogar", to: "/administrar-hogar" },
+    ],
+    VST: [
+      { icon: FaFolderOpen, text: "Tus invitaciones", to: "/tus-invitaciones" },
+    ],
+  };
+
+  const options = commonOptions.concat(roleSpecificOptions[role] || []);
+  options.push({ icon: FaSignOutAlt, text: "Cerrar sesión", to: "/" });
+
+  return options;
+};
 
 const ResidentAccountView = () => {
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-icy-lilac">
-          <h1 className="text-3xl font-Inter text-center text-black">Tu cuenta</h1>
-          <p className="text-lg text-center font-B612 text-light-gray mt-2">Administra tu cuenta y ten control de tu app</p>
-          
-          <div className="relative mt-6">
-            <img
-              src="https://via.placeholder.com/150" 
-              alt="Foto de perfil"
-              className="w-40 h-40 rounded-full object-cover"
-            />
-            <button className="absolute bottom-0 right-0 bg-tanzanite text-white p-2 rounded-full shadow-card flex items-center justify-center">
-              <FaCog size={20} />
-            </button>
-          </div>
+  const options = getOptionsByRole(UserROL);
 
-          <h2 className="text-xl text-royal-amethyst font-semibold mt-4">Martín López</h2>
-          <p className="text-lg font-Inter text-black mt-2">Familia López</p>
-          <p className="text-sm font-B612 text-light-gray mt-1">Residencial HLVS, calle principal, pasaje 25, casa #24</p>
+  return (
+    <Container className="flex min-h-screen flex-col items-center justify-center pb-8">
+      <SectionIntro
+        title="Tu cuenta"
+        subtitle="Administra tu cuenta y ten control de tu app."
+        generalClassName="text-center max-w-[27ch]"
+      />
 
-          <div className="mt-4 w-full px-8">
-                <h3 className="text-lg font-B612 text-black text-left">Ajustes generales</h3>
-                <button className="flex items-start text-left font-B612 text-light-gray mt-2">
-                <FaUser size={20} className="mr-2" />
-                Información personal
-                </button>
-                <button className="flex items-start text-left font-B612 text-light-gray">
-                <FaFolderOpen size={20} className="mr-2" />
-                Contacto con administrador
-                </button>
-                <button className="flex items-start text-left font-B612 text-light-gray">
-                <FaCalendarAlt size={20} className="mr-2" />
-                Registros de entrada
-                </button>
-                <button className="flex items-start text-left font-B612 text-light-gray">
-                <FaHome size={20} className="mr-2" />
-                Administrar hogar
-                </button>
-                <button className="flex items-start text-left font-B612 text-light-gray">
-                <FaSignOutAlt size={20} className="mr-2" />
-                Cerrar sesión
-                </button>
-            </div>
+      <div className="relative mt-6">
+        <img
+          src="https://via.placeholder.com/150"
+          alt="Foto de perfil"
+          className="h-40 w-40 rounded-full border-4 border-tanzanite object-cover shadow-card"
+        />
+        <button className="absolute bottom-0 right-0 flex items-center justify-center rounded-full bg-tanzanite p-2 text-white shadow-card">
+          <FaCog size={20} />
+        </button>
+      </div>
 
-          
+      <h2 className="mt-4 text-xl font-semibold text-royal-amethyst">
+        Martín López
+      </h2>
+      <p className="mt-2 font-Inter text-lg text-black">Familia López</p>
+      <p className="mt-1 text-sm text-light-gray">
+        Residencial HLVS, calle principal, pasaje 25, casa #24
+      </p>
 
-         
-        </div>
-        
-      );
+      <div className="mt-4 w-full px-8">
+        <SectionIntro title="Ajustes generales" titleClassName="!text-xl" />
+        <ul className="leading-[2rem] text-[#495865]">
+          {options.map((option, index) => (
+            <li key={index}>
+              <Link to={option.to} className="flex items-center gap-4">
+                <option.icon size={20} className="mr-2" />
+                <span className="leading-[2rem] hover:text-[#323f4b]">
+                  {option.text}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  );
+};
 
-}
 export default ResidentAccountView;
-
-
-
-

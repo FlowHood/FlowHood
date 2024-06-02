@@ -8,4 +8,5 @@ export const VIEWS = {
   createQR: "/generate-ticket",
   scanQR: "/scan-qr",
   request: "/request",
+  myAccount: "/myaccount",
 };

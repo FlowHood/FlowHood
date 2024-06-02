@@ -4,6 +4,9 @@ import { TableComponent } from "../../components/table/GeneralTable";
 /*Icons*/
 
 /*Components*/
+import BlockOption from "../../components/BlockOption/BlockOption";
+import { MdQrCode2 } from "react-icons/md";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 const Home = () => {
   return (

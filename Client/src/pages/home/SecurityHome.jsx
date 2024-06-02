@@ -4,8 +4,10 @@ import { LogoInitialsIcon, PeopleIcon, QRIcon } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
 import InfoResidentCard from "../../components/cards/InfoResidentCard";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import UserLayout from "../../components/user/UserLayout";
 import { VIEWS } from "../../lib/views";
+
 let UserROL = "VGT"; //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
 
 let homeInformation = {
