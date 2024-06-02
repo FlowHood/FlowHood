@@ -10,4 +10,7 @@ export const VIEWS = {
   myAccount: "/myaccount",
   loader: "/loader",
   modal: "/modal",
+  houseList: "/listhouse",
+  userList: "/users-list",
+  requestList: "/requests-list",
 };
