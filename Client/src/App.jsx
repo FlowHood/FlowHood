@@ -7,11 +7,14 @@ import SecurityHome from "./pages/home/SecurityHome";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import PageTest from "./pages/PageTest";
 import PageNotFound from "./pages/PageNotFound";
-import CreateQR from "./pages/qr/CreateQR";
+import CreateQRHome from "./pages/qr/CreateQRHome";
 import ScanQR from "./pages/qr/ScanQR";
 import { AuthProvider } from "./context/AuthContext";
 import Loading from "./components/Loading";
 import ModalTest from "./pages/ModalTest";
+import ResidentAccountView from "./pages/account/ResidentAccountView";
+import AllRequest from "./pages/home/AllRequest";
+import { VIEWS } from "./lib/views";
 
 function App() {
   return (
@@ -20,16 +23,17 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/securityHome" element={<SecurityHome />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/test" element={<PageTest />} />
             <Route path="*" element={<PageNotFound />} />
-            <Route path="/security-home" element={<SecurityHome />} />
-            <Route path="/create-qr" element={<CreateQR />} />
-            <Route path="/scan-qr" element={<ScanQR />} />
-            <Route path="/loader" element={<Loading />} />
-            <Route path="/modal" element={<ModalTest />} />
+            <Route path={VIEWS.login} element={<Login />} />
+            <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
+            <Route path={VIEWS.test} element={<PageTest />} />
+            <Route path={VIEWS.myAccount} element={<ResidentAccountView />} />
+            <Route path={VIEWS.securityHome} element={<SecurityHome />} />
+            <Route path={VIEWS.createQR} element={<CreateQRHome />} />
+            <Route path={VIEWS.scanQR} element={<ScanQR />} />
+            <Route path={VIEWS.request} element={<AllRequest />} />
+            <Route path={VIEWS.loader} element={<Loading />} />
+            <Route path={VIEWS.modal} element={<ModalTest />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

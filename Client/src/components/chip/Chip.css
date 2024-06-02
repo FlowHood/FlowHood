@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .chip-component {
+    @apply flex flex-row items-center justify-center gap-2 rounded-lg p-1.5 px-2 font-Inter text-xs font-medium;
+  }
+  .chip-status {
+    @apply h-2 w-2 rounded-full;
+  }
+}

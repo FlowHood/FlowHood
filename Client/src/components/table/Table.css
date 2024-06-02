@@ -4,36 +4,36 @@
 
 @layer utilities {
   .table-chip.A {
-    @apply bg-purple-alt text-purple;
+    @apply bg-purple-300 text-purple-700;
   }
   .table-chip.B {
-    @apply bg-sky-alt text-sky;
+    @apply bg-sky-300 text-sky-700;
   }
   .table-chip.C {
-    @apply bg-magenta-alt text-magenta;
+    @apply bg-red-300 text-red-700;
   }
   .table-chip.default {
     @apply bg-gray-100 text-gray-600;
   }
   .table-chip.active {
-    @apply bg-green-alt text-green;
+    @apply bg-green-300 text-green-700;
   }
   .table-chip.inactive {
-    @apply bg-secondary-alt text-secondary;
+    @apply bg-gray-300 text-gray-700;
   }
   .circle-state-chip.active {
-    @apply bg-green;
+    @apply bg-green-300;
   }
   .circle-state-chip.inactive {
-    @apply bg-secondary;
+    @apply bg-red-300;
   }
   .circle-state-chip.none {
     @apply hidden;
   }
   .table-chip.operador {
-    @apply bg-sky-alt text-sky;
+    @apply bg-sky-300 text-sky-700;
   }
   .table-chip.administrador {
-    @apply bg-magenta-alt text-magenta;
+    @apply bg-red-300 text-red-700;
   }
 }

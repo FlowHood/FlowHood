@@ -23,7 +23,7 @@ export default {
         Inter: "Inter",
       },
       boxShadow: {
-        "card": " 0px 8px 30px 0px rgba(0, 0, 0, 0.10)",
+        card: " 0px 8px 30px 0px rgba(0, 0, 0, 0.10)",
       },
     },
   },
