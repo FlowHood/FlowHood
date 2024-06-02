@@ -4,7 +4,6 @@ export const VIEWS = {
   dashboard: "/dashboard",
   test: "/test",
   pageNotFound: "*",
-  securityHome: "/security-home",
   createQR: "/generate-ticket",
   scanQR: "/scan-qr",
   request: "/request",
