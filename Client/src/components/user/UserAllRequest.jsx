@@ -4,6 +4,10 @@ import GeneralButton from "../buttons/GeneralButton";
 import UserRequestContainer from "../UserRequestContainer";
 import RequestFilterBar from "./filterBar/RequestFilterBar";
 import { ROL } from "../../lib/rol";
+import ScrollToTopButton from "../ScrollToTopButton";
+import Button from "../buttons/Button";
+import { VIEWS } from "../../lib/views";
+import { Link } from "react-router-dom";
 
 /*
 example 
@@ -79,20 +83,20 @@ export default function UserAllRequest() {
           userName={_item.name}
           date={_item.date}
           key={_item.id}
-          action={() => {}}
+          to={VIEWS.requestDetail}
         />
       );
     }) || [];
 
   return (
-    <div className=" flex min-h-[80vh] w-full min-w-32 flex-col items-center gap-3 overflow-y-auto px-4 font-Inter">
+    <div className=" flex min-h-[80vh] w-full min-w-32 flex-col items-center gap-3 px-4 font-Inter">
       <div className="flex w-11/12 flex-col gap-1 text-center">
         <h1 className=" text-xl font-semibold sm:text-4xl">{title}</h1>
         <p className="text-[0.75rem] font-light sm:text-base">{subTitle}</p>
       </div>
       <div className="flex w-full flex-col sm:w-3/4">
-        <div className=" flex max-h-[63vh] flex-col gap-4">
-          {rol === "ECG" || rol === "RST" ? (
+        <div className=" flex min-h-screen flex-col gap-4">
+          {rol === ROL.OWNER || rol === ROL.RESIDENT ? (
             <div className="flex flex-col gap-1">
               <h2 className=" text-lg font-semibold text-royal-amethyst sm:text-3xl">
                 Solicitudes pendientes
@@ -105,21 +109,24 @@ export default function UserAllRequest() {
             <></>
           )}
           <RequestFilterBar rol={rol} />
-          <div className=" flex h-full w-full flex-1 flex-col justify-start gap-2 overflow-y-auto sm:px-4">
+          <div className=" grid h-full grid-cols-1 w-full flex-1 md:grid-cols-2 flex-col pb-8 justify-start gap-2 sm:px-4">
             {listOfItems != null && listOfItems.length > 0
               ? listOfItems
               : "Cargando..."}
           </div>
-          <div className="flex flex-col items-center justify-center gap-2">
-            <div className="flex flex-row items-center justify-center gap-1 text-gray-600">
+          <div className="sticky bottom-[4.2rem] flex flex-col items-center justify-center gap-2 bg-white p-3 sm:bottom-0">
+            <div className="hidden flex-row items-center justify-center gap-1 text-gray-600 sm:flex">
               <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
               <p>Ó</p>
               <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
             </div>
-            <GeneralButton textDescription={"Crear invitación"} />
+            <Button as={Link} to={VIEWS.createRequest}>
+              Crear invitación
+            </Button>
           </div>
         </div>
       </div>
+      <ScrollToTopButton scrollClassname="bottom-[4.8rem] right-5" />
     </div>
   );
 }

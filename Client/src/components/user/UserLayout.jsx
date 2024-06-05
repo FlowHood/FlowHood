@@ -4,17 +4,19 @@ import NavigationBar from "./navigationBar/NavigationBar";
 import LogoutButton from "../buttons/LogoutButton";
 
 import { MdArrowBackIos } from "react-icons/md";
+import { VIEWS } from "../../lib/views";
+import GoBackButton from "../buttons/GoBackButton";
 
 export default function UserLayout({
   showBack = true,
   showLogout = true,
-  navigate = "/security-home",
+  navigate = VIEWS.securityHome,
   children,
 }) {
   return (
-    <main className="min-h-screen">
-      <div className="flex flex-col items-center justify-start px-4 py-8 text-black sm:gap-20 md:gap-10 lg:gap-12">
-        <div className="flex min-h-[2vh] flex-col gap-2 self-start sm:px-7">
+    <main className="min-h-screen pb-11 md:pb-0">
+      <div className="px-4 py-8 text-black">
+        <div className="flex min-h-[2vh] flex-col gap-2 self-start sm:px-7 fixed top-0 p-5">
           {showLogout && (
             <LogoutButton
               action={() => {
@@ -24,9 +26,7 @@ export default function UserLayout({
             />
           )}
           {showBack && (
-            <Link to={navigate} className="ml-5 lg:ml-10">
-              <MdArrowBackIos size={20} />
-            </Link>
+            <GoBackButton />
           )}
         </div>
 

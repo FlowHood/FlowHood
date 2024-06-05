@@ -8,7 +8,7 @@ export default function FilterItem({
 }) {
   return (
     <button
-      className={` rounded-md px-2 py-1 text-[0.6rem] sm:text-base ${className} ${isSelected ? "bg-gray-200 font-medium" : "font-thin"}`}
+      className={` rounded-md px-2 py-1 text-[0.6rem] sm:text-base ${className} ${isSelected ? "bg-gray-200" : "font-medium"}`}
       onClick={action}
     >
       {text}

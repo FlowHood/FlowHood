@@ -3,6 +3,7 @@ import Button from "../components/buttons/Button";
 import SectionIntro from "../components/SectionIntro";
 import { Link } from "react-router-dom";
 import NotFondImage from "../assets/images/not_found.svg";
+import { VIEWS } from "../lib/views";
 
 const PageNotFound = () => {
   return (
@@ -13,7 +14,7 @@ const PageNotFound = () => {
         subtitle="Al parecer algo se ha perdido. Seguiremos buscandolo."
         generalClassName="max-w-[30ch]"
       />
-      <Button as={Link} to="/home" className="mt-5">
+      <Button as={Link} to={VIEWS.securityHome} className="mt-5">
         Regresar al Inicio
       </Button>
     </main>
