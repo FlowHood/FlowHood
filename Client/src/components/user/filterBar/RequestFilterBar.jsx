@@ -20,7 +20,7 @@ export default function RequestFilterBar(title = "", rol = ROL.RESIDENT) {
   };
 
   return (
-    <div className=" flex flex-row items-center justify-center gap-3">
+    <div className=" flex flex-row items-center justify-center gap-3 sticky top-0 bg-white p-2">
       <FilterItem
         text={"Aceptadas"}
         action={() => {

@@ -16,3 +16,7 @@ export function getRol(rol) {
   };
   return currentRol[rol] || "NOROL";
 }
+
+export function isAuthorized(rol, roles) {
+  return roles.includes(getRol(rol));
+}

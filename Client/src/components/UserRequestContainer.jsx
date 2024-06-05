@@ -1,5 +1,6 @@
 import moment from "moment";
 import React from "react";
+import { Link } from "react-router-dom";
 
 moment.locale("es", {
   months:
@@ -16,7 +17,7 @@ moment.locale("es", {
 export default function UserRequestContainer({
   userName = "",
   date = "",
-  action,
+  to = "",
 }) {
   const generateDateString = (date) => {
     let newDate = moment(date);
@@ -45,9 +46,9 @@ export default function UserRequestContainer({
 
   let { day, month, year } = generateDateString(date);
   return (
-    <div
+    <Link
       className="flex w-full flex-row rounded-md border-2 border-black"
-      onClick={action}
+      to={to}
     >
       <div className="w-[6%] rounded-bl-md rounded-tl-md border-r-2 border-black bg-tanzanite sm:w-[4%]"></div>
       <div className="flex w-11/12 flex-col p-2">
@@ -58,6 +59,6 @@ export default function UserRequestContainer({
           <span className="font-bold">{day}</span>, {month + " " + year}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
