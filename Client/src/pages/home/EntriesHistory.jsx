@@ -1,11 +1,11 @@
 import React from "react";
-import UserAllRequest from "../../components/user/UserAllRequest";
+import UserEntriesHistory from "../../components/user/UserEntriesHistory"
 import UserLayout from "../../components/user/UserLayout";
 
-export default function AllRequest() {
+export default function AllEntries() {
   return (
     <UserLayout showLogout={false}>
-      <UserAllRequest />
+      <UserEntriesHistory/>
     </UserLayout>
   );
-}
+} 
