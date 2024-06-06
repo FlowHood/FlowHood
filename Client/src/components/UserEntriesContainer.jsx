@@ -1,6 +1,6 @@
 import moment from "moment";
 import React from "react";
-import { Link } from "react-router-dom";
+import { ClockIcon } from "./Icons";
 
 moment.locale("es", {
   months:
@@ -17,7 +17,7 @@ moment.locale("es", {
 export default function UserRequestContainer({
   userName = "",
   date = "",
-  to = "",
+  action,
 }) {
   const generateDateString = (date) => {
     let newDate = moment(date);
@@ -46,19 +46,21 @@ export default function UserRequestContainer({
 
   let { day, month, year } = generateDateString(date);
   return (
-    <Link
+    <div
       className="flex w-full flex-row rounded-md border-2 border-black"
-      to={to}
+      onClick={action}
     >
-      <div className="w-[6%] rounded-bl-md rounded-tl-md border-r-2 border-black bg-tanzanite sm:w-[4%]"></div>
       <div className="flex w-11/12 flex-col p-2">
-        <p className=" w-2/4 text-[0.65rem] sm:w-auto sm:text-base">
-          Solicitud de invitacion para {userName}
-        </p>
+        <div className="flex items-center">
+          <ClockIcon className="text-sm p-2" />
+          <p className="w-2/4 text-[0.65rem] sm:w-auto sm:text-base">
+            Entrada Registrada de {userName}
+          </p>
+        </div>
         <p className="self-end text-[0.6rem] sm:self-auto sm:text-base">
-          <span className="font-bold">{day}</span>, {month + " " + year}
+          <span className="font-bold">{day}</span>, {month} {year}
         </p>
       </div>
-    </Link>
-  );
+    </div>
+  )
 }
