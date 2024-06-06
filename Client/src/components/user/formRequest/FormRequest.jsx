@@ -21,7 +21,7 @@ export default function FormRequest() {
     console.log(e);
   };
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-4 p-4">
+    <div className="flex w-full max-w-[1024px] flex-col items-center justify-center gap-4 p-4 md:max-w-[75%]">
       <div className="flex flex-col items-center justify-center gap-4 text-center font-Inter">
         <h1 className="text-2xl font-semibold ">
           Crear
@@ -80,15 +80,16 @@ export default function FormRequest() {
         </div>
 
         <div className={`flex-row gap-3 ${isPeriodic ? "flex" : "hidden"}`}>
-          <Form.Item className="" label="Fecha final" name={"endDate"}>
+          <Form.Item className="p-2" label="Fecha final" name={"endDate"}>
             <Input type="date" />
           </Form.Item>
-          <Form.Item label="Hora final" name={"endTime"}>
+          <Form.Item label="Hora final" className="p-2" name={"endTime"}>
             <Input type="time" />
           </Form.Item>
         </div>
         <Form.Item
           label="Razón de visitante"
+          className="p-2"
           name={"reason"}
           rules={[
             {
