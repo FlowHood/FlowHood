@@ -42,8 +42,8 @@ export default function UserScanQR() {
               onError={handleError}
               onScan={handleScan}
               style={{
-                width: "w-full max-w-44 sm:max-w-72",
-                height: "h-full max-h-44 sm:max-h-72",
+                width: " w-full", //"w-full max-w-44 sm:max-w-72 md:max-w-96"
+                height: "w-full", //"h-full max-h-44 sm:max-h-72 md:max-h-96"
               }}
               constraints={{
                 audio: false,

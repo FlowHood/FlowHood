@@ -10,7 +10,6 @@ import PageNotFound from "./pages/PageNotFound";
 import CreateQRHome from "./pages/qr/CreateQRHome";
 import ScanQR from "./pages/qr/ScanQR";
 import { AuthProvider } from "./context/AuthContext";
-import Loading from "./components/Loading";
 import ModalTest from "./pages/ModalTest";
 import ResidentAccountView from "./pages/account/ResidentAccountView";
 import AllRequest from "./pages/home/AllRequest";
@@ -18,6 +17,8 @@ import { VIEWS } from "./lib/views";
 import UserList from "./pages/admin/UserList";
 import HouseList from "./pages/admin/HouseList";
 import RequestList from "./pages/admin/RequestList";
+import Loading from "./components/Loading";
+import CreateRequestHome from "./pages/form/CreateRequestHome";
 import RequestDetail from "./pages/request/RequestDetail";
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="*" element={<PageNotFound />} />
+            <Route path={VIEWS.pageNotFound} element={<PageNotFound />} />
             <Route path={VIEWS.login} element={<Login />} />
             <Route path={VIEWS.test} element={<PageTest />} />
             <Route path={VIEWS.myAccount} element={<ResidentAccountView />} />
@@ -39,10 +40,13 @@ function App() {
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
             <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
-            <Route path={VIEWS.houseList} element={<HouseList  />} />
+            <Route path={VIEWS.houseList} element={<HouseList />} />
             <Route path={VIEWS.userList} element={<UserList />} />
             <Route path={VIEWS.requestList} element={<RequestList />} />
-
+            <Route
+              path={VIEWS.CreateRequestHome}
+              element={<CreateRequestHome />}
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

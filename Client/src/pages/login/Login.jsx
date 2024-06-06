@@ -16,17 +16,6 @@ const Login = () => {
 
   return (
     <div className="mx-auto flex max-w-[475px] flex-col items-center gap-8 px-8 py-10 text-center text-black md:gap-10 lg:gap-12">
-      User:
-      <pre>{JSON.stringify(user, null, 2)}</pre>
-      {!isAuthenticated() ? (
-        <button onClick={login}>Login with Google</button>
-      ) : (
-        <div>
-          <img src={user.picture} alt={user.name} />
-          <h2>{user.name}</h2>
-          <button onClick={logout}>Logout</button>
-        </div>
-      )}
       <img
         src={LogoImage}
         alt="FlowHood"
@@ -44,7 +33,7 @@ const Login = () => {
         Nuestro objetivo es brindarte la mejor experiencia y hacer que te
         sientas seguro en tu comunidad.
       </p>
-      <p className="mt-5 text-lg font-medium leading-[11.209px]">
+      <p className="mt-5 text-lg font-medium leading-[normal]">
         Por favor, inicia sesión para continuar
       </p>
       <GoogleLoginButton login={login} />

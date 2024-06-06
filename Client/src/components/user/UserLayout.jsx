@@ -10,7 +10,7 @@ import GoBackButton from "../buttons/GoBackButton";
 export default function UserLayout({
   showBack = true,
   showLogout = true,
-  navigate = VIEWS.securityHome,
+  navigate = { pathname: VIEWS.securityHome },
   children,
 }) {
   return (
