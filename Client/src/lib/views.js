@@ -1,6 +1,8 @@
+import CreateRequestHome from "../pages/form/CreateRequestHome";
+
 export const VIEWS = {
   login: "/login",
-  securityHome: "/securityHome",
+  securityHome: "/security-home",
   dashboard: "/dashboard",
   test: "/test",
   pageNotFound: "*",
@@ -13,4 +15,5 @@ export const VIEWS = {
   houseList: "/listhouse",
   userList: "/users-list",
   requestList: "/requests-list",
+  CreateRequestHome: "/create-request",
 };

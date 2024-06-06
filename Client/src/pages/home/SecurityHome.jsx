@@ -51,7 +51,6 @@ const SecurityHome = () => {
           </div>
 
           <div className="w-full max-w-[480px] text-start lg:max-w-[400px]">
-
             <p className="text-[1.0625rem] font-medium text-[#0c1522]">
               ¿Qué haremos hoy?
             </p>

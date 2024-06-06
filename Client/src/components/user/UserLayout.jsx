@@ -4,11 +4,12 @@ import NavigationBar from "./navigationBar/NavigationBar";
 import LogoutButton from "../buttons/LogoutButton";
 
 import { MdArrowBackIos } from "react-icons/md";
+import { VIEWS } from "../../lib/views";
 
 export default function UserLayout({
   showBack = true,
   showLogout = true,
-  navigate = "/security-home",
+  navigate = { pathname: VIEWS.securityHome },
   children,
 }) {
   return (
