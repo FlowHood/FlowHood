@@ -1,12 +1,17 @@
 import React, { useEffect, useState, createContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { ROL } from "../lib/rol";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [roles, setRoles] = useState([ROL.ADMIN]);
   const [loading, setLoading] = useState(true);
+
+  console.log("Roles", roles);
 
   const fetchUserData = async (access_token) => {
     try {
@@ -71,6 +76,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("refresh_token", refresh_token);
 
       fetchUserData(access_token);
+
+      // Redirect user to the home page
+      window.location.href = "/";
     },
     onError: (error) => {
       console.error("Login failed", error);
@@ -89,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated, loading }}
+      value={{ user, login, logout, isAuthenticated, loading, roles }}
     >
       {children}
     </AuthContext.Provider>

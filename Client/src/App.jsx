@@ -19,11 +19,12 @@ import HouseList from "./pages/admin/HouseList";
 import RequestList from "./pages/admin/RequestList";
 import Loading from "./components/Loading";
 import CreateRequestHome from "./pages/form/CreateRequestHome";
+import RequestDetail from "./pages/request/RequestDetail";
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIEND_ID}>
-      <AuthProvider>
+       <AuthProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -35,6 +36,7 @@ function App() {
             <Route path={VIEWS.createQR} element={<CreateQRHome />} />
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
             <Route path={VIEWS.request} element={<AllRequest />} />
+            <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
             <Route path={VIEWS.dashboard} element={<AdminDashboard />} />

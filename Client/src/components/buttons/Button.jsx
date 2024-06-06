@@ -4,13 +4,14 @@ import { cn } from "../../lib/utils";
 const Button = ({
   as: Component = "button",
   action = () => {},
+  to = "",
   className = "",
   children,
   props,
 }) => {
   const buttonProps =
-    Component === "button" ? { type: "button", onClick: action } : {};
-
+    Component === "button" ? { type: "button", onClick: action } : { to };
+    
   return (
     <Component
       className={cn(
