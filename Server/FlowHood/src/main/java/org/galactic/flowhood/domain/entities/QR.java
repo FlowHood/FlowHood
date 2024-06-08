@@ -1,4 +1,4 @@
-package org.galactic.flowhood.entities;
+package org.galactic.flowhood.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

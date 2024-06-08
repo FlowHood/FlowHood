@@ -1,14 +1,13 @@
-package org.galactic.flowhood.entities;
+package org.galactic.flowhood.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.galactic.flowhood.utils.SystemStates;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class Request {
     private String endTime;
     private String reason;
     private String status;
-    private Date createdAt = Date.from(Instant.now());
+    private Date createdAt;
 
     //one to one petitions
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -42,4 +41,18 @@ public class Request {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private House house;
+
+    public Request(Date startDate, Date endDate, String startTime, String endTime, String reason, String status, QR qr, User resident, User visitor, House house) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + "para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
+        this.status = SystemStates.PENDING.getState();
+        this.qr = qr;
+        this.resident = resident;
+        this.visitor = visitor;
+        this.house = house;
+        this.createdAt = Date.from(Instant.now());
+    }
 }

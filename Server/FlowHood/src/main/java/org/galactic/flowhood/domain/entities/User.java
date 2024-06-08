@@ -1,26 +1,32 @@
-package org.galactic.flowhood.entities;
+package org.galactic.flowhood.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Table(name = "users")
 @Entity
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String lastname;
     private String email;
+    private boolean state;
 
     //adding one-to-many relations
     @JsonIgnore
@@ -52,4 +58,18 @@ public class User {
            inverseJoinColumns = @JoinColumn(name = "house_id")
     )
     private List<House> houses;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getId())).collect(Collectors.toList());
+    }
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
 }
