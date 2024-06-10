@@ -1,6 +1,7 @@
 package org.galactic.flowhood.services;
 
 import org.galactic.flowhood.domain.dto.request.UserReqDTO;
+import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.Token;
 import org.galactic.flowhood.domain.entities.User;
@@ -15,15 +16,15 @@ public interface UserService {
     void cleanTokens(User user) throws Exception;
 
     User findUserAuthenticated();
-    void deleteUserById(User user);
+    void deleteUser(User user);
     List<User> findAllUser();
     User findUserById(UUID id);
 
-    void updateById(UUID id, UserReqDTO req);
+    User updateUser(User user);
 
-    void makeHomeResponsible(UUID id);
+    User makeHomeResponsible(User user, House house);
 
-    void patchRole(User user, Role role);
+    User patchRole(User user, Role role);
     User findOneByIdentifier(String identifier);
 
 }

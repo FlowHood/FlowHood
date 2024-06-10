@@ -1,7 +1,10 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import org.galactic.flowhood.domain.entities.Request;
+import org.galactic.flowhood.domain.entities.User;
+import org.galactic.flowhood.repository.RequestRepository;
 import org.galactic.flowhood.services.RequestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,28 +12,36 @@ import java.util.UUID;
 
 @Service
 public class RequestServiceImpl implements RequestService {
-    @Override
-    public void createRequest(Request request) {
 
+    final
+    RequestRepository requestRepository;
+
+    public RequestServiceImpl(RequestRepository requestRepository) {
+        this.requestRepository = requestRepository;
     }
 
     @Override
-    public void deleteRequestById(UUID id) {
+    public Request createRequest(Request request) {
+        return requestRepository.save(request);
+    }
 
+    @Override
+    public void deleteRequest(Request request) {
+        requestRepository.delete(request);
     }
 
     @Override
     public Request findRequestById(UUID id) {
-        return null;
+        return requestRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Request> findAllRequests() {
-        return null;
+        return requestRepository.findAll();
     }
 
     @Override
-    public List<Request> findAllRequestsByUserIdAndState(UUID userId, String state) {
-        return null;
+    public List<Request> findAllByUserAndState(User user, String state) {
+        return requestRepository.findAllByStatusAndVisitorOrResident(state, user, user);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.galactic.flowhood.utils.SystemStates;
 
 import java.time.Instant;
 import java.util.Date;
@@ -20,9 +21,15 @@ public class QR {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String status;
-    private Date lastUpdate = Date.from(Instant.now());
+    private Date lastUpdate;
 
     @JsonIgnore
     @OneToOne(mappedBy = "qr")
     private Request request;
+
+    public QR(Request request) {
+        this.status = SystemStates.PENDING.getState();
+        this.lastUpdate = Date.from(Instant.now());
+        this.request = request;
+    }
 }

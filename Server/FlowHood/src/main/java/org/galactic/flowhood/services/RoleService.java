@@ -6,7 +6,9 @@ import org.galactic.flowhood.domain.entities.Role;
 import java.util.List;
 
 public interface RoleService {
-    void deleteRoleById(String id);
+    void deleteRole(Role role);
     List<Role> findAllRole();
     Role findRoleById(String id);
+
+    Role createRole(Role role);
 }

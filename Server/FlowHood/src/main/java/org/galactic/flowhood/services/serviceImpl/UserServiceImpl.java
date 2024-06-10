@@ -3,11 +3,13 @@ package org.galactic.flowhood.services.serviceImpl;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.galactic.flowhood.domain.dto.request.UserReqDTO;
+import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.Token;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.TokenRepository;
 import org.galactic.flowhood.repository.UserRepository;
+import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService  {
+public class UserServiceImpl implements UserService {
     final
     UserRepository userRepository;
 
@@ -77,6 +79,7 @@ public class UserServiceImpl implements UserService  {
         });
 
     }
+
     @Override
     public User findUserAuthenticated() {
         String username = SecurityContextHolder
@@ -88,37 +91,53 @@ public class UserServiceImpl implements UserService  {
     }
 
     @Override
-    public void deleteUserById(User user) {
-
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     @Override
     public List<User> findAllUser() {
-        return null;
+        return userRepository.findAll();
     }
 
     @Override
     public User findUserById(UUID id) {
-        return null;
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void updateById(UUID id, UserReqDTO req) {
-
+    public User updateUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public void makeHomeResponsible(UUID id) {
-
+    public User makeHomeResponsible(User user, House house) {
+        List<House> usersHouses = user.getHouses();
+        if (!usersHouses.contains(house)) {
+            usersHouses.add(house);
+            user.setHouses(usersHouses);
+            return userRepository.save(user);
+        } else {
+            return user;
+        }
     }
 
     @Override
-    public void patchRole(User user, Role role) {
+    public User patchRole(User user, Role role) {
+        List<Role> roles = user.getRoles();
+        if (!roles.contains(role))
+            roles.add(role);
+        else
+            roles.remove(role);
 
+        user.setRoles(roles);
+        return userRepository.save(user);
     }
 
     @Override
     public User findOneByIdentifier(String identifier) {
-        return null;
+        return userRepository.findFirstByEmail(identifier).orElse(null);
     }
+
+
 }

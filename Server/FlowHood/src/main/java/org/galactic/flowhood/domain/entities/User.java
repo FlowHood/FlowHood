@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.galactic.flowhood.utils.SystemRoles;
+import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +28,7 @@ public class User implements UserDetails {
     private String name;
     private String lastname;
     private String email;
-    private boolean state;
+    private String state;
 
     //adding one-to-many relations
     @JsonIgnore
@@ -71,5 +73,18 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return null;
+    }
+
+    public User(String name, String lastname, String email, List<Token> tokens, List<Role> roles, List<House> houses) {
+        this.name = name;
+        this.lastname = lastname;
+        this.email = email;
+        this.state = SystemStates.ACTIVE.getState();
+        this.createdRequests = List.of();
+        this.request = List.of();
+        this.tokens = tokens;
+        this.roles = roles;
+        this.houses = List.of();
+
     }
 }

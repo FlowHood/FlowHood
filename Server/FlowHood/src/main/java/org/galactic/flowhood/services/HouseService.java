@@ -8,11 +8,11 @@ import java.util.UUID;
 
 public interface HouseService {
 
-    void createHouse(House house);
+    House createHouse(House house);
 
     House getHouseById(UUID id);
 
-    void deleteHouse(UUID id);
+    void deleteHouse(House house);
 
     List<House> getAllHouses();
 

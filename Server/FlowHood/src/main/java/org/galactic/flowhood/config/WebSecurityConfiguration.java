@@ -1,9 +1,11 @@
 package org.galactic.flowhood.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTokenFilter;
+import org.galactic.flowhood.utils.SystemRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,12 +27,12 @@ public class WebSecurityConfiguration {
 
     private final UserService userService;
 
-    @Autowired
-    private JWTTokenFilter filter;
+    private final JWTTokenFilter filter;
 
-    public WebSecurityConfiguration(PasswordEncoder passwordEncoder, UserService userService) {
+    public WebSecurityConfiguration(PasswordEncoder passwordEncoder, UserService userService, JWTTokenFilter filter) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.filter = filter;
     }
 
     @Bean
@@ -60,6 +62,7 @@ public class WebSecurityConfiguration {
         //Route filter
         http.authorizeHttpRequests(auth ->
                 auth
+                        .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
                         .requestMatchers("/api/auth/**").permitAll()
 //                        .anyRequest().authenticated()
         .anyRequest().permitAll());
