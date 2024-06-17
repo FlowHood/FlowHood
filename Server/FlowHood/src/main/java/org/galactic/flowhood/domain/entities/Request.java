@@ -19,12 +19,20 @@ public class    Request {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private Date startDate;
     private Date endDate;
+
+    @Column(nullable = false)
     private String startTime;
     private String endTime;
     private String reason;
+
+    @Column(nullable = false)
     private String status;
+
+    @Column(nullable = false)
     private Date createdAt;
 
     //one to one petitions

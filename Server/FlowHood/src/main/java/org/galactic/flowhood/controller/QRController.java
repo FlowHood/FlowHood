@@ -30,16 +30,6 @@ public class QRController {
         }
     }
 
-    @PatchMapping("/")
-    public ResponseEntity<GeneralResponse> updateQRStatus(@RequestBody QRReqDTO req) {
-        try {
-            return GeneralResponse.builder().status(HttpStatus.OK).message("QR created").getResponse();
-
-        } catch (Exception e) {
-            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
-        }
-    }
-
     @PatchMapping("/status/{_id}")
     public ResponseEntity<GeneralResponse> updateQRStatus(@PathVariable("_id") String id) {
         try {

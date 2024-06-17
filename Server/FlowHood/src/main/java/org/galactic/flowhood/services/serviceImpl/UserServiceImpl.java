@@ -1,22 +1,22 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.galactic.flowhood.domain.dto.request.UserReqDTO;
+import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.Token;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.TokenRepository;
 import org.galactic.flowhood.repository.UserRepository;
-import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTools;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -30,10 +30,13 @@ public class UserServiceImpl implements UserService {
     final
     JWTTools jwtTools;
 
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools) {
+    final RestTemplate restTemplate;
+
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.jwtTools = jwtTools;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -81,6 +84,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserRegisterDTO getUserInformation(String token) {
+        String url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token="+token;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Object.class);
+
+        if(response.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException("Failed to get user information from Google OAuth2");
+        }
+
+        System.out.println(requestEntity);
+
+        UserRegisterDTO user = new UserRegisterDTO();
+        user.setEmail((String) ((Map)response.getBody()).get("name"));
+        user.setLastname((String) ((Map)response.getBody()).get("family_name"));
+        user.setEmail((String) ((Map) response.getBody()).get("email"));
+
+        return user;
+    }
+
+    @Override
     public User findUserAuthenticated() {
         String username = SecurityContextHolder
                 .getContext()
@@ -103,6 +130,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(UUID id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findFirstByEmail(email).orElse(null);
+    }
+
+    @Override
+    public boolean existUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -139,5 +181,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findFirstByEmail(identifier).orElse(null);
     }
 
+
+    @Override
+    public void addRole(User user, Role role) {
+        List<Role> roles = user.getRoles();
+        if (!roles.contains(role))
+            roles.add(role);
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
 
 }

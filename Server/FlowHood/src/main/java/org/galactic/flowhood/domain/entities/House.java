@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +20,8 @@ public class House {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String address;
 
     //    adding one-to-many relations
@@ -27,5 +31,20 @@ public class House {
 
     //   adding many-to-many relations
     @ManyToMany(mappedBy = "houses")
-    private List<User> users;
+    private List<User> residents;
+
+    //   adding one-to-many relations
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User responsible;
+
+    @Column(nullable = false)
+    private Boolean active;
+
+    public House(String address) {
+        this.address = address;
+        this.requests = null;
+        this.residents = null;
+        this.responsible = null;
+        this.active = true;
+    }
 }

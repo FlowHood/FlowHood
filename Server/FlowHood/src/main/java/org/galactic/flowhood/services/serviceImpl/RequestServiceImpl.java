@@ -40,6 +40,7 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findAll();
     }
 
+    //TODO: update method to allow non state and state
     @Override
     public List<Request> findAllByUserAndState(User user, String state) {
         return requestRepository.findAllByStatusAndVisitorOrResident(state, user, user);

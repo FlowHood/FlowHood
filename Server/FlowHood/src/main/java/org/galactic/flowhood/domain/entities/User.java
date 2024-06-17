@@ -61,6 +61,8 @@ public class User implements UserDetails {
     )
     private List<House> houses;
 
+    @OneToMany(mappedBy = "responsible", fetch = FetchType.LAZY)
+    private List<House> admHouses;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getId())).collect(Collectors.toList());
@@ -75,16 +77,16 @@ public class User implements UserDetails {
         return null;
     }
 
-    public User(String name, String lastname, String email, List<Token> tokens, List<Role> roles, List<House> houses) {
+    public User(String name, String lastname, String email) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
         this.state = SystemStates.ACTIVE.getState();
-        this.createdRequests = List.of();
-        this.request = List.of();
-        this.tokens = tokens;
-        this.roles = roles;
-        this.houses = List.of();
+        this.createdRequests = null;
+        this.request = null;
+        this.tokens = null;
+        this.roles = null;
+        this.houses = null;
 
     }
 }

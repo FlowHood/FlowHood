@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import LogoImage from "../../assets/images/logo.svg";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,7 +12,7 @@ const Login = () => {
     if (isAuthenticated()) {
       navigateTo("/");
     }
-  } , [isAuthenticated, navigateTo]);
+  }, [isAuthenticated, navigateTo]);
 
   return (
     <div className="mx-auto flex max-w-[475px] flex-col items-center gap-8 px-8 py-10 text-center text-black md:gap-10 lg:gap-12">
