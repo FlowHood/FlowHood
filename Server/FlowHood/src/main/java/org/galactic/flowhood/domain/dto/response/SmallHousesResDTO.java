@@ -10,15 +10,15 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class HousesResDTO {
+public class SmallHousesResDTO {
     private UUID id;
     private String address;
     private Boolean active;
     private SmallUserResDTO responsible;
     private List<SmallUserResDTO> residents;
 
-    public static HousesResDTO fromEntity(House house) {
-        HousesResDTO houseDTO = new HousesResDTO();
+    public static SmallHousesResDTO fromEntity(House house) {
+        SmallHousesResDTO houseDTO = new SmallHousesResDTO();
         houseDTO.setId(house.getId());
         houseDTO.setAddress(house.getAddress());
         houseDTO.setActive(house.getActive());

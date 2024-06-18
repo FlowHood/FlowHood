@@ -2,7 +2,11 @@ import { colorTableDictionary } from "../lib/tableUtils";
 import { Chip } from "../components/chip/Chip";
 import { useEffect, useRef, useState } from "react";
 import { Button, Input, Space } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 
 import "../components/table/Table.css";
 
@@ -12,6 +16,8 @@ export const useTable = (
   addSortOn = [],
   addFilterOn = [],
   addSearchOn = [],
+  onEdit = () => {},
+  onDelete = () => {},
 ) => {
   const [columns, setColumns] = useState([]);
   const [_, setSearchText] = useState("");
@@ -35,25 +41,69 @@ export const useTable = (
         title: col[0].toUpperCase() + col.slice(1),
         dataIndex: col.toLowerCase(),
         key: col.toLowerCase(),
+        render: col === "picture" ? renderPictureColumn : undefined,
       };
     });
+
+    cols.push({
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button icon={<EditOutlined />} onClick={() => onEdit(record.id)} />
+          <Button
+            icon={<DeleteOutlined />}
+            danger
+            onClick={() => onDelete(record.id)}
+          />
+        </Space>
+      ),
+    });
+
     setColumns(cols);
     return cols;
   };
 
   const generateFilteredColumns = (columns = []) => {
     let tableColumns = addTagsOn.length > 0 ? checkTableTags(columns) : columns;
-
     tableColumns =
       addSortOn.length > 0 ? checkTableSort(tableColumns) : tableColumns;
-
     tableColumns =
       addFilterOn.length > 0 ? checkTableFilter(tableColumns) : tableColumns;
-
     tableColumns =
       addSearchOn.length > 0 ? checkTableSearch(tableColumns) : tableColumns;
+      
+    tableColumns = tableColumns.filter((column) => column.key !== "id");
+    tableColumns = checkTableState(tableColumns); // add state chip to table
 
     setFilteredColumns(tableColumns);
+  };
+
+  const renderPictureColumn = (text, record) => (
+    <div className="flex items-center">
+      <img src={record.picture} alt="image" className="w-12 h-12 rounded-full" />
+    </div>
+  );
+
+  const checkTableState = (columns = []) => {
+    return columns.map((column) => {
+      if (column.key === "estado") {
+        return {
+          ...column,
+          render: (_, record) => {
+            const estado = record[column.key];
+            const stateColor =
+              estado?.toString().toLowerCase() === "activo"
+                ? "circle-state-chip active"
+                : estado?.toString().toLowerCase() === "inactivo"
+                  ? "circle-state-chip inactive"
+                  : "circle-state-chip none";
+            return <Chip className={stateColor}>{estado}</Chip>;
+          },
+        };
+      }
+      return column;
+    });
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -151,18 +201,20 @@ export const useTable = (
     if (addFilterOn.length < 1) return columns;
     //mapping new array with the render Tag component for the table column
     return columns.map((column) => {
+      if (column.key === "picture") return column;
       //check if addFilterOn includes keys from the columns to add the render component
 
       //local filtered options to avoid repeated items on list
       const _filteredOptions = [];
       data.forEach((_d) => {
-        if (!_filteredOptions.includes(_d[column.key])) {
+        if (_d[column.key] && !_filteredOptions.includes(_d[column.key])) {
           _filteredOptions.push(_d[column.key]);
         }
       });
 
       //filtered options list
       const filters = _filteredOptions.map((_option) => {
+        console.log("_option", _option);
         return {
           text: _option.toString().toLowerCase(),
           value: _option.toString().toLowerCase(),
@@ -264,6 +316,7 @@ export const useTable = (
       }}
     />
   );
+
   const onFilter = (dataIndex) => (value, record) =>
     record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
 

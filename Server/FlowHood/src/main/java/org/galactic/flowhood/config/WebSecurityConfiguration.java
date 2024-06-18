@@ -66,6 +66,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/auth/**").permitAll()
 //                        .anyRequest().authenticated()
         .anyRequest().permitAll());
+
         //UnAunthorized handler
         http.exceptionHandling(handling -> handling.authenticationEntryPoint((req, res, ex) -> {
             res.sendError(

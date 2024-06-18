@@ -1,13 +1,20 @@
 package org.galactic.flowhood.controller;
 
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
+import org.galactic.flowhood.domain.dto.response.UserResDTO;
+import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.utils.SystemRoles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin
 public class UserController {
 
     final
@@ -20,8 +27,12 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllUser(){
         try{
-            return GeneralResponse.builder().status(HttpStatus.OK).message("found").getResponse();
-
+            List<UserResDTO> users = userService.findAllUser();
+            return GeneralResponse.builder()
+                    .status(HttpStatus.OK)
+                    .data(users)
+                    .message("found")
+                    .getResponse();
         }
         catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
@@ -31,8 +42,10 @@ public class UserController {
     @GetMapping("/{_id}")
     public ResponseEntity<GeneralResponse> findUserById(@PathVariable("_id") String id){
         try{
-            return GeneralResponse.builder().status(HttpStatus.OK).message("found").getResponse();
-
+            UserResDTO user = userService.findUserByIdDto(UUID.fromString(id));
+            if (user == null)
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
+            return GeneralResponse.builder().status(HttpStatus.OK).data(user).message("found").getResponse();
         }
         catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();

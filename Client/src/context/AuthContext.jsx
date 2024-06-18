@@ -1,8 +1,7 @@
 import React, { useEffect, useState, createContext } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { ROL } from "../lib/rol";
+import { getMe, loginToApi } from "../services/auth.service";
 
 const AuthContext = createContext();
 
@@ -11,54 +10,13 @@ export const AuthProvider = ({ children }) => {
   const [roles, setRoles] = useState([ROL.ADMIN]);
   const [loading, setLoading] = useState(true);
 
-  console.log("Roles", roles);
-
-  const fetchUserData = async (access_token) => {
-    try {
-      const res = await axios.get(
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`,
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            Accept: "application/json",
-          },
-        },
-      );
-      setUser(res.data);
-      localStorage.setItem("user", JSON.stringify(res.data));
-    } catch (error) {
-      console.error(error);
-      logout();
-    }
-  };
-
-  const verifyToken = async (access_token) => {
-    try {
-      const res = await axios.get(
-        `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${access_token}`,
-      );
-      return res.data;
-    } catch (error) {
-      console.error("Token is invalid or expired", error);
-      logout();
-      return null;
-    }
-  };
-
   useEffect(() => {
     const checkToken = async () => {
       setLoading(true);
       const token = localStorage.getItem("session");
       if (token) {
-        const tokenInfo = await verifyToken(token);
-        if (tokenInfo) {
-          fetchUserData(token);
-        }
-      } else {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
+        const user = await getMe();
+        setUser(user);
       }
       setLoading(false);
     };
@@ -66,19 +24,18 @@ export const AuthProvider = ({ children }) => {
     checkToken();
   }, []);
 
+
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const { access_token, expires_in, refresh_token } = tokenResponse;
-      const expirationTime = new Date().getTime() + expires_in * 1000;
+      const { access_token } = tokenResponse;
 
-      localStorage.setItem("session", access_token);
-      localStorage.setItem("token_expiration", expirationTime.toString());
-      localStorage.setItem("refresh_token", refresh_token);
+      const token = await loginToApi(access_token);
+      localStorage.setItem("session", token);
 
-      fetchUserData(access_token);
-
-      // Redirect user to the home page
-      window.location.href = "/";
+      if (token) {
+        const user = await getMe();
+        setUser(user);
+      }
     },
     onError: (error) => {
       console.error("Login failed", error);
@@ -87,10 +44,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("session");
-    localStorage.removeItem("token_expiration");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
     setUser(null);
+    setRoles([]);
   };
 
   const isAuthenticated = () => !!user;
