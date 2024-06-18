@@ -20,11 +20,14 @@ import RequestList from "./pages/admin/RequestList";
 import Loading from "./components/Loading";
 import CreateRequestHome from "./pages/form/CreateRequestHome";
 import RequestDetail from "./pages/request/RequestDetail";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import { ROL } from "./lib/rol";
+import CreateHouse from "./pages/admin/CreateHouse";
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIEND_ID}>
-       <AuthProvider>
+      <AuthProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -39,14 +42,18 @@ function App() {
             <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
-            <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
-            <Route path={VIEWS.houseList} element={<HouseList />} />
-            <Route path={VIEWS.userList} element={<UserList />} />
-            <Route path={VIEWS.requestList} element={<RequestList />} />
-            <Route
-              path={VIEWS.CreateRequestHome}
-              element={<CreateRequestHome />}
-            />
+
+            <Route element={<ProtectedRoute requiredRole={ROL.ADMIN} />}>
+              <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
+              <Route path={VIEWS.createHouse} element={<CreateHouse />} />
+              <Route path={VIEWS.houseList} element={<HouseList />} />
+              <Route path={VIEWS.userList} element={<UserList />} />
+              <Route path={VIEWS.requestList} element={<RequestList />} />
+              <Route
+                path={VIEWS.CreateRequestHome}
+                element={<CreateRequestHome />}
+              />
+            </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>

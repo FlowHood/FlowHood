@@ -5,7 +5,7 @@ import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
-  const { user, login, logout, isAuthenticated } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigateTo = useNavigate();
 
   useEffect(() => {

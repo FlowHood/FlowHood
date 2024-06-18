@@ -24,4 +24,5 @@ public interface HouseService {
 
     List<House> getHousesByResident(User user);
 
+    House updateHouse(House house);
 }

@@ -1,6 +1,8 @@
 package org.galactic.flowhood.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +30,7 @@ public class User implements UserDetails {
     private String name;
     private String lastname;
     private String email;
+    private String picture;
     private String state;
 
     //adding one-to-many relations
@@ -63,6 +66,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "responsible", fetch = FetchType.LAZY)
     private List<House> admHouses;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getId())).collect(Collectors.toList());
@@ -77,16 +81,16 @@ public class User implements UserDetails {
         return null;
     }
 
-    public User(String name, String lastname, String email) {
+    public User(String name, String lastname, String email, String picture) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
+        this.picture = picture;
         this.state = SystemStates.ACTIVE.getState();
         this.createdRequests = null;
         this.request = null;
         this.tokens = null;
         this.roles = null;
         this.houses = null;
-
     }
 }

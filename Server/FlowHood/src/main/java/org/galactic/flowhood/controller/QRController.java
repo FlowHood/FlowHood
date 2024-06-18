@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/qr")
+@CrossOrigin
 public class QRController {
     @GetMapping("/{_id}")
     public ResponseEntity<GeneralResponse> findQRById(@PathVariable("_id") String id) {

@@ -11,6 +11,7 @@ import org.galactic.flowhood.utils.SystemRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +58,7 @@ public class HouseServiceImpl implements HouseService {
 
         //check if house has no responsible
         if(house.getResponsible() == null) {
-            Role role = roleService.findRoleById(SystemRoles.ADMINISTRATOR.getRole());
+            Role role = roleService.findRoleById(SystemRoles.RESPONSIBLE.getRole());
             userService.addRole(user, role);
             house.setResponsible(user);
             houseRepository.save(house);
@@ -71,23 +72,27 @@ public class HouseServiceImpl implements HouseService {
             }
         }
 
-
-
         return house;
     }
 
     @Override
     public House addResidents(List<User> users, House house) {
         List<User> houseUsers = house.getResidents();
+        if (houseUsers == null) {
+            houseUsers = new ArrayList<>();
+        }
+
         Role role = roleService.findRoleById(SystemRoles.RESIDENT.getRole());
         for (User user : users) {
             if (!houseUsers.contains(user)) {
                 houseUsers.add(user);
                 userService.addRole(user, role);
+                user.getHouses().add(house);
                 userService.updateUser(user);
             }
         }
         house.setResidents(houseUsers);
+        houseRepository.save(house);
         return house;
     }
 
@@ -102,5 +107,8 @@ public class HouseServiceImpl implements HouseService {
         return user.getHouses();
     }
 
-
+    @Override
+    public House updateHouse(House house) {
+        return houseRepository.save(house);
+    }
 }

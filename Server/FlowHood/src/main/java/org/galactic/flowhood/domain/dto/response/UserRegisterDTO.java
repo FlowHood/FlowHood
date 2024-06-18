@@ -11,4 +11,5 @@ public class UserRegisterDTO {
     private String name;
     private String lastname;
     private String email;
+    private String picture;
 }

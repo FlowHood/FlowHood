@@ -3,6 +3,7 @@ package org.galactic.flowhood.controller;
 import jakarta.validation.Valid;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
 import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
+import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.User;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin
 public class UserController {
 
     final
@@ -38,9 +40,13 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllUser(){
         try{
-            List<User> users = userService.findAllUser();
-            return GeneralResponse.builder().status(HttpStatus.OK).data(users).message("found").getResponse();
 
+            List<UserResDTO> users = userService.findAllUser();
+            return GeneralResponse.builder()
+                    .status(HttpStatus.OK)
+                    .data(users)
+                    .message("found")
+                    .getResponse();
         }
         catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
@@ -49,15 +55,14 @@ public class UserController {
 
     //Admin only
     @GetMapping("/{_id}")
-    public ResponseEntity<GeneralResponse> findUserById(@PathVariable("_id") String id) {
-        try {
-            UUID _userId = UUID.fromString(id);
-            User user = userService.findUserById(_userId);
+    public ResponseEntity<GeneralResponse> findUserById(@PathVariable("_id") String id){
+        try{
+            UserResDTO user = userService.findUserByIdDto(UUID.fromString(id));
             if (user == null)
-                return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
             return GeneralResponse.builder().status(HttpStatus.OK).data(user).message("found").getResponse();
-
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }

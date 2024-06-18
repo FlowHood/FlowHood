@@ -1,9 +1,9 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
+import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.Token;
@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -106,16 +106,22 @@ public class UserServiceImpl implements UserService {
         user.setName((String) ((Map)response.getBody()).get("given_name"));
         user.setLastname((String) ((Map)response.getBody()).get("family_name"));
         user.setEmail((String) ((Map) response.getBody()).get("email"));
+        user.setPicture((String) ((Map) response.getBody()).get("picture"));
+
         return user;
     }
 
     @Override
-    public User findUserAuthenticated() {
+    public UserResDTO findUserAuthenticated() {
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getName();
-        return userRepository.findFirstByEmail(username).orElse(null);
+        User user = userRepository.findFirstByEmail(username).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        return   UserResDTO.fromEntity(user);
     }
 
     @Override
@@ -124,13 +130,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllUser() {
-        return userRepository.findAll();
+    public List<UserResDTO> findAllUser() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .map(UserResDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
     public User findUserById(UUID id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public UserResDTO findUserByIdDto(UUID id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        return UserResDTO.fromEntity(user);
+    }
+
+    @Override
+    public List<User> findUsersByIds(List<UUID> ids) {
+        return userRepository.findAllById(ids);
     }
 
     @Override
