@@ -56,6 +56,7 @@ public class AuthController {
             }
 
             User res = userService.findUserByEmail(user.getEmail());
+            if(res == null) return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).getResponse();
             Token token = userService.registerToken(res);
             return GeneralResponse.builder().status(HttpStatus.OK).data(new TokenResDTO(token.getContent())).getResponse();
         } catch (Exception e) {

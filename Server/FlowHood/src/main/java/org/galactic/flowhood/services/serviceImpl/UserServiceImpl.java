@@ -1,6 +1,8 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
@@ -18,8 +20,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     final
     UserRepository userRepository;
@@ -97,13 +101,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to get user information from Google OAuth2");
         }
 
-        System.out.println(requestEntity);
 
         UserRegisterDTO user = new UserRegisterDTO();
-        user.setEmail((String) ((Map)response.getBody()).get("name"));
+        user.setName((String) ((Map)response.getBody()).get("given_name"));
         user.setLastname((String) ((Map)response.getBody()).get("family_name"));
         user.setEmail((String) ((Map) response.getBody()).get("email"));
-
         return user;
     }
 
@@ -113,7 +115,6 @@ public class UserServiceImpl implements UserService {
                 .getContext()
                 .getAuthentication()
                 .getName();
-
         return userRepository.findFirstByEmail(username).orElse(null);
     }
 

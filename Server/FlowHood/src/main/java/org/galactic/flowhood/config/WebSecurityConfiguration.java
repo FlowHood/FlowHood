@@ -63,6 +63,7 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
+                        .requestMatchers("/api/house/responsible").hasAnyAuthority(SystemRoles.RESPONSIBLE.getRole())
                         .requestMatchers("/api/auth/**").permitAll()
 //                        .anyRequest().authenticated()
         .anyRequest().permitAll());
