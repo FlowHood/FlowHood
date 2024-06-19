@@ -32,8 +32,6 @@ public interface UserService {
 
     User updateUser(User user);
 
-    User makeHomeResponsible(User user, House house);
-
     User patchRole(User user, Role role);
     User findOneByIdentifier(String identifier);
     void addRole(User user, Role role);

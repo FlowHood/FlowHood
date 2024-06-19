@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,13 +130,11 @@ public class UserController {
     @PatchMapping("/{_userId}/house/{_homeId}")
     public ResponseEntity<GeneralResponse> toggleHouseResponsible(@PathVariable("_userId") String userId, @PathVariable("_homeId") String homeId){
         try{
-            UUID _userId = UUID.fromString(userId);
-            User user = userService.findUserById(_userId);
+            User user = userService.findUserById(UUID.fromString(userId));
             if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
-            UUID _homeId = UUID.fromString(homeId);
-            House house = houseService.getHouseById(_homeId);
+            House house = houseService.getHouseById(UUID.fromString(homeId));
             if(house == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
-            userService.makeHomeResponsible(user, house);
+            houseService.toggleResposible(user, house);
 
             return GeneralResponse.builder().status(HttpStatus.OK).message("user set as home responsible").getResponse();
 
@@ -144,6 +143,48 @@ public class UserController {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
+    //only for adm and responsible
+    @PatchMapping("/{_userId}/house/{_homeId}")
+    public ResponseEntity<GeneralResponse> toggleUserResident(@PathVariable("_userId") String userId, @PathVariable("_homeId") String homeId){
+        try{
+            User user = userService.findUserById(UUID.fromString(userId));
+            if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
+            House house = houseService.getHouseById(UUID.fromString(homeId));
+            if(house == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
+            houseService.toggleResident(user, house);
 
+            return GeneralResponse.builder().status(HttpStatus.OK).message("user set as home resident").getResponse();
+
+        }
+        catch (Exception e){
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
+    //only for adm and responsible
+    @PatchMapping("/house/{_homeId}")
+    public ResponseEntity<GeneralResponse> toggleManyUsers(@PathVariable("_homeId") String homeId, @RequestBody @Valid List<String> usersId, BindingResult error){
+        try{
+            if (error.hasErrors()) return GeneralResponse.builder().data(error.getAllErrors()).status(HttpStatus.BAD_REQUEST).data(error.getAllErrors()).getResponse();
+
+            House house = houseService.getHouseById(UUID.fromString(homeId));
+            if(house == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
+
+            List<User> users = new ArrayList<>();
+            for(String userId : usersId){
+                User user = userService.findUserById(UUID.fromString(userId));
+                if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
+                users.add(user);
+            }
+
+            houseService.addResidents(users, house);
+
+            return GeneralResponse.builder().status(HttpStatus.OK).message("user set as home resident").getResponse();
+
+        }
+        catch (Exception e){
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
 
 }

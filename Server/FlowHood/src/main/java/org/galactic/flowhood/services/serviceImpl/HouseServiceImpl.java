@@ -8,7 +8,6 @@ import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.SystemRoles;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class HouseServiceImpl implements HouseService {
 
     //Admin only
     @Override
-    public House addResponsible(User user, House house) {
+    public House toggleResposible(User user, House house) {
 
         //check if house has no responsible
         if(house.getResponsible() == null) {
@@ -71,29 +70,44 @@ public class HouseServiceImpl implements HouseService {
                 userService.updateUser(user);
             }
         }
+        else {
+            //if house has responsible, remove house from user
+            List<House> ownHouses = user.getAdmHouses();
+            if (ownHouses.contains(house)) {
+                ownHouses.remove(house);
+                user.setAdmHouses(ownHouses);
+                userService.updateUser(user);
+            }
+            house.setResponsible(null);
+            houseRepository.save(house);
+            //remove responsible role from user
+        }
 
         return house;
     }
 
     @Override
     public House addResidents(List<User> users, House house) {
-        List<User> houseUsers = house.getResidents();
-        if (houseUsers == null) {
-            houseUsers = new ArrayList<>();
-        }
+        List<User> residentsInHouse = house.getResidents();
+        if (residentsInHouse == null)
+            residentsInHouse = new ArrayList<>();
 
         Role role = roleService.findRoleById(SystemRoles.RESIDENT.getRole());
         for (User user : users) {
-            if (!houseUsers.contains(user)) {
-                houseUsers.add(user);
-                userService.addRole(user, role);
-                user.getHouses().add(house);
-                userService.updateUser(user);
-            }
+            toggleSingleResident(residentsInHouse, user, house, role);
         }
-        house.setResidents(houseUsers);
-        houseRepository.save(house);
-        return house;
+        return houseRepository.findById(house.getId()).orElse(null);;
+
+    }
+
+    @Override
+    public House toggleResident(User user, House house) {
+        List<User> residentsInHouse = house.getResidents();
+        if (residentsInHouse == null)
+            residentsInHouse = new ArrayList<>();
+
+        Role role = roleService.findRoleById(SystemRoles.RESIDENT.getRole());
+        return toggleSingleResident(residentsInHouse, user, house, role);
     }
 
     @Override
@@ -101,6 +115,35 @@ public class HouseServiceImpl implements HouseService {
         return houseRepository.findAllByResponsible(user);
     }
 
+    private House toggleSingleResident(List<User> residentsInHouse, User user, House house, Role role){
+        if (!residentsInHouse.contains(user)) {
+            residentsInHouse.add(user);
+            userService.addRole(user, role);
+
+            if(!user.getHouses().contains(house)){
+                List<House> houses = user.getHouses();
+                houses.add(house);
+                user.setHouses(houses);
+                userService.updateUser(user);
+            }
+
+        }
+        else {
+            residentsInHouse.remove(user);
+
+            if(user.getHouses().contains(house)){
+                List<House> houses = user.getHouses();
+                houses.remove(house);
+                user.setHouses(houses);
+                userService.updateUser(user);
+            }
+
+        }
+        house.setResidents(residentsInHouse);
+        houseRepository.save(house);
+
+        return house;
+    }
     //TODO
     @Override
     public List<House> getHousesByResident(User user) {

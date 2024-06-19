@@ -16,9 +16,11 @@ public interface HouseService {
 
     List<House> getAllHouses();
 
-    House addResponsible(User user, House house);
+    House toggleResposible(User user, House house);
 
     House addResidents(List<User> users, House house);
+
+    House toggleResident(User user, House house);
 
     List<House> getHousesByResponsible(User user);
 

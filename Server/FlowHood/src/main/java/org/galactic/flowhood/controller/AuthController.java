@@ -38,6 +38,7 @@ public class AuthController {
         this.roleService = roleService;
     }
 
+    //every user can login
     @PostMapping("/login")
     public ResponseEntity<GeneralResponse> login(@RequestBody @Valid LoginReqDTO req){
         try {
@@ -60,7 +61,7 @@ public class AuthController {
             return GeneralResponse.builder().message(e.getMessage()).status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
-
+    //any athenticated user can get his information
     @GetMapping("/me")
     public ResponseEntity<GeneralResponse> getAuthenticatedUser() {
         try {

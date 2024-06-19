@@ -24,6 +24,7 @@ public class RequestController {
         this.requestService = requestService;
     }
 
+    //admin only
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllRequest(){
         try{
@@ -37,6 +38,7 @@ public class RequestController {
         }
     }
 
+    //admin only and authenticated user
     @GetMapping("/{_id}")
     public ResponseEntity<GeneralResponse> findRequestById(@PathVariable("_id") String id){
         try{

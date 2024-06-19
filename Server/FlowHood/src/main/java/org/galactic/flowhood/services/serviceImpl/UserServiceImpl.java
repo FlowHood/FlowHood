@@ -10,6 +10,7 @@ import org.galactic.flowhood.domain.entities.Token;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.TokenRepository;
 import org.galactic.flowhood.repository.UserRepository;
+import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTools;
 import org.springframework.http.*;
@@ -36,11 +37,14 @@ public class UserServiceImpl implements UserService {
 
     final RestTemplate restTemplate;
 
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate) {
+    final HouseService houseService;
+
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate, HouseService houseService) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.jwtTools = jwtTools;
         this.restTemplate = restTemplate;
+        this.houseService = houseService;
     }
 
     @Override
@@ -177,18 +181,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    public User makeHomeResponsible(User user, House house) {
-        List<House> usersHouses = user.getHouses();
-        if (!usersHouses.contains(house)) {
-            usersHouses.add(house);
-            user.setHouses(usersHouses);
-            return userRepository.save(user);
-        } else {
-            return user;
-        }
     }
 
     @Override

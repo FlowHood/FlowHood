@@ -2,10 +2,8 @@ package org.galactic.flowhood.controller;
 
 import jakarta.validation.Valid;
 import org.galactic.flowhood.domain.dto.request.HouseReqDTO;
-import org.galactic.flowhood.domain.dto.request.RoleReqDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
 import org.galactic.flowhood.domain.dto.response.HousesResDTO;
-import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.User;
@@ -13,16 +11,13 @@ import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.SystemRoles;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.Binding;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/house")
@@ -41,6 +36,7 @@ public class HouseController {
         this.roleService = roleService;
     }
 
+    //Admin only
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllHouses(){
         try{
@@ -53,6 +49,7 @@ public class HouseController {
         }
     }
 
+    //Admin only
     @GetMapping("/{_id}")
     public ResponseEntity<GeneralResponse> findHouseById(@PathVariable("_id") String id){
         try{
@@ -69,6 +66,7 @@ public class HouseController {
         }
     }
 
+    //Admin only
     @PostMapping("/")
     public ResponseEntity<GeneralResponse> createHouse(@RequestBody @Valid HouseReqDTO req, BindingResult error){
         try{
@@ -82,7 +80,7 @@ public class HouseController {
             if (req.getResponsibleId() != null) {
                 User responsible = userService.findUserById(req.getResponsibleId());
                 if (responsible != null) {
-                    houseService.addResponsible(responsible, house);
+                    houseService.toggleResposible(responsible, house);
                 } else {
                     return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("responsible not found").getResponse();
                 }
@@ -105,7 +103,7 @@ public class HouseController {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
-
+    //admin only
     @DeleteMapping("/{_id}")
     public ResponseEntity<GeneralResponse> deleteHouseById(@PathVariable("_id") String id){
         try{
@@ -121,6 +119,7 @@ public class HouseController {
         }
     }
 
+    //only user responsible
     @GetMapping("/responsible")
     public ResponseEntity<GeneralResponse> findAllByResponsible(){
         try{
@@ -142,6 +141,7 @@ public class HouseController {
         }
     }
 
+    //only user residents
     @GetMapping("/resident")
     public ResponseEntity<GeneralResponse> findAllByResident(){
         try{
@@ -149,9 +149,8 @@ public class HouseController {
             if (user == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
 
-            Role ecgUser = roleService.findRoleById(SystemRoles.RESPONSIBLE.getRole());
-            Role vstUser = roleService.findRoleById(SystemRoles.VISITOR.getRole());
-            if(!user.getRoles().contains(ecgUser) || !user.getRoles().contains(vstUser))
+            Role rstUser = roleService.findRoleById(SystemRoles.RESIDENT.getRole());
+            if(!user.getRoles().contains(rstUser))
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("not allowed").getResponse();
 
             List<House> houses = houseService.getHousesByResident(user);
