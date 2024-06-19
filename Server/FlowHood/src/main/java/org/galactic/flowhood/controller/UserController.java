@@ -127,7 +127,7 @@ public class UserController {
     }
 
     //only for admin
-    @PatchMapping("/{_userId}/house/{_homeId}")
+    @PatchMapping("/{_userId}/house-responsible/{_homeId}")
     public ResponseEntity<GeneralResponse> toggleHouseResponsible(@PathVariable("_userId") String userId, @PathVariable("_homeId") String homeId){
         try{
             User user = userService.findUserById(UUID.fromString(userId));
@@ -144,7 +144,7 @@ public class UserController {
         }
     }
     //only for adm and responsible
-    @PatchMapping("/{_userId}/house/{_homeId}")
+    @PatchMapping("/{_userId}/house-resident/{_homeId}")
     public ResponseEntity<GeneralResponse> toggleUserResident(@PathVariable("_userId") String userId, @PathVariable("_homeId") String homeId){
         try{
             User user = userService.findUserById(UUID.fromString(userId));

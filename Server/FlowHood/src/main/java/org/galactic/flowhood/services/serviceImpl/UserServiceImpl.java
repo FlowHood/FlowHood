@@ -37,14 +37,12 @@ public class UserServiceImpl implements UserService {
 
     final RestTemplate restTemplate;
 
-    final HouseService houseService;
 
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate, HouseService houseService) {
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.jwtTools = jwtTools;
         this.restTemplate = restTemplate;
-        this.houseService = houseService;
     }
 
     @Override
