@@ -96,7 +96,7 @@ public class HouseServiceImpl implements HouseService {
         for (User user : users) {
             toggleSingleResident(residentsInHouse, user, house, role);
         }
-        return houseRepository.findById(house.getId()).orElse(null);;
+        return houseRepository.findById(house.getId()).orElse(null);
 
     }
 

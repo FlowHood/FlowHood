@@ -29,7 +29,7 @@ public class MeController {
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> Me() {
         try {
-            User user = userService.findUserAuthenticated();
+            User user = userService.findUserAuthenticated().toEntity();
             if (user == null)
                 return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
             return GeneralResponse.builder().status(HttpStatus.OK).data(user).message("found").getResponse();
@@ -44,7 +44,7 @@ public class MeController {
     public ResponseEntity<GeneralResponse> updateMe(@RequestBody @Valid UserRegisterDTO req, BindingResult error){
         try{
             if(error.hasErrors()) return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).data(error.getAllErrors()).getResponse();
-            User user = userService.findUserAuthenticated();
+            User user = userService.findUserAuthenticated().toEntity();
             if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
             user.setEmail(req.getEmail());
             user.setLastname(req.getLastname());
@@ -62,7 +62,7 @@ public class MeController {
     @DeleteMapping("/")
     public ResponseEntity<GeneralResponse> deleteMe(){
         try{
-            User user = userService.findUserAuthenticated();
+            User user = userService.findUserAuthenticated().toEntity();
             if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
             userService.deleteUser(user);
             return GeneralResponse.builder().status(HttpStatus.OK).message("deleted").getResponse();
