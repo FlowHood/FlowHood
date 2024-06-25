@@ -5,9 +5,11 @@ import org.galactic.flowhood.domain.dto.request.HouseReqDTO;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.dto.request.RequestStateReqDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
+import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.User;
+import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.RequestService;
 import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-//TODO
 @RestController
 @RequestMapping("/api/request")
 @CrossOrigin
@@ -33,10 +34,13 @@ public class RequestController {
 
     final RoleService roleService;
 
-    public RequestController(RequestService requestService, UserService userService, RoleService roleService) {
+    final HouseService houseService;
+
+    public RequestController(RequestService requestService, UserService userService, RoleService roleService, HouseService houseService) {
         this.requestService = requestService;
         this.userService = userService;
         this.roleService = roleService;
+        this.houseService = houseService;
     }
 
     //admin only
@@ -69,15 +73,34 @@ public class RequestController {
         }
     }
 
-    //Access on resident and responsible
+    //Access for anyone excepts visitors
     @PostMapping("/")
     public ResponseEntity<GeneralResponse> createRequest(@RequestBody @Valid RequestReqDTO req, BindingResult errors){
         //validate if role is vigilant or responsible then request must be automatically approved else it should be pending
         try{
             if (errors.hasErrors())
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("invalid request").data(errors.getAllErrors()).getResponse();
-            return GeneralResponse.builder().status(HttpStatus.OK).message("role created").getResponse();
 
+            House house = houseService.getHouseById(UUID.fromString(req.getHouse()));
+            if(house == null)
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("house not found").getResponse();
+
+            User resident = userService.findUserById(UUID.fromString(req.getResident()));
+            if(resident == null)
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("resident not found").getResponse();
+
+            User visitor = userService.findUserById(UUID.fromString(req.getVisitor()));
+            if(visitor == null)
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("visitor not found").getResponse();
+
+            if(!house.getActive())
+                return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("House can not currently accept visits requests").getResponse();
+
+            if(!house.getResidents().contains(resident) || !house.getResponsible().equals(resident))
+                return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You can not create requests for this house").getResponse();
+
+            requestService.createRequestHandler(req, house, resident, visitor);
+            return GeneralResponse.builder().status(HttpStatus.OK).message("role created").getResponse();
         }
         catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
