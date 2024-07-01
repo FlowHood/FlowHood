@@ -107,7 +107,7 @@ public class UserController {
 
     //check if this is necessary or could be done in the patch role
     //only for admin
-    @PatchMapping("/{_userId}/role/{_roleId}")
+    @PatchMapping("/{_userId}/rol/{_roleId}")
     public ResponseEntity<GeneralResponse> toggleRole(@PathVariable("_userId") String userId, @PathVariable("_roleId") String roleId){
         try{
             UUID _userId = UUID.fromString(userId);

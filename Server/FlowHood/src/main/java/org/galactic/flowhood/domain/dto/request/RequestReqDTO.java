@@ -11,11 +11,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class RequestReqDTO {
 
     @NotBlank
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private String startDate;
 
     @Nullable
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private String endDate = null;
 
     @NotBlank
@@ -29,7 +29,6 @@ public class RequestReqDTO {
     @Nullable
     private String reason = null;
 
-    @NotBlank
     @Pattern(regexp = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$")
     private String resident;
 

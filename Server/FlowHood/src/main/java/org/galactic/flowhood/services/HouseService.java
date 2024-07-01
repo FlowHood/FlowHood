@@ -26,5 +26,7 @@ public interface HouseService {
 
     List<House> getHousesByResident(User user);
 
+    boolean isResponsibleFromHouse(User user, House house);
+
     House updateHouse(House house);
 }

@@ -50,14 +50,14 @@ public class    Request {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private House house;
 
-    public Request(Date startDate, Date endDate, String startTime, String endTime, String reason, String status, QR qr, User resident, User visitor, House house) {
+    public Request(Date startDate, Date endDate, String startTime, String endTime, User resident, User visitor, House house) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + "para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
         this.status = SystemStates.PENDING.getState();
-        this.qr = qr;
+        this.qr = null;
         this.resident = resident;
         this.visitor = visitor;
         this.house = house;

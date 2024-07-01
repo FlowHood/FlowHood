@@ -151,6 +151,17 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
+    public boolean isResponsibleFromHouse(User resident, House house) {
+        boolean isValidResident = false;
+        for(User u : house.getResidents()){
+            isValidResident = u.getEmail().equals(resident.getEmail());
+            if(isValidResident)
+                break;
+        }
+        return isValidResident;
+    }
+
+    @Override
     public House updateHouse(House house) {
         return houseRepository.save(house);
     }

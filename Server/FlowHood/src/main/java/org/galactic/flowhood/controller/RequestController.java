@@ -85,10 +85,6 @@ public class RequestController {
             if(house == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("house not found").getResponse();
 
-            User resident = userService.findUserById(UUID.fromString(req.getResident()));
-            if(resident == null)
-                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("resident not found").getResponse();
-
             User visitor = userService.findUserById(UUID.fromString(req.getVisitor()));
             if(visitor == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("visitor not found").getResponse();
@@ -96,11 +92,22 @@ public class RequestController {
             if(!house.getActive())
                 return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("House can not currently accept visits requests").getResponse();
 
-            if(!house.getResidents().contains(resident) || !house.getResponsible().equals(resident))
+            User resident = userService.findUserAuthenticated().toEntity();
+
+            //Asign current resident rol to handle petition
+            String residentRol = SystemRoles.RESPONSIBLE.getRole();
+            Role role = roleService.findRoleById(SystemRoles.ADMINISTRATOR.getRole());
+            if(resident.getRoles().contains(role))
+                residentRol = SystemRoles.ADMINISTRATOR.getRole();
+
+            boolean isValidResident = houseService.isResponsibleFromHouse(resident, house);
+            if(isValidResident)
+                residentRol = SystemRoles.RESIDENT.getRole();
+            if(!house.getResponsible().getEmail().equals(resident.getEmail()) && !isValidResident)
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You can not create requests for this house").getResponse();
 
-            requestService.createRequestHandler(req, house, resident, visitor);
-            return GeneralResponse.builder().status(HttpStatus.OK).message("role created").getResponse();
+            requestService.createRequestHandler(req, house, resident, visitor, residentRol);
+            return GeneralResponse.builder().status(HttpStatus.OK).message("request created").getResponse();
         }
         catch (Exception e){
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();

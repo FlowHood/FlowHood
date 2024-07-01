@@ -3,20 +3,19 @@ package org.galactic.flowhood.services.serviceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.entities.House;
+import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.RequestRepository;
+import org.galactic.flowhood.services.QrService;
 import org.galactic.flowhood.services.RequestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.galactic.flowhood.utils.SystemRoles;
+import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -25,8 +24,11 @@ public class RequestServiceImpl implements RequestService {
     final
     RequestRepository requestRepository;
 
-    public RequestServiceImpl(RequestRepository requestRepository) {
+    final QrService qrService;
+
+    public RequestServiceImpl(RequestRepository requestRepository, QrService qrService) {
         this.requestRepository = requestRepository;
+        this.qrService = qrService;
     }
 
     @Override
@@ -35,24 +37,45 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request createRequestHandler(RequestReqDTO req, House house, User resident, User visitor) {
-        //TODO
-        String patternDate = "yyyy-MM-dd";
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(patternDate, Locale.getDefault());
-        LocalDateTime _startDate = LocalDateTime.parse(req.getStartDate(), format);
-        ZoneId zoneId = ZoneId.of("America/Chicago");
-        ZonedDateTime zonedStartDate = _startDate.atZone(zoneId);
-        Date startDate = Date.from(zonedStartDate.toInstant());
+    public Request createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         Date endDate = null;
+        Date startDate = dateFormat.parse(req.getStartDate());
         if (req.getEndDate() != null) {
-            LocalDateTime _endDate = LocalDateTime.parse(req.getEndDate(), format);
-            ZonedDateTime zonedEndDate = _endDate.atZone(zoneId);
-            endDate = Date.from(zonedEndDate.toInstant());
+            endDate = dateFormat.parse(req.getEndDate());
         }
-        System.out.println("startDate: " + startDate);
-        log.error("endDate: " + endDate);
+        //creating normal request
+        Request newRequest = new Request(
+                startDate,
+                startDate,
+                req.getStartTime(),
+                req.getStartTime(),
+                resident,
+                visitor,
+                house
+        );
 
-        return new Request();
+        //validating for periodic request
+        if (endDate != null) {
+            newRequest.setEndDate(endDate);
+        }
+        if (req.getEndTime() != null) {
+            newRequest.setEndTime(req.getEndTime());
+        }
+
+        if (Objects.equals(residentRol, SystemRoles.RESPONSIBLE.getRole()) || Objects.equals(residentRol, SystemRoles.ADMINISTRATOR.getRole())) {
+            newRequest.setStatus(SystemStates.ACTIVE.getState());
+        }
+
+        Request response = requestRepository.save(newRequest);
+        if (Objects.equals(residentRol, SystemRoles.RESPONSIBLE.getRole()) || Objects.equals(residentRol, SystemRoles.ADMINISTRATOR.getRole())) {
+            QR newQR = new QR(response);
+            newQR.setStatus(SystemStates.ACTIVE.getState());
+            qrService.generateQRCode(newQR);
+            response.setQr(newQR);
+            requestRepository.save(response);
+        }
+        return response;
     }
 
 
