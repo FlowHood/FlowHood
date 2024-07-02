@@ -42,6 +42,7 @@ public class JWTTokenFilter extends OncePerRequestFilter {
 
             try {
                 username = jwtTools.getUsernameFrom(token);
+                System.out.println(username);
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
@@ -54,14 +55,13 @@ public class JWTTokenFilter extends OncePerRequestFilter {
         }
         if (username != null && token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             User user = userService.findOneByIdentifier(username);
-
             if (user != null) {
                 Boolean tokenValidity = userService.isTokenValid(user, token);
 
                 if (tokenValidity) {
                     //Preparing the authentication token.
                     UsernamePasswordAuthenticationToken authToken
-                            = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                            = new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
 
                     authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request)

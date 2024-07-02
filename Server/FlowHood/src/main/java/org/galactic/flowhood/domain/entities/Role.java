@@ -1,5 +1,6 @@
 package org.galactic.flowhood.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -21,6 +22,12 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     private List<User> users;
 
+    public Role(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.users = null;
+    }
 }

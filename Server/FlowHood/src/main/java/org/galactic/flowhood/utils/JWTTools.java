@@ -14,7 +14,6 @@ import java.util.Map;
 @Component
 public class JWTTools {
     @Value("${jwt.secret}")
-//    @Value("9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9")
     private String secret;
 
     @Value("${jwt.exptime}")
@@ -57,6 +56,7 @@ public class JWTTools {
                     .getSubject();
         } catch (Exception e) {
 //            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
     }

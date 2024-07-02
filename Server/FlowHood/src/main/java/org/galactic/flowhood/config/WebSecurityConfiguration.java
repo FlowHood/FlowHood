@@ -63,9 +63,13 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
+                        .requestMatchers("/api/house/responsible").hasAnyAuthority(SystemRoles.RESPONSIBLE.getRole())
+                        .requestMatchers("api/users/{_userId}/house-resident/{_homeId}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole())
+                        .requestMatchers("/api/request/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
                         .requestMatchers("/api/auth/**").permitAll()
 //                        .anyRequest().authenticated()
         .anyRequest().permitAll());
+
         //UnAunthorized handler
         http.exceptionHandling(handling -> handling.authenticationEntryPoint((req, res, ex) -> {
             res.sendError(

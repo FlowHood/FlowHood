@@ -4,7 +4,6 @@ import { capitalizeWords } from "../../lib/utils";
 
 const InfoUserCard = () => {
   const { user, loading } = useAuth();
-  console.log("USER", user);
 
   if (loading) {
     return <p>Loading...</p>;

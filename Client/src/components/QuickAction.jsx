@@ -5,6 +5,12 @@ import SectionIntro from "./SectionIntro";
 
 const actions = [
   {
+    title: "Agregar nueva casa",
+    icon: <SimpleHouseIcon />,
+    href: "/add-house",
+    className: "md:row-span-2 lg:row-auto",
+  },
+  {
     title: "Agregar nuevo usuario",
     icon: <PlusIcon />,
     href: "/add-user",
@@ -14,12 +20,7 @@ const actions = [
     icon: <InvitationIcon />,
     href: "/create-invitation",
   },
-  {
-    title: "Agregar nueva casa",
-    icon: <SimpleHouseIcon />,
-    href: "/add-house",
-    className: "md:row-span-2 lg:row-auto",
-  },
+ 
   {
     title: "Agregar ",
     icon: <PlusIcon />,

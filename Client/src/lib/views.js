@@ -14,6 +14,7 @@ export const VIEWS = {
   myAccount: "/myaccount",
   loader: "/loader",
   modal: "/modal",
+  createHouse: "/create-house",
   houseList: "/listhouse",
   userList: "/users-list",
   requestList: "/requests-list",

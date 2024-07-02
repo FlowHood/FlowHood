@@ -2,6 +2,7 @@ package org.galactic.flowhood.services;
 
 import org.galactic.flowhood.domain.dto.request.UserReqDTO;
 import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
+import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Role;
 import org.galactic.flowhood.domain.entities.Token;
@@ -18,10 +19,11 @@ public interface UserService {
 
 
     UserRegisterDTO getUserInformation(String token);
-    User findUserAuthenticated();
+    UserResDTO findUserAuthenticated();
     void deleteUser(User user);
-    List<User> findAllUser();
+    List<UserResDTO> findAllUser();
     User findUserById(UUID id);
+    UserResDTO findUserByIdDto(UUID id);
     User findUserByEmail(String email);
 
     boolean existUserByEmail(String email);
@@ -30,11 +32,8 @@ public interface UserService {
 
     User updateUser(User user);
 
-    User makeHomeResponsible(User user, House house);
-
     User patchRole(User user, Role role);
     User findOneByIdentifier(String identifier);
     void addRole(User user, Role role);
-
-
+    List<User> findUsersByIds(List<UUID> residentIds);
 }

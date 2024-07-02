@@ -1,29 +1,37 @@
 import { Table } from "antd";
 import { useTable } from "../../hook/useTable";
 
+
 const dummyData = [
   {
     key: "1",
+    id: "1",
     name: "activo",
     age: 32,
     address: "New York No. 1 Lake Park",
     tags: "nice",
+    estado: "activo",
   },
   {
     key: "2",
+    id: "2",
     name: "Jim Green",
     age: 102,
     address: "London No. 1 Lake Park",
     tags: "inactivo",
+    estado: "inactivo",
   },
   {
     key: "3",
+    id: "3",
     name: "Joe Black",
     age: 32,
     address: "Conteo A",
     tags: "activo",
+    estado: "activo",
   },
 ];
+
 /*
 this component has the following props:
  - data: is the data the table will display
@@ -37,6 +45,7 @@ this component has the following props:
  - addFiltersOn: addsFilters to the data
  }
 */
+
 const dummyTags = ["age", "address", "tags"];
 const dummySearch = ["address", "name"];
 const dummySorter = ["age"];
@@ -48,6 +57,8 @@ export const TableComponent = ({
   addSearchOn = dummySearch,
   addSortOn = dummySorter,
   addFiltersOn = dummyFiltersOn,
+  onEdit = () => {},
+  onDelete = () => {},
 }) => {
   const { filteredColumns, loading } = useTable(
     data,
@@ -55,6 +66,8 @@ export const TableComponent = ({
     addSortOn,
     addFiltersOn,
     addSearchOn,
+    onEdit,
+    onDelete
   );
 
   return (
