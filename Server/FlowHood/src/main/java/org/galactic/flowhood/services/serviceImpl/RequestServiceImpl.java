@@ -37,6 +37,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public void save(Request request) {
+        requestRepository.save(request);
+    }
+
+    @Override
     public Request createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         Date endDate = null;
