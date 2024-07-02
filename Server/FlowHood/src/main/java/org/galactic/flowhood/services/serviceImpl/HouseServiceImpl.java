@@ -147,7 +147,7 @@ public class HouseServiceImpl implements HouseService {
     //TODO
     @Override
     public List<House> getHousesByResident(User user) {
-        return user.getHouses();
+        return houseRepository.findAllByResidentsContaining(user);
     }
 
     @Override

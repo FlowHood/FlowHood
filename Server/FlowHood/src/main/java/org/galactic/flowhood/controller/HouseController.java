@@ -1,6 +1,7 @@
 package org.galactic.flowhood.controller;
 
 import jakarta.validation.Valid;
+import org.apache.catalina.mapper.Mapper;
 import org.galactic.flowhood.domain.dto.request.HouseReqDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
 import org.galactic.flowhood.domain.dto.response.HousesResDTO;
@@ -38,39 +39,37 @@ public class HouseController {
 
     //Admin only
     @GetMapping("/")
-    public ResponseEntity<GeneralResponse> findAllHouses(){
-        try{
+    public ResponseEntity<GeneralResponse> findAllHouses() {
+        try {
             List<House> houses = houseService.getAllHouses();
             List<HousesResDTO> houseDTOs = houses.stream().map(HousesResDTO::fromEntity).toList();
             return GeneralResponse.builder().status(HttpStatus.OK).data(houseDTOs).message("found").getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
 
     //Admin only
     @GetMapping("/{_id}")
-    public ResponseEntity<GeneralResponse> findHouseById(@PathVariable("_id") String id){
-        try{
+    public ResponseEntity<GeneralResponse> findHouseById(@PathVariable("_id") String id) {
+        try {
             UUID _id = UUID.fromString(id);
             House house = houseService.getHouseById(_id);
-            if(house == null)
+            if (house == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
 
             HousesResDTO houseDto = HousesResDTO.fromEntity(house);
             return GeneralResponse.builder().status(HttpStatus.OK).data(houseDto).message("found").getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
 
     //Admin only
     @PostMapping("/")
-    public ResponseEntity<GeneralResponse> createHouse(@RequestBody @Valid HouseReqDTO req, BindingResult error){
-        try{
-            if(error.hasErrors()){
+    public ResponseEntity<GeneralResponse> createHouse(@RequestBody @Valid HouseReqDTO req, BindingResult error) {
+        try {
+            if (error.hasErrors()) {
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).data(error.getAllErrors()).message("invalid request").getResponse();
             }
 
@@ -97,67 +96,68 @@ public class HouseController {
 
             HousesResDTO houseDTO = HousesResDTO.fromEntity(house);
             return GeneralResponse.builder().status(HttpStatus.OK).message("house created").data(houseDTO).getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
+
     //admin only
     @DeleteMapping("/{_id}")
-    public ResponseEntity<GeneralResponse> deleteHouseById(@PathVariable("_id") String id){
-        try{
+    public ResponseEntity<GeneralResponse> deleteHouseById(@PathVariable("_id") String id) {
+        try {
             UUID _id = UUID.fromString(id);
             House house = houseService.getHouseById(_id);
-            if(house == null)
+            if (house == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
             houseService.deleteHouse(house);
             return GeneralResponse.builder().status(HttpStatus.OK).message("deleted").getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
 
     //only user responsible
     @GetMapping("/responsible")
-    public ResponseEntity<GeneralResponse> findAllByResponsible(){
-        try{
+    public ResponseEntity<GeneralResponse> findAllByResponsible() {
+        try {
             User responsible = userService.findUserAuthenticated().toEntity();
             if (responsible == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
 
             Role role = roleService.findRoleById(SystemRoles.RESPONSIBLE.getRole());
-            if(!responsible.getRoles().contains(role))
+            if (!responsible.getRoles().contains(role))
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("not allowed").getResponse();
 
 
             List<House> houses = houseService.getHousesByResponsible(responsible);
             List<HousesResDTO> houseDTOs = houses.stream().map(HousesResDTO::fromEntity).toList();
             return GeneralResponse.builder().status(HttpStatus.OK).data(houseDTOs).message("found").getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
 
     //only user residents
     @GetMapping("/resident")
-    public ResponseEntity<GeneralResponse> findAllByResident(){
-        try{
+    public ResponseEntity<GeneralResponse> findAllByResident() {
+        try {
             User user = userService.findUserAuthenticated().toEntity();
             if (user == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
 
             Role rstUser = roleService.findRoleById(SystemRoles.RESIDENT.getRole());
-            if(!user.getRoles().contains(rstUser))
+            if (!user.getRoles().contains(rstUser))
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("not allowed").getResponse();
 
             List<House> houses = houseService.getHousesByResident(user);
+            if(houses.isEmpty())
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
+
             List<HousesResDTO> houseDTOs = houses.stream().map(HousesResDTO::fromEntity).toList();
             return GeneralResponse.builder().status(HttpStatus.OK).data(houseDTOs).message("found").getResponse();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }

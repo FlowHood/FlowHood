@@ -99,4 +99,9 @@ public class RequestServiceImpl implements RequestService {
     public List<Request> findAllByUserAndState(User user, String state) {
         return requestRepository.findAllByStatusAndVisitorOrResident(state, user, user);
     }
+
+    @Override
+    public boolean isUserFromRequest(User user, Request request) {
+        return request.getResident().getId().equals(user.getId()) || request.getVisitor().getId().equals(user.getId()) || request.getHouse().getResponsible().getId().equals(user.getId());
+    }
 }

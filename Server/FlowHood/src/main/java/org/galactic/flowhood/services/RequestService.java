@@ -23,4 +23,5 @@ public interface RequestService {
 
     List<Request> findAllByUserAndState(User user, String state);
 
+    boolean isUserFromRequest(User user, Request request);
 }
