@@ -13,5 +13,6 @@ import java.util.UUID;
 public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findAllByStatusAndVisitorOrResident(String status, User visitor, User resident);
     List<Request> findAllByHouse(House house);
+    List<Request> findAllByHouseOrHouseIn(House house, List<House> admHouses);
     List<Request> findAllByHouseIn(List<House> houses);
 }
