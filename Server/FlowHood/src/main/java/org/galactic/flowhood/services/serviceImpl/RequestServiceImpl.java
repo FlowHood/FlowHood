@@ -94,6 +94,16 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findAll();
     }
 
+    @Override public List<Request> findRequestsByHouse(House house) {
+        return requestRepository.findAllByHouse(house);
+    }
+
+    @Override
+    public List<Request> findAllRequestsByHouses(List<House> houses) {
+        return requestRepository.findAllByHouseIn(houses);
+    }
+
+
     //TODO: update method to allow non state and state
     @Override
     public List<Request> findAllByUserAndState(User user, String state) {
