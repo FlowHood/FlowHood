@@ -7,14 +7,14 @@ export const OPTIONS = {
 
 export const FILTER_LABEL = {
   [OPTIONS.NO_FILTER]: "NF",
-  [OPTIONS.ACCEPTED]: "ACP",
+  [OPTIONS.ACCEPTED]: "ACT",
   [OPTIONS.NOT_ACCEPTED]: "REC",
   [OPTIONS.TO_CHECK]: "PEN",
 };
 
 export const OPTIONS_ARRAY = {
   NO_FILTER: "NF",
-  ACCEPTED: "ACP",
+  ACCEPTED: "ACT",
   NOT_ACCEPTED: "REC",
   TO_CHECK: "PEN",
 };

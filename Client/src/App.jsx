@@ -39,7 +39,7 @@ function App() {
             <Route path={VIEWS.createQR} element={<CreateQRHome />} />
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
 
-            <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
+           
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
 
@@ -49,6 +49,7 @@ function App() {
                 element={<CreateRequestHome />}
               />
               <Route path={VIEWS.request} element={<AllRequest />} />
+              <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
             </Route>
 
             <Route element={<ProtectedRoute requiredRole={ROL.ADMIN} />}>

@@ -19,6 +19,7 @@ moment.locale("es", {
 export default function UserRequestContainer({
   userName = "",
   date = "",
+  time = "",
   to = "",
   address = "",
   status = "",
@@ -72,7 +73,7 @@ export default function UserRequestContainer({
           Solicitud de invitacion para {capitalizeWords(userName)}
         </p>
         <p className="self-end text-[0.6rem] sm:self-auto sm:text-base">
-          <span className="font-bold">{day}</span>, {month + " " + year}
+          <span className="font-bold">{day}</span>, {month + " " + year} - {time}
         </p>
         <p className="mt-3 text-[0.65rem] text-gray-600 sm:text-base">
           Dirección: {address}

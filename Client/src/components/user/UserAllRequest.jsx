@@ -54,11 +54,8 @@ const getScreenInformation = (rol) => {
 
 export default function UserAllRequest() {
   const { user } = useAuth();
-  console.log("User:", user);
-  console.log("User roles:", user.roles[0].id);
 
   const highestRole = getHighestPriorityRole(user.roles);
-  console.log("Highest role:", highestRole);
 
   let { title, subTitle, subTitle2 } = getScreenInformation(highestRole);
   const [requests, setRequests] = useState([]);
@@ -94,8 +91,9 @@ export default function UserAllRequest() {
         <UserRequestContainer
           userName={request.visitor.name}
           date={request.startDate.split("T")[0]}
+          time={request.startTime === request.endTime ? request.startTime : `${request.startTime} - ${request.endTime}`}
           key={request.id}
-          to={`${VIEWS.requestDetail}/${request.id}`}
+          to={`${VIEWS.requestDetail.replace("/:id", "")}/${request.id}`}
           address={request.house.address}
           reason={request.reason}
           status={request.status}
@@ -114,7 +112,7 @@ export default function UserAllRequest() {
         <h1 className="text-xl font-semibold sm:text-4xl">{title}</h1>
         <p className="text-[0.75rem] font-light sm:text-base">{subTitle}</p>
       </div>
-      <div className="flex w-full flex-col sm:w-3/4">
+      <div className="flex w-full flex-col sm:w-11/12">
         <div className="flex min-h-screen flex-col gap-4">
           {/* {rol === ROL.OWNER || rol === ROL.RESIDENT ? (
             <div className="flex flex-col gap-1">

@@ -36,5 +36,21 @@ export const getAllRequestsInMyHouse = async () => {
   }
 };
 
+export const getRequestById = async (id) => {
+  try {
+    const res = await axios.get(`request/my-house/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    return res.data.data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+    return null;
+  }
+};
+
 
 

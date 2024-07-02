@@ -21,6 +21,10 @@ public interface RequestService {
 
     List<Request> findAllRequests();
 
+    List<Request> findRequestsByHouse(House house);
+
+    List<Request> findAllRequestsByHouses(List<House> houses);
+
     List<Request> findAllByUserAndState(User user, String state);
 
     boolean isUserFromRequest(User user, Request request);
