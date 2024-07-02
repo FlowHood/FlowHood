@@ -38,10 +38,18 @@ function App() {
             <Route path={VIEWS.securityHome} element={<SecurityHome />} />
             <Route path={VIEWS.createQR} element={<CreateQRHome />} />
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
-            <Route path={VIEWS.request} element={<AllRequest />} />
+
             <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
+
+            <Route element={<ProtectedRoute requiredRole={ROL.RESIDENT} />}>
+              <Route
+                path={VIEWS.CreateRequestHome}
+                element={<CreateRequestHome />}
+              />
+              <Route path={VIEWS.request} element={<AllRequest />} />
+            </Route>
 
             <Route element={<ProtectedRoute requiredRole={ROL.ADMIN} />}>
               <Route path={VIEWS.dashboard} element={<AdminDashboard />} />

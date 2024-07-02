@@ -1,6 +1,8 @@
 import moment from "moment";
 import React from "react";
 import { Link } from "react-router-dom";
+import { capitalizeWords } from "../lib/utils";
+import { OPTIONS_ARRAY } from "../lib/const";
 
 moment.locale("es", {
   months:
@@ -18,6 +20,8 @@ export default function UserRequestContainer({
   userName = "",
   date = "",
   to = "",
+  address = "",
+  status = "",
 }) {
   const generateDateString = (date) => {
     let newDate = moment(date);
@@ -47,16 +51,31 @@ export default function UserRequestContainer({
   let { day, month, year } = generateDateString(date);
   return (
     <Link
-      className="flex w-full flex-row rounded-md border-2 border-black"
+      className="flex h-[fit-content] w-full flex-row rounded-md border-2 border-black"
       to={to}
     >
-      <div className="w-[6%] rounded-bl-md rounded-tl-md border-r-2 border-black bg-tanzanite sm:w-[4%]"></div>
+      <div
+        className={`}w-[6%] rounded-bl-md rounded-tl-md border-r-2 border-black ${
+          status === OPTIONS_ARRAY.NO_FILTER
+            ? "bg-red-500"
+            : status === OPTIONS_ARRAY.ACCEPTED
+              ? "bg-tanzanite"
+              : status === OPTIONS_ARRAY.NOT_ACCEPTED
+                ? "bg-yellow-500"
+                : status === OPTIONS_ARRAY.TO_CHECK
+                  ? "bg-orange-500"
+                  : "bg-red-500"
+        }  sm:w-[4%]`}
+      ></div>
       <div className="flex w-11/12 flex-col p-2">
         <p className=" w-2/4 text-[0.65rem] sm:w-auto sm:text-base">
-          Solicitud de invitacion para {userName}
+          Solicitud de invitacion para {capitalizeWords(userName)}
         </p>
         <p className="self-end text-[0.6rem] sm:self-auto sm:text-base">
           <span className="font-bold">{day}</span>, {month + " " + year}
+        </p>
+        <p className="mt-3 text-[0.65rem] text-gray-600 sm:text-base">
+          Dirección: {address}
         </p>
       </div>
     </Link>

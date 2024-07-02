@@ -6,6 +6,36 @@ export const ROL = {
   RESIDENT: "RST",
 };
 
+export const getHighestPriorityRole = (roles) => {
+  const priority = {
+    ADM: 4, // mas importante
+    VGT: 3,
+    ECG: 2,
+    RST: 1,
+    VST: 0, // menos importante
+  };
+  let highestRole = "VST";
+  let highestPriority = -1;
+  roles.forEach((role) => {
+    if (priority[role.id] > highestPriority) {
+      highestRole = role.id;
+      highestPriority = priority[role.id];
+    }
+  });
+  return highestRole;
+};
+
+export const getRoleDescription = (roleCode) => {
+  const roleMapping = {
+    VST: "visitor",
+    ECG: "owner",
+    ADM: "administrator",
+    VGT: "vigilant",
+    RST: "resident"
+  };
+  return roleMapping[roleCode] || roleCode;
+};
+
 export function getRol(rol) {
   const currentRol = {
     VST: "VST",
