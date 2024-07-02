@@ -65,10 +65,12 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
                         .requestMatchers("/api/house/responsible").hasAnyAuthority(SystemRoles.RESPONSIBLE.getRole())
                         .requestMatchers("api/users/{_userId}/house-resident/{_homeId}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole())
+                        .requestMatchers("api/users/{_userId}/house-resident/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
                         .requestMatchers("/api/request/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
+                        .requestMatchers("/api/request/{_id}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole(), SystemRoles.VISITOR.getRole())
+                        .requestMatchers("/api/roles/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
                         .requestMatchers("/api/auth/**").permitAll()
-//                        .anyRequest().authenticated()
-        .anyRequest().permitAll());
+                        .anyRequest().authenticated());
 
         //UnAunthorized handler
         http.exceptionHandling(handling -> handling.authenticationEntryPoint((req, res, ex) -> {
