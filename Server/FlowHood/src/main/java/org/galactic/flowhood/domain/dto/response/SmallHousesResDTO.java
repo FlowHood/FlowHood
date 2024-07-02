@@ -30,4 +30,12 @@ public class SmallHousesResDTO {
         }
         return houseDTO;
     }
+
+    public House toEntity() {
+        House house = new House();
+        house.setId(this.id);
+        house.setAddress(this.address);
+        house.setActive(this.active);
+        return house;
+    }
 }
