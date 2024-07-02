@@ -146,12 +146,15 @@ public class RequestController {
                     return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view requests for this house").getResponse();
                 }
 
-                List<Request> requests = requestService.findRequestsByHouse(house);
+                List<House> admHouses = mapper.mapList(user.getAdmHouses(), House.class);
+                List<Request> requests = requestService.findRequestsByHouseOrAdminHouses(house, admHouses);
                 List<RequestResDTO> requestResDto = mapper.mapList(requests, RequestResDTO.class);
                 return GeneralResponse.builder().status(HttpStatus.OK).data(requestResDto).message("Requests found for the house").getResponse();
             } else {
                 List<SmallHousesResDTO> houses = user.getHouses();
-                if (houses == null || houses.isEmpty()) {
+                houses.addAll(user.getAdmHouses());
+
+                if (houses.isEmpty()) {
                     return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("No houses found for the authenticated user").getResponse();
                 }
                 List<House> housesEntities = mapper.mapList(houses, House.class);
