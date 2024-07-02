@@ -142,7 +142,9 @@ public class RequestController {
                     return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("House not found").getResponse();
                 }
                 // Check if the house exists and if the user is authorized to view requests for this house
-                if (user.getHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))) {
+                if (user.getHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+                        && user.getAdmHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+                ) {
                     return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view requests for this house").getResponse();
                 }
 
