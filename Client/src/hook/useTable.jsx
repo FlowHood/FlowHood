@@ -42,6 +42,8 @@ export const useTable = (
         dataIndex: col.toLowerCase(),
         key: col.toLowerCase(),
         render: col === "picture" ? renderPictureColumn : undefined,
+        width: col === "razon" ? 1450 : undefined,
+        className: col === "razon" ? "razon-column" : undefined,
       };
     });
 
