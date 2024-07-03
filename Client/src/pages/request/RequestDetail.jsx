@@ -5,10 +5,14 @@ import TitleComponent from "../../components/shared/TitleComponent";
 import Button from "../../components/buttons/Button";
 import UserLayout from "../../components/user/UserLayout";
 import Loading from "../../components/Loading";
-import { getRequestById } from "../../services/request.service";
+import {
+  getRequestById,
+  updateStatusRequest,
+} from "../../services/request.service";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
 import { ROL } from "../../lib/rol";
+import { OPTIONS_ARRAY } from "../../lib/const";
 
 const RequestDetail = () => {
   const { id } = useParams();
@@ -55,6 +59,11 @@ const RequestDetail = () => {
     razonVisita: request.reason,
   };
 
+  const handleChangeStatus = async (status) => {
+    await updateStatusRequest(id, status);
+    setRequest({ ...request, status });
+  };
+
   return (
     <UserLayout showLogout={false}>
       <div className="flex flex-col items-center gap-2 py-8 text-center">
@@ -75,8 +84,17 @@ const RequestDetail = () => {
         </div>
         {roles.includes(ROL.OWNER) || roles.includes(ROL.ADMIN) ? (
           <div className="flex gap-8">
-            <Button className="opacity-80">Rechazar</Button>
-            <Button>Aceptar</Button>
+            <Button
+              onClick={() => handleChangeStatus(OPTIONS_ARRAY.NOT_ACCEPTED)}
+              className="opacity-80"
+            >
+              Rechazar
+            </Button>
+            <Button
+              onClick={() => handleChangeStatus(OPTIONS_ARRAY.ACCEPTED)}
+            >
+              Aceptar
+            </Button>
           </div>
         ) : null}
         {}

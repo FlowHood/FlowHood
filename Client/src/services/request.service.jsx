@@ -54,3 +54,21 @@ export const getRequestById = async (id) => {
 
 
 
+export const updateStatusRequest = async (id, status) => {
+  try {
+    const res = await axios.patch(`request/${id}`, {status}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("Request updated:", res.data);
+    toast.success("Request updated successfully");
+    return res.data;
+  }
+  catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+  }
+}
+
