@@ -1,58 +1,46 @@
-import React from "react";
-import { TableComponent } from "../../components/table/GeneralTable"; // Ajusta la ruta según sea necesario
+import React, { useEffect, useState } from "react";
+import { TableComponent } from "../../components/table/GeneralTable";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import SectionIntro from "../../components/SectionIntro";
+import { getAllRequests } from "../../services/request.service";
 
-const requestData = [
-  {
-    id: 1,
-    request_date: "2024-06-02",
-    start_time: "09:00",
-    end_time: "11:00",
-    reason: "Visita",
-    visitor: "Daniel",
-    house: 3,
-  },
-  {
-    id: 2,
-    request_date: "2024-06-03",
-    start_time: "14:00",
-    end_time: "16:00",
-    reason: "Hogar",
-    visitor: "Maria",
-    house: 5,
-  },
-  {
-    id: 3,
-    request_date: "2024-06-04",
-    start_time: "10:30",
-    end_time: "12:30",
-    reason: "Entrega de comida",
-    visitor: "John",
-    house: 2,
-  },
-];
-
-const requestTags = ["reason", "state"];
-const requestSearch = ["reason"];
-const requestSorter = ["request_date", "start_time", "end_time"];
-const requestFiltersOn = ["state"];
+const requestTags = ["razon", "visitante", "residente", "fecha_inicio", "fecha_fin", "estado_solicitud"];
+const requestSearch = ["razon", "visitante", "residente"];
+const requestSorter = ["fecha_inicio", "fecha_fin"];
+const requestFiltersOn = ["estado_solicitud"];
 
 const RequestList = () => {
+  const [requestData, setRequestData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      const data = await getAllRequests();
+      setRequestData(data);
+      setLoading(false);
+    };
+
+    fetchRequests();
+  }, []);
+
   return (
     <DashboardLayout>
       <SectionIntro title="Lista de solicitudes" />
       <div className="rounded-xl bg-white p-6 shadow-card">
-        <RequestTable />
+        {loading ? (
+          <span>Cargando...</span>
+        ) : (
+          <RequestTable data={requestData} />
+        )}
       </div>
     </DashboardLayout>
   );
 };
 
-export const RequestTable = () => {
+const RequestTable = ({ data }) => {
   return (
     <TableComponent
-      data={requestData}
+      data={data}
       addTagsOn={requestTags}
       addSearchOn={requestSearch}
       addSortOn={requestSorter}

@@ -21,6 +21,30 @@ export const createRequest = async (requestData) => {
   }
 };
 
+export const getAllRequests = async () => {
+  try {
+    const res = await axios.get("request/", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    const data = res.data.data.map((request) => ({
+      id: request.id,
+      razon: request.reason,
+      visitante: request.visitor.name + " " + request.visitor.email,
+      residente: request.resident.name + " " + request.resident.email,
+      fecha_inicio: request.startDate + " " + request.startTime,
+      fecha_fin: request.end_time ? request.endDate + " " + request.endTime : "N/A",
+      estado_solicitud: request.status,
+    }));
+    return data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+  }
+}
+
 export const getAllRequestsInMyHouse = async () => {
   try {
     const res = await axios.get("request/my-house-requests", {
