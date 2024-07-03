@@ -1,5 +1,6 @@
 package org.galactic.flowhood.services.serviceImpl;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.entities.House;
@@ -11,6 +12,7 @@ import org.galactic.flowhood.services.QrService;
 import org.galactic.flowhood.services.RequestService;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -41,46 +43,59 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.save(request);
     }
 
+
     @Override
-    public Request createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
+    @Async
+    @Transactional
+    public void createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        List<Request> requests = new ArrayList<>();
         Date endDate = null;
         Date startDate = dateFormat.parse(req.getStartDate());
-        if (req.getEndDate() != null) {
+
+        if (req.getEndDate() != null)
             endDate = dateFormat.parse(req.getEndDate());
-        }
-        //creating normal request
-        Request newRequest = new Request(
-                startDate,
-                startDate,
-                req.getStartTime(),
-                req.getStartTime(),
-                resident,
-                visitor,
-                house
-        );
 
-        //validating for periodic request
-        if (endDate != null) {
-            newRequest.setEndDate(endDate);
-        }
-        if (req.getEndTime() != null) {
-            newRequest.setEndTime(req.getEndTime());
-        }
 
-        if (Objects.equals(residentRol, SystemRoles.RESPONSIBLE.getRole()) || Objects.equals(residentRol, SystemRoles.ADMINISTRATOR.getRole())) {
-            newRequest.setStatus(SystemStates.ACTIVE.getState());
-        }
+        //Iterate over the days between the start and end date
+        do {
+            //creating normal request
+            Request newRequest = new Request(
+                    startDate,
+                    startDate,
+                    req.getStartTime(),
+                    req.getStartTime(),
+                    resident,
+                    visitor,
+                    house
+            );
 
-        Request response = requestRepository.save(newRequest);
-        if (Objects.equals(residentRol, SystemRoles.RESPONSIBLE.getRole()) || Objects.equals(residentRol, SystemRoles.ADMINISTRATOR.getRole())) {
-            QR newQR = new QR(response);
-            newQR.setStatus(SystemStates.ACTIVE.getState());
-            qrService.generateQRCode(newQR);
-            response.setQr(newQR);
-            requestRepository.save(response);
+            if (req.getEndTime() != null) {
+                newRequest.setEndTime(req.getEndTime());
+            }
+
+            if (Objects.equals(residentRol, SystemRoles.RESPONSIBLE.getRole()) || Objects.equals(residentRol, SystemRoles.ADMINISTRATOR.getRole())) {
+                newRequest.setStatus(SystemStates.ACTIVE.getState());
+            }
+            requests.add(newRequest);
+            startDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
         }
-        return response;
+        while (startDate.before(endDate));
+        List<Request> requestsSaved = requestRepository.saveAll(requests);
+
+        List<QR> qrs = new ArrayList<>();
+        for (Request _req : requestsSaved) {
+            QR newQr = new QR(_req);
+            newQr.setStatus(SystemStates.ACTIVE.getState());
+            qrs.add(newQr);
+        }
+        List<QR> qrSaved = qrService.generateManyQRCode(qrs);
+
+        requestsSaved.forEach(request -> {
+            request.setQr(qrSaved.stream().filter(qr -> qr.getRequest().getId().equals(request.getId())).findFirst().orElse(null));
+            requestRepository.save(request);
+        });
+
     }
 
 
@@ -99,7 +114,8 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findAll();
     }
 
-    @Override public List<Request> findRequestsByHouse(House house) {
+    @Override
+    public List<Request> findRequestsByHouse(House house) {
         return requestRepository.findAllByHouse(house);
     }
 
