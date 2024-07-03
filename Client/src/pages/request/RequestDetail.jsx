@@ -13,6 +13,7 @@ import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
 import { ROL } from "../../lib/rol";
 import { OPTIONS_ARRAY } from "../../lib/const";
+import { capitalizeWords } from "../../lib/utils";
 
 const RequestDetail = () => {
   const { id } = useParams();
@@ -60,6 +61,7 @@ const RequestDetail = () => {
   };
 
   const handleChangeStatus = async (status) => {
+    console.log("handleChangeStatus called with status:", status);
     await updateStatusRequest(id, status);
     setRequest({ ...request, status });
   };
@@ -68,7 +70,7 @@ const RequestDetail = () => {
     <UserLayout showLogout={false}>
       <div className="flex flex-col items-center gap-2 py-8 text-center">
         <SectionIntro
-          title={"Solicitud de visita de " + data.nombre}
+          title={"Solicitud de visita de " + capitalizeWords(data.nombre)}
           small
           generalClassName="!text-royal-amethyst max-w-[50ch]"
         />
@@ -85,14 +87,12 @@ const RequestDetail = () => {
         {roles.includes(ROL.OWNER) || roles.includes(ROL.ADMIN) ? (
           <div className="flex gap-8">
             <Button
-              onClick={() => handleChangeStatus(OPTIONS_ARRAY.NOT_ACCEPTED)}
+              action={() => handleChangeStatus(OPTIONS_ARRAY.NOT_ACCEPTED)}
               className="opacity-80"
             >
               Rechazar
             </Button>
-            <Button
-              onClick={() => handleChangeStatus(OPTIONS_ARRAY.ACCEPTED)}
-            >
+            <Button action={() => handleChangeStatus(OPTIONS_ARRAY.ACCEPTED)}>
               Aceptar
             </Button>
           </div>

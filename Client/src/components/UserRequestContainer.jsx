@@ -58,14 +58,14 @@ export default function UserRequestContainer({
       <div
         className={`}w-[6%] rounded-bl-md rounded-tl-md border-r-2 border-black ${
           status === OPTIONS_ARRAY.NO_FILTER
-            ? "bg-red-500"
+            ? "bg-slate-700"
             : status === OPTIONS_ARRAY.ACCEPTED
               ? "bg-tanzanite"
               : status === OPTIONS_ARRAY.NOT_ACCEPTED
-                ? "bg-yellow-500"
+                ? "bg-red-500"
                 : status === OPTIONS_ARRAY.TO_CHECK
                   ? "bg-orange-500"
-                  : "bg-red-500"
+                  : "bg-slate-700"
         }  sm:w-[4%]`}
       ></div>
       <div className="flex w-11/12 flex-col p-2">

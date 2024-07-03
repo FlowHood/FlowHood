@@ -41,26 +41,20 @@ function App() {
             <Route path={VIEWS.loader} element={<Loading />} />
             <Route path={VIEWS.modal} element={<ModalTest />} />
 
-            <Route element={<ProtectedRoute requiredRole={ROL.RESIDENT} />}>
+            <Route element={<ProtectedRoute allowedRoles={[ROL.OWNER, ROL.RESIDENT]} />}>
               <Route path={VIEWS.myAccount} element={<ResidentAccountView />} />
-              <Route
-                path={VIEWS.CreateRequestHome}
-                element={<CreateRequestHome />}
-              />
+              <Route path={VIEWS.CreateRequestHome} element={<CreateRequestHome />} />
               <Route path={VIEWS.request} element={<AllRequest />} />
               <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
             </Route>
 
-            <Route element={<ProtectedRoute requiredRole={ROL.ADMIN} />}>
+            <Route element={<ProtectedRoute allowedRoles={[ROL.ADMIN]} />}>
               <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
               <Route path={VIEWS.createHouse} element={<CreateHouse />} />
               <Route path={VIEWS.houseList} element={<HouseList />} />
               <Route path={VIEWS.userList} element={<UserList />} />
               <Route path={VIEWS.requestList} element={<RequestList />} />
-              <Route
-                path={VIEWS.CreateRequestHome}
-                element={<CreateRequestHome />}
-              />
+              <Route path={VIEWS.CreateRequestHome} element={<CreateRequestHome />} />
             </Route>
           </Routes>
         </BrowserRouter>

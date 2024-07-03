@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useAuth } from "../../context/AuthContext";
 import Loading from "../Loading";
 
-const ProtectedRoute = ({ requiredRole, component: Component }) => {
+const ProtectedRoute = ({ allowedRoles, component: Component }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -21,7 +21,10 @@ const ProtectedRoute = ({ requiredRole, component: Component }) => {
   }
 
   const userRoles = user.roles.map((role) => role.id);
-  if (requiredRole && !userRoles.includes(requiredRole)) {
+
+  const hasPermission = allowedRoles.some(role => userRoles.includes(role));
+
+  if (!hasPermission) {
     toast.error("You do not have permission to view this page");
     return <Navigate to="/" />;
   }

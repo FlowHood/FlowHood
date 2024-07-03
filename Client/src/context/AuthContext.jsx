@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         const user = await getMe();
         setUser(user);
+        setRoles(user.roles.map((role) => role.id));
       }
       setLoading(false);
     };

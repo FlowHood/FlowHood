@@ -71,7 +71,7 @@ export default function UserAllRequest() {
     };
 
     fetchRequests();
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -134,7 +134,11 @@ export default function UserAllRequest() {
             ) : listOfItems.length > 0 ? (
               listOfItems
             ) : (
-              "No hay solicitudes pendientes."
+              <div className="flex flex-col items-center gap-2 text-center">
+                <p className="text-[0.75rem] font-light sm:text-base">
+                  No hay solicitudes
+                </p>
+              </div>
             )}
           </div>
           <div className="sticky bottom-[4.2rem] flex flex-col items-center justify-center gap-2 bg-white p-3 sm:bottom-0">

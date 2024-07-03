@@ -52,17 +52,24 @@ export const getRequestById = async (id) => {
   }
 };
 
-
-
 export const updateStatusRequest = async (id, status) => {
   try {
-    const res = await axios.patch(`request/${id}`, {status}, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("session")}`,
-      },
-    });
-    console.log("Request updated:", res.data);
-    toast.success("Request updated successfully");
+    let res;
+    if (status === "ACT" ) {
+      res = await axios.post(`request/accept/${id}`, {status}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("session")}`,
+        },
+      });
+      toast.success("Request accepted successfully");
+    } else {
+      res = await axios.post(`request/reject/${id}`, {status}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("session")}`,
+        },
+      });
+      toast.success("Request rejected successfully");
+    }
     return res.data;
   }
   catch (error) {

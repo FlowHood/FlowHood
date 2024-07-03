@@ -3,18 +3,21 @@ export const OPTIONS = {
   ACCEPTED: 1,
   NOT_ACCEPTED: 2,
   TO_CHECK: 3,
+  USED: 4,
 };
 
 export const FILTER_LABEL = {
   [OPTIONS.NO_FILTER]: "NF",
   [OPTIONS.ACCEPTED]: "ACT",
-  [OPTIONS.NOT_ACCEPTED]: "REC",
+  [OPTIONS.NOT_ACCEPTED]: "INC",
   [OPTIONS.TO_CHECK]: "PEN",
+  [OPTIONS.USED]: "USD",
 };
 
 export const OPTIONS_ARRAY = {
   NO_FILTER: "NF",
   ACCEPTED: "ACT",
-  NOT_ACCEPTED: "REC",
+  NOT_ACCEPTED: "INC",
   TO_CHECK: "PEN",
+  USED: "USD",
 };

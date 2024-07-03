@@ -10,7 +10,7 @@ import {
 import SectionIntro from "../../components/SectionIntro";
 import { Container } from "../../components/Container";
 import { Link } from "react-router-dom";
-import { getHighestPriorityRole, getRoleDescription } from "../../lib/rol";
+import { getHighestPriorityRole, getRoleDescription, getRolesDescription } from "../../lib/rol";
 import { useAuth } from "../../context/AuthContext";
 import Avatar from "antd/es/avatar/avatar";
 import { Tag } from "antd";
@@ -85,8 +85,8 @@ const ResidentAccountView = () => {
   const { user, roles, logout } = useAuth();
 
   const highestRole = getHighestPriorityRole(roles);
-  const roleDescription = getRoleDescription(highestRole);
-  const options = getOptionsByRole(highestRole);
+  const rolesDescription = getRolesDescription(roles);
+  const options = getOptionsByRole(highestRole); //TODO
 
   const hasHouses = user.houses.length > 0;
   const hasAdmHouses = user.admHouses.length > 0;
@@ -110,7 +110,7 @@ const ResidentAccountView = () => {
       <h2 className="mt-4 text-xl font-semibold text-royal-amethyst">
         {user.name} {user.lastname}
       </h2>
-      <p className="mt-2 font-Inter text-lg text-black">{roleDescription}</p>
+      <p className="mt-2 font-Inter text-lg text-black">{rolesDescription.join(", ")}</p>
 
       <div className="mt-4 w-full px-8">
         {hasHouses || hasAdmHouses ? (
@@ -126,7 +126,7 @@ const ResidentAccountView = () => {
             {hasAdmHouses && (
               <HouseCard
                 house={user.admHouses[0]}
-                title="Casa(s) como administrador"
+                title="Casa(s) como encargado"
               />
             )}
           </div>
