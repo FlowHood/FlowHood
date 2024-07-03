@@ -15,7 +15,7 @@ public interface RequestService {
 
     void save(Request request);
 
-    Request createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException;
+    void createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException;
 
     void deleteRequest(Request request);
 

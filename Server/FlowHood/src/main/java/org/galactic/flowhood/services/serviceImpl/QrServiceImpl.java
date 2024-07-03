@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,11 @@ public class QrServiceImpl implements QrService {
     @Override
     public QR generateQRCode(QR qr) {
         return qrRepository.save(qr);
+    }
+
+    @Override
+    public List<QR> generateManyQRCode(List<QR> qrList) {
+        return qrRepository.saveAll(qrList);
     }
 
     @Override
