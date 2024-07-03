@@ -36,6 +36,10 @@ export const getRoleDescription = (roleCode) => {
   return roleMapping[roleCode] || roleCode;
 };
 
+export const getRolesDescription = (roles) => {
+  return roles.map((role) => getRoleDescription(role));
+};
+
 export function getRol(rol) {
   const currentRol = {
     VST: "VST",

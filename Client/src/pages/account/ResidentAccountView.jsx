@@ -1,19 +1,38 @@
 import React from "react";
-import { FaCog, FaUser, FaFolderOpen, FaSignOutAlt, FaHome, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaCog,
+  FaUser,
+  FaFolderOpen,
+  FaSignOutAlt,
+  FaHome,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import SectionIntro from "../../components/SectionIntro";
 import { Container } from "../../components/Container";
 import { Link } from "react-router-dom";
+import { getHighestPriorityRole, getRoleDescription, getRolesDescription } from "../../lib/rol";
+import { useAuth } from "../../context/AuthContext";
+import Avatar from "antd/es/avatar/avatar";
+import { Tag } from "antd";
+import { capitalizeWords } from "../../lib/utils";
 
-let UserROL = "VST"; //ADM administrador, VST visitante, VGT vigilante, RST residente, ECG encargado
 const getOptionsByRole = (role) => {
   const commonOptions = [
     { icon: FaUser, text: "Información Personal", to: "/informacion-personal" },
-    { icon: FaFolderOpen, text: "Contacto con administrador", to: "/contacto-administrador" },
+    {
+      icon: FaFolderOpen,
+      text: "Contacto con administrador",
+      to: "/contacto-administrador",
+    },
   ];
 
   const roleSpecificOptions = {
     ECG: [
-      { icon: FaCalendarAlt, text: "Registros de entrada", to: "/registros-entrada" },
+      {
+        icon: FaCalendarAlt,
+        text: "Registros de entrada",
+        to: "/registros-entrada",
+      },
       { icon: FaHome, text: "Administrar hogar", to: "/administrar-hogar" },
     ],
     VST: [
@@ -27,8 +46,50 @@ const getOptionsByRole = (role) => {
   return options;
 };
 
+const HouseCard = ({ house, title }) => (
+  <div className="w-full max-w-md rounded-md border bg-white p-4 shadow-md">
+    <h3 className="mb-2 text-xl font-semibold">{title}</h3>
+    <div className="flex items-center justify-between gap-4">
+      <p>
+        <strong>Dirección:</strong> {house.address}
+      </p>
+      <Tag color={house.active ? "green" : "red"}>
+        {house.active ? "Activa" : "Inactiva"}
+      </Tag>
+    </div>
+    <div className="flex items-center gap-3">
+      <p>
+        <strong>Responsable:</strong> {capitalizeWords(house.responsible.name)}
+      </p>
+      <Avatar src={house.responsible.picture} alt={house.responsible.name} />
+    </div>
+    <div className="flex items-center gap-3">
+      <p>
+        <strong>Residentes:</strong>
+      </p>
+
+      <Avatar.Group max={5}>
+        {house.residents.map((resident) => (
+          <Avatar
+            key={resident.id}
+            src={resident.picture}
+            alt={resident.name}
+          />
+        ))}
+      </Avatar.Group>
+    </div>
+  </div>
+);
+
 const ResidentAccountView = () => {
-  const options = getOptionsByRole(UserROL);
+  const { user, roles, logout } = useAuth();
+
+  const highestRole = getHighestPriorityRole(roles);
+  const rolesDescription = getRolesDescription(roles);
+  const options = getOptionsByRole(highestRole); //TODO
+
+  const hasHouses = user.houses.length > 0;
+  const hasAdmHouses = user.admHouses.length > 0;
 
   return (
     <Container className="flex min-h-screen flex-col items-center justify-center pb-8">
@@ -40,24 +101,41 @@ const ResidentAccountView = () => {
 
       <div className="relative mt-6">
         <img
-          src="https://via.placeholder.com/150"
+          src={user.picture}
           alt="Foto de perfil"
           className="h-40 w-40 rounded-full border-4 border-tanzanite object-cover shadow-card"
         />
-        <button className="absolute bottom-0 right-0 flex items-center justify-center rounded-full bg-tanzanite p-2 text-white shadow-card">
-          <FaCog size={20} />
-        </button>
       </div>
 
       <h2 className="mt-4 text-xl font-semibold text-royal-amethyst">
-        Martín López
+        {user.name} {user.lastname}
       </h2>
-      <p className="mt-2 font-Inter text-lg text-black">Familia López</p>
-      <p className="mt-1 text-sm text-light-gray">
-        Residencial HLVS, calle principal, pasaje 25, casa #24
-      </p>
+      <p className="mt-2 font-Inter text-lg text-black">{rolesDescription.join(", ")}</p>
 
       <div className="mt-4 w-full px-8">
+        {hasHouses || hasAdmHouses ? (
+          <div
+            className={`grid justify-items-center gap-4 ${hasAdmHouses && hasHouses ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
+          >
+            {hasHouses && (
+              <HouseCard
+                house={user.houses[0]}
+                title="Casa(s) como residente"
+              />
+            )}
+            {hasAdmHouses && (
+              <HouseCard
+                house={user.admHouses[0]}
+                title="Casa(s) como encargado"
+              />
+            )}
+          </div>
+        ) : (
+          <p>No tiene casas asociadas.</p>
+        )}
+      </div>
+
+      <div className="mx-auto mt-4 w-full max-w-[400px] px-8">
         <SectionIntro title="Ajustes generales" titleClassName="!text-xl" />
         <ul className="leading-[2rem] text-[#495865]">
           {options.map((option, index) => (

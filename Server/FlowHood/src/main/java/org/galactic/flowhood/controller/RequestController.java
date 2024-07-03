@@ -142,16 +142,21 @@ public class RequestController {
                     return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("House not found").getResponse();
                 }
                 // Check if the house exists and if the user is authorized to view requests for this house
-                if (user.getHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))) {
+                if (user.getHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+                        && user.getAdmHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+                ) {
                     return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view requests for this house").getResponse();
                 }
 
-                List<Request> requests = requestService.findRequestsByHouse(house);
+                List<House> admHouses = mapper.mapList(user.getAdmHouses(), House.class);
+                List<Request> requests = requestService.findRequestsByHouseOrAdminHouses(house, admHouses);
                 List<RequestResDTO> requestResDto = mapper.mapList(requests, RequestResDTO.class);
                 return GeneralResponse.builder().status(HttpStatus.OK).data(requestResDto).message("Requests found for the house").getResponse();
             } else {
                 List<SmallHousesResDTO> houses = user.getHouses();
-                if (houses == null || houses.isEmpty()) {
+                houses.addAll(user.getAdmHouses());
+
+                if (houses.isEmpty()) {
                     return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("No houses found for the authenticated user").getResponse();
                 }
                 List<House> housesEntities = mapper.mapList(houses, House.class);
@@ -173,10 +178,11 @@ public class RequestController {
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("Request not found").getResponse();
             }
 
-            User user = userService.findUserAuthenticated().toEntity();
-            boolean isUserFromRequest = requestService.isUserFromRequest(user, request);
-            Role role = roleService.findRoleById(SystemRoles.ADMINISTRATOR.getRole());
-            if (!user.getRoles().contains(role) && !isUserFromRequest) {
+            UserResDTO user = userService.findUserAuthenticated();
+            House house = houseService.getHouseById(request.getHouse().getId());
+            if (user.getHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+                    && user.getAdmHouses().stream().noneMatch(h -> h.getId().equals(house.getId()))
+            ) {
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view this request").getResponse();
             }
 
@@ -261,5 +267,35 @@ public class RequestController {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
+
+    @PostMapping("/reject/{_id}")
+    public ResponseEntity<GeneralResponse> rejectRequest(@PathVariable("_id") String id) {
+        try {
+            Request request = requestService.findRequestById(UUID.fromString(id));
+            if (request == null)
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
+
+            User user = userService.findUserAuthenticated().toEntity();
+            Role role = roleService.findRoleById(SystemRoles.RESPONSIBLE.getRole());
+            if (!user.getRoles().contains(role))
+                return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view this content").getResponse();
+
+            if(!requestService.isUserFromRequest(user, request))
+                return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to reject this request").getResponse();
+
+            if(request.getStartDate().before(Date.from(Instant.now()))){
+                request.setStatus(SystemStates.INACTIVE.getState());
+                requestService.save(request);
+                return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("request is expired").getResponse();
+            }
+
+            request.setStatus(SystemStates.INACTIVE.getState());
+            requestService.save(request);
+            return GeneralResponse.builder().status(HttpStatus.OK).message("request rejected").getResponse();
+        } catch (Exception e) {
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
 
 }

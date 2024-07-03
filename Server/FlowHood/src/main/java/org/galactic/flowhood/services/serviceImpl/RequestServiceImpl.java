@@ -124,6 +124,11 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.findAllByHouseIn(houses);
     }
 
+    @Override
+    public List<Request> findRequestsByHouseOrAdminHouses(House house, List<House> admHouses) {
+        return requestRepository.findAllByHouseOrHouseIn(house, admHouses);
+    }
+
 
     //TODO: update method to allow non state and state
     @Override
