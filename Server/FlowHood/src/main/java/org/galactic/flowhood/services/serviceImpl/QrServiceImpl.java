@@ -19,10 +19,10 @@ import java.util.UUID;
 public class QrServiceImpl implements QrService {
 
     @Value("${qr.refresh}")
-    private int qrRefreshTime;
+    private String qrRefreshTime;
 
     @Value("${qr.readable}")
-    private int qrReadTime;
+    private String qrReadTime;
     final
     QrRepository qrRepository;
 
@@ -52,8 +52,8 @@ public class QrServiceImpl implements QrService {
             return null;
         }
         if (
-                qr.getLastUpdate().toInstant().minusMillis(qrRefreshTime).isBefore(Instant.now()) &&
-                        qr.getLastUpdate().toInstant().plusMillis(qrRefreshTime).isAfter(Instant.now())
+                qr.getLastUpdate().toInstant().minusMillis(Long.parseLong(qrRefreshTime)).isBefore(Instant.now()) &&
+                        qr.getLastUpdate().toInstant().plusMillis(Long.parseLong(qrRefreshTime)).isAfter(Instant.now())
         ) {
             qr.setLastUpdate(Date.from(Instant.now()));
         }
@@ -79,7 +79,7 @@ public class QrServiceImpl implements QrService {
         endDate.setMinutes(Integer.parseInt(endTime[1]));
 
 
-        if (!Instant.now().isBefore(startDate.toInstant().minusMillis(qrReadTime)) || !Instant.now().isBefore(endDate.toInstant().plusMillis(qrReadTime))) {
+        if (!Instant.now().isBefore(startDate.toInstant().minusMillis(Long.parseLong(qrReadTime))) || !Instant.now().isBefore(endDate.toInstant().plusMillis(Long.parseLong(qrReadTime)))) {
             return false;
         }
         return true;
