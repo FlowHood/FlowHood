@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.entities.House;
-import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.RequestRepository;
@@ -50,19 +49,14 @@ public class RequestServiceImpl implements RequestService {
     public void createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         List<Request> requests = new ArrayList<>();
-        Date endDate = null;
-        Date startDate = dateFormat.parse(req.getStartDate());
-
-        if (req.getEndDate() != null)
-            endDate = dateFormat.parse(req.getEndDate());
-
+//        Date startDate = dateFormat.parse(req.getStartDate());
 
         //Iterate over the days between the start and end date
-        do {
+        for(String date : req.getDates()) {
             //creating normal request
             Request newRequest = new Request(
-                    startDate,
-                    startDate,
+                    dateFormat.parse(date),
+                    dateFormat.parse(date),
                     req.getStartTime(),
                     req.getStartTime(),
                     resident,
@@ -78,23 +72,21 @@ public class RequestServiceImpl implements RequestService {
                 newRequest.setStatus(SystemStates.ACTIVE.getState());
             }
             requests.add(newRequest);
-            startDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
         }
-        while (startDate.before(endDate));
-        List<Request> requestsSaved = requestRepository.saveAll(requests);
-
-        List<QR> qrs = new ArrayList<>();
-        for (Request _req : requestsSaved) {
-            QR newQr = new QR(_req);
-            newQr.setStatus(SystemStates.ACTIVE.getState());
-            qrs.add(newQr);
-        }
-        List<QR> qrSaved = qrService.generateManyQRCode(qrs);
-
-        requestsSaved.forEach(request -> {
-            request.setQr(qrSaved.stream().filter(qr -> qr.getRequest().getId().equals(request.getId())).findFirst().orElse(null));
-            requestRepository.save(request);
-        });
+        requestRepository.saveAll(requests);
+//
+//        List<QR> qrs = new ArrayList<>();
+//        for (Request _req : requestsSaved) {
+//            QR newQr = new QR(_req);
+//            newQr.setStatus(SystemStates.ACTIVE.getState());
+//            qrs.add(newQr);
+//        }
+//        List<QR> qrSaved = qrService.generateManyQRCode(qrs);
+//
+//        requestsSaved.forEach(request -> {
+//            request.setQr(qrSaved.stream().filter(qr -> qr.getRequest().getId().equals(request.getId())).findFirst().orElse(null));
+//            requestRepository.save(request);
+//        });
 
     }
 

@@ -31,9 +31,6 @@ public class QRController {
 
     final EncryptUtil encryptUtil;
 
-    @Value("${qr.readable}")
-    private int qrReadTime;
-
     public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil) {
         this.qrService = qrService;
         this.requestService = requestService;
@@ -68,7 +65,7 @@ public class QRController {
         }
     }
 
-    //TODO read qr
+    //TODO read qr ; remember do not valid dates on
     @PostMapping("/read")
     public ResponseEntity<GeneralResponse> readQR(@RequestBody ReadQrReqDTO readQrReqDTO) {
         try {
@@ -93,19 +90,7 @@ public class QRController {
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("User not allowed").getResponse();
             }
 
-            //settings start date with time
-            String[] startTime = request.getStartTime().split(":");
-            Date startDate = request.getStartDate();
-            startDate.setHours(Integer.parseInt(startTime[0]));
-            startDate.setMinutes(Integer.parseInt(startTime[1]));
-
-            String[] endTime = request.getStartTime().split(":");
-            Date endDate = request.getEndDate();
-            endDate.setHours(Integer.parseInt(endTime[0]));
-            endDate.setMinutes(Integer.parseInt(endTime[1]));
-
-
-            if (!Instant.now().isBefore(startDate.toInstant().minusMillis(qrReadTime)) || !Instant.now().isBefore(endDate.toInstant().plusMillis(qrReadTime))) {
+            if (qrService.validateTimePeriod(request)) {
                 return GeneralResponse.builder().message("QR not able to be read").status(HttpStatus.BAD_REQUEST).getResponse();
             }
 

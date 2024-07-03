@@ -3,6 +3,7 @@ package org.galactic.flowhood.services;
 import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ public interface QrService {
     QR refreshQRByRequest(Request request);
 
     QR findByRequest(Request request);
+
+    boolean validateTimePeriod(Request request);
 
     void changeQRStatus(QR qr, String status);
 }
