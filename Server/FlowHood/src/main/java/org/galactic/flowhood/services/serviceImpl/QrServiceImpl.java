@@ -1,9 +1,11 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import org.galactic.flowhood.domain.entities.QR;
+import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.repository.QrRepository;
 import org.galactic.flowhood.services.QrService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Service
 public class QrServiceImpl implements QrService {
 
+    @Value("${qr.refresh}")
+    private int qrRefreshTime;
     final
     QrRepository qrRepository;
 
@@ -37,9 +41,23 @@ public class QrServiceImpl implements QrService {
     }
 
     @Override
-    public void refreshQR(QR qr) {
-        qr.setLastUpdate(Date.from(Instant.now()));
-        qrRepository.save(qr);
+    public QR refreshQRByRequest(Request request) {
+        QR qr = findByRequest(request);
+        if (qr == null) {
+            return null;
+        }
+        if (
+                qr.getLastUpdate().toInstant().minusMillis(qrRefreshTime).isBefore(Instant.now()) &&
+                        qr.getLastUpdate().toInstant().plusMillis(qrRefreshTime).isAfter(Instant.now())
+        ) {
+            qr.setLastUpdate(Date.from(Instant.now()));
+        }
+        return qrRepository.save(qr);
+    }
+
+    @Override
+    public QR findByRequest(Request request) {
+        return qrRepository.findByRequest(request).orElse(null);
     }
 
     @Override
