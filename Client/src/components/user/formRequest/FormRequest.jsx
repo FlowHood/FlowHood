@@ -105,7 +105,7 @@ export default function FormRequest() {
   if (myhouses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-4">
-        <h1 className="text-2xl font-semibold text-center">
+        <h1 className="text-center text-2xl font-semibold">
           No tienes casas asociadas
         </h1>
         <p className="text-center">
@@ -213,15 +213,6 @@ export default function FormRequest() {
                   <TimePicker className="p-2" format="HH:mm" />
                 </Form.Item>
               </div>
-              {/* <Form.Item
-                label="Horas de visita de esos dias"
-                name="times"
-                rules={[
-                  { required: true, message: "Este campo es obligatorio" },
-                ]}
-              >
-                <TimePicker.RangePicker className="p-2" format="HH:mm" />
-              </Form.Item> */}
             </>
           ) : (
             <>
@@ -250,35 +241,8 @@ export default function FormRequest() {
               </div>
             </>
           )}
-
-          {/* <Form.Item
-            label="Fecha de visita"
-            name={"startDate"}
-            rules={[{ required: true, message: "Este campo es obligatorio" }]}
-          >
-            <Input
-              className="p-2"
-              type="date"
-              prefix={<MdCalendarMonth className="text-gray-400 " />}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Hora de visita"
-            name={"startTime"}
-            rules={[{ required: true, message: "Este campo es obligatorio" }]}
-          >
-            <Input type="time" className="p-2" />
-          </Form.Item> */}
         </div>
 
-        {/* <div className={`flex-row gap-3 ${isPeriodic ? "flex" : "hidden"}`}>
-          <Form.Item className="p-2" label="Fecha final" name={"endDate"}>
-            <Input type="date" />
-          </Form.Item>
-          <Form.Item label="Hora final" className="p-2" name={"endTime"}>
-            <Input type="time" />
-          </Form.Item>
-        </div> */}
         <GeneralButton
           textDescription={"Crear invitación"}
           type="submit"
