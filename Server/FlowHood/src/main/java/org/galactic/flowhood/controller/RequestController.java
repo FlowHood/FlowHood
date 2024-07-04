@@ -97,6 +97,9 @@ public class RequestController {
             if (errors.hasErrors())
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("invalid request").data(errors.getAllErrors()).getResponse();
 
+            if(req.getDates().isEmpty())
+                return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("dates can not be empty").getResponse();
+
             House house = houseService.getHouseById(UUID.fromString(req.getHouse()));
             if (house == null)
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("house not found").getResponse();
@@ -110,15 +113,14 @@ public class RequestController {
 
             User resident = userService.findUserAuthenticated().toEntity();
 
-            //Asign current resident rol to handle petition
             String residentRol = SystemRoles.RESPONSIBLE.getRole();
-            Role role = roleService.findRoleById(SystemRoles.ADMINISTRATOR.getRole());
-            if (resident.getRoles().contains(role))
+            if (userService.hasUserRole(resident, SystemRoles.ADMINISTRATOR.getRole()))
                 residentRol = SystemRoles.ADMINISTRATOR.getRole();
 
             boolean isValidResident = houseService.isResponsibleFromHouse(resident, house);
             if (isValidResident)
                 residentRol = SystemRoles.RESIDENT.getRole();
+
             if (!house.getResponsible().getEmail().equals(resident.getEmail()) && !isValidResident)
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You can not create requests for this house").getResponse();
 

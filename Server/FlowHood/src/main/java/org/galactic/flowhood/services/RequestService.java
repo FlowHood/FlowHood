@@ -33,4 +33,6 @@ public interface RequestService {
     List<Request> findAllByUserAndState(User user, String state);
 
     boolean isUserFromRequest(User user, Request request);
+
+    void changeRequestStatus(Request request, String state);
 }

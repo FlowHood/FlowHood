@@ -49,8 +49,6 @@ public class RequestServiceImpl implements RequestService {
     public void createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         List<Request> requests = new ArrayList<>();
-//        Date startDate = dateFormat.parse(req.getStartDate());
-
         //Iterate over the days between the start and end date
         for(String date : req.getDates()) {
             //creating normal request
@@ -136,5 +134,11 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public boolean isUserFromRequest(User user, Request request) {
         return request.getResident().getId().equals(user.getId()) || request.getVisitor().getId().equals(user.getId()) || request.getHouse().getResponsible().getId().equals(user.getId());
+    }
+
+    @Override
+    public void changeRequestStatus(Request request, String state) {
+        request.setStatus(state);
+        requestRepository.save(request);
     }
 }

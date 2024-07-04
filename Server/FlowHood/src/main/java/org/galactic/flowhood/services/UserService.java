@@ -17,6 +17,7 @@ public interface UserService {
     Boolean isTokenValid(User user, String token);
     void cleanTokens(User user) throws Exception;
 
+    boolean hasUserRole(User user, String roleId);
 
     UserRegisterDTO getUserInformation(String token);
     UserResDTO findUserAuthenticated();

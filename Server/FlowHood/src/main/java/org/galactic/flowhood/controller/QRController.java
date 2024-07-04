@@ -2,13 +2,16 @@ package org.galactic.flowhood.controller;
 
 import org.galactic.flowhood.domain.dto.request.ReadQrReqDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
+import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
+import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.QrService;
 import org.galactic.flowhood.services.RequestService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.EncryptUtil;
+import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,7 @@ public class QRController {
 
     final EncryptUtil encryptUtil;
 
-    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil) {
+    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService) {
         this.qrService = qrService;
         this.requestService = requestService;
         this.userService = userService;
@@ -39,23 +42,51 @@ public class QRController {
     }
 
     //TODO qr generate and update for petition when clicking
-    @PostMapping("/refresh/{_requestId}")
-    public ResponseEntity<GeneralResponse> refreshQR(@PathVariable("_requestId") String requestId) {
+    @PostMapping(value = {"/request-qr", "/request-qr/{_requestId}"})
+    public ResponseEntity<GeneralResponse> refreshQR(@PathVariable(value = "_requestId", required = false) String requestId){
         try {
-            Request request = requestService.findRequestById(UUID.fromString(requestId));
+            User user = userService.findUserAuthenticated().toEntity();
+            Request request;
+
+            if (requestId == null &&
+                    (userService.hasUserRole(user, SystemRoles.ADMINISTRATOR.getRole()) ||
+                            userService.hasUserRole(user, SystemRoles.RESIDENT.getRole()) ||
+                            userService.hasUserRole(user, SystemRoles.RESPONSIBLE.getRole()))) {
+                Date current = Date.from(Instant.now());
+                String time = current.getHours() + ":" + current.getMinutes();
+
+                Request newRequest = new Request(
+                        current,
+                        current,
+                        time,
+                        time,
+                        user,
+                        user,
+                        new House("")
+                );
+                request = requestService.createRequest(newRequest);
+            } else {
+                assert requestId != null;
+                request = requestService.findRequestById(UUID.fromString(requestId));
+            }
             if (request == null) {
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("Request not found").getResponse();
             }
-            User user = userService.findUserAuthenticated().toEntity();
             if (!requestService.isUserFromRequest(user, request)) {
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("User not allowed").getResponse();
             }
 
+            if(!request.getStatus().equals(SystemStates.ACTIVE.getState())){
+                return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("Request is not active").getResponse();
+            }
+
             QR qr = qrService.findByRequest(request);
             if (qr == null) {
-                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("QR not found").getResponse();
-            }
-            qr = qrService.refreshQRByRequest(request);
+                QR newQr = new QR(request);
+                qr = qrService.generateQRCode(newQr);
+                request.setQr(qr);
+                requestService.save(request);
+            } else qr = qrService.refreshQRByRequest(request);
 
             String data = qr.getId() + "/" + qr.getRequest().getId() + "/" + qr.getLastUpdate();
             return GeneralResponse.builder().data(encryptUtil.encrypt(data)).status(HttpStatus.OK).message("QR generated").getResponse();
@@ -93,6 +124,10 @@ public class QRController {
             if (qrService.validateTimePeriod(request)) {
                 return GeneralResponse.builder().message("QR not able to be read").status(HttpStatus.BAD_REQUEST).getResponse();
             }
+
+            requestService.changeRequestStatus(request, SystemStates.USED.getState());
+            qrService.changeQRStatus(qr, SystemStates.USED.getState());
+            //TODO: levantar el pico
 
             return GeneralResponse.builder().data(true).status(HttpStatus.OK).message("Able to enter").getResponse();
 
