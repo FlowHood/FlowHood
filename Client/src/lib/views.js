@@ -2,7 +2,7 @@ import CreateRequestHome from "../pages/form/CreateRequestHome";
 
 export const VIEWS = {
   login: "/login",
-  securityHome: "/security-home",
+  securityHome: "/",
   dashboard: "/dashboard",
   test: "/test",
   pageNotFound: "*",
