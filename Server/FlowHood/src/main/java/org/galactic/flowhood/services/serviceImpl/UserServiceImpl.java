@@ -11,6 +11,7 @@ import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.TokenRepository;
 import org.galactic.flowhood.repository.UserRepository;
 import org.galactic.flowhood.services.HouseService;
+import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTools;
 import org.springframework.http.*;
@@ -37,12 +38,15 @@ public class UserServiceImpl implements UserService {
 
     final RestTemplate restTemplate;
 
+    final RoleService roleService;
 
-    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate) {
+
+    public UserServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, JWTTools jwtTools, RestTemplate restTemplate, RoleService roleService) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.jwtTools = jwtTools;
         this.restTemplate = restTemplate;
+        this.roleService = roleService;
     }
 
     @Override
@@ -56,6 +60,12 @@ public class UserServiceImpl implements UserService {
         tokenRepository.save(token);
 
         return token;
+    }
+
+    @Override
+    public boolean hasUserRole(User user, String roleId) {
+        Role role = roleService.findRoleById(roleId);
+        return user.getRoles().contains(role);
     }
 
     @Override
