@@ -11,11 +11,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Auth provider mounted");
     const checkToken = async () => {
       setLoading(true);
       const token = localStorage.getItem("session");
       if (token) {
         const user = await getMe();
+        console.log(user);
         setUser(user);
         setRoles(user.roles.map((role) => role.id));
       }

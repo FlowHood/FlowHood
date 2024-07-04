@@ -5,14 +5,18 @@ import {
   MailSelectedIcon,
   PeopleIcon,
   QRIcon,
+  StatsIcon,
 } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
-import InfoResidentCard from "../../components/cards/InfoResidentCard";
+import InfoResidentCard, {
+  NoHousesCard,
+} from "../../components/cards/InfoResidentCard";
 import UserLayout from "../../components/user/UserLayout";
 import { VIEWS } from "../../lib/views";
 import { useAuth } from "../../context/AuthContext";
-import { ROL } from "../../lib/rol";
+import { ROL, getHighestPriorityRole } from "../../lib/rol";
+import { capitalizeWords, getCurrentShift } from "../../lib/utils";
 
 let homeInformation = {
   homeIdentifier: "123",
@@ -22,60 +26,112 @@ let homeInformation = {
 };
 
 // Función para obtener información basada en el rol
-const HandlerInformationByRol = (roles = []) => {
-  return roles.map((rol) => {
-    switch (rol) {
-      case ROL.RESIDENT:
-        return (
-          <InfoResidentCard
-            key={rol}
-            homeIdentifier={homeInformation.homeIdentifier}
-            homeName={homeInformation.homeName}
-            homeAddress={homeInformation.homeAddress}
-            homeMembers={homeInformation.homeMembers}
-          />
-        );
-      case ROL.VIGILANT:
-        return <InfoScheduleCard key={rol} turno="Turno Vespertino" />;
-      default:
-        return <InfoScheduleCard key={rol} turno="Turno Vespertino" />;
+const HandlerInformationByRol = (roles = [], admHouses) => {
+  const currentShift = getCurrentShift();
+
+  const highestRole = getHighestPriorityRole(roles);
+
+  switch (highestRole) {
+    case ROL.RESIDENT: {
+      const houses = admHouses || [];
+      const totalHouses = houses.length;
+      const uniqueResidents = new Set();
+      houses.forEach((house) =>
+        house.residents.forEach((resident) => uniqueResidents.add(resident.id)),
+      );
+
+      return houses.length > 0 ? (
+        <InfoResidentCard
+          totalHouses={totalHouses}
+          totalResidents={uniqueResidents.size}
+          houseDetails={houses.map((house) => ({
+            id: house.id,
+            address: house.address,
+            active: house.active,
+            responsible: house.responsible,
+            residents: house.residents,
+          }))}
+        />
+      ) : (
+        <NoHousesCard key={highestRole} />
+      );
     }
-  });
+    case ROL.VIGILANT:
+      return <InfoScheduleCard key={highestRole} turno={currentShift} />;
+    default:
+      return <InfoScheduleCard key={highestRole} turno={currentShift} />;
+  }
 };
 
 // Definir los componentes que deben mostrarse según los roles
 const getOptionLinksByRoles = (roles) => {
-  const commonComponents = [
-    {
-      texto: "Lector de QR de entrada",
-      Icono: QRIcon,
-      to: VIEWS.scanQR,
-    },
-    {
-      texto: "Registros a terceros",
-      Icono: PeopleIcon,
-      to: VIEWS.scanQR,
-    },
-  ];
-
   const roleComponents = {
-    [ROL.VIGILANT]: commonComponents,
-    [ROL.ADMIN]: commonComponents,
-    [ROL.RESIDENT]: [
+    [ROL.VIGILANT]: [
       {
-        texto: "QR de ingreso",
+        texto: "Lector de QR de entrada",
         Icono: QRIcon,
         to: VIEWS.scanQR,
       },
       {
-        texto: "Crear Invitación",
-        Icono: MailIcon,
+        texto: "Registros a terceros",
+        Icono: PeopleIcon,
         to: VIEWS.scanQR,
       },
       {
-        texto: "Solicitudes Aprobadas",
+        texto: "Mi Cuenta",
+        Icono: QRIcon,
+        to: VIEWS.myAccount,
+      },
+    ],
+    [ROL.ADMIN]: [
+      {
+        texto: "Dashboard",
+        Icono: StatsIcon,
+        to: VIEWS.dashboard,
+      },
+      {
+        texto: "Generar QR de ingreso",
+        Icono: QRIcon,
+        to: VIEWS.createQR,
+      },
+      {
+        texto: "Mi Cuenta",
+        Icono: QRIcon,
+        to: VIEWS.myAccount,
+      },
+    ],
+    [ROL.OWNER]: [
+      {
+        texto: "Generar QR de ingreso",
+        Icono: QRIcon,
+        to: VIEWS.createQR,
+      },
+      {
+        texto: "Solicitudes",
         Icono: MailSelectedIcon,
-        to: VIEWS.scanQR,
+        to: VIEWS.request,
+      },
+      {
+        texto: "Mi Cuenta",
+        Icono: QRIcon,
+        to: VIEWS.myAccount,
+      },
+    ],
+    [ROL.RESIDENT]: [
+      {
+        texto: "Generar QR de ingreso",
+        Icono: QRIcon,
+        to: VIEWS.createQR,
+      },
+      {
+        texto: "Crear Invitación",
+        Icono: MailIcon,
+        to: VIEWS.createRequest,
+      },
+      {
+        texto: "Solicitudes",
+        Icono: MailSelectedIcon,
+        to: VIEWS.request,
       },
       {
         texto: "Mi Cuenta",
@@ -85,40 +141,44 @@ const getOptionLinksByRoles = (roles) => {
     ],
     [ROL.VISITOR]: [
       {
-        texto: "QR de ingreso",
+        texto: "Generar QR de ingreso",
         Icono: QRIcon,
-        to: VIEWS.scanQR,
-      },
-    ],
-    [ROL.OWNER]: [
-      {
-        texto: "QR de ingreso",
-        Icono: QRIcon,
-        to: VIEWS.scanQR,
+        to: VIEWS.createQR,
       },
       {
         texto: "Solicitudes",
         Icono: MailSelectedIcon,
-        to: VIEWS.scanQR,
+        to: VIEWS.request,
+      },
+      {
+        texto: "Mi Cuenta",
+        Icono: QRIcon,
+        to: VIEWS.myAccount,
       },
     ],
   };
 
-  const uniqueComponents = new Set();
+  const uniqueComponentsMap = new Map();
+  const addedToSet = new Set();
 
   roles.forEach((rol) => {
-    (roleComponents[rol] || []).forEach((component) => {
-      uniqueComponents.add(component);
+    const components = roleComponents[rol];
+    components.forEach((component) => {
+      if (!addedToSet.has(component.to)) {
+        addedToSet.add(component.to);
+        uniqueComponentsMap.set(component.to, component);
+      }
     });
   });
+
+  const uniqueComponents = Array.from(uniqueComponentsMap.values());
 
   return Array.from(uniqueComponents);
 };
 
-
 const SecurityHome = () => {
-  const { roles } = useAuth();
-  console.log("Roles", roles);
+  const { roles, user } = useAuth();
+  console.log(user);
   const optionLinks = getOptionLinksByRoles(roles);
 
   return (
@@ -129,10 +189,12 @@ const SecurityHome = () => {
             <LogoInitialsIcon />
             <p className="inline-flex flex-col gap-2.5 text-[2.4375rem] font-semibold ">
               Bienvenido,
-              <span className="text-royal-amethyst ">Juan Ramos</span>
+              <span className="text-royal-amethyst ">
+                {capitalizeWords(user.name)}
+              </span>
             </p>
 
-            {HandlerInformationByRol(roles)}
+            {HandlerInformationByRol(roles, user.admHouses)}
           </div>
 
           <div className="w-full max-w-[480px] text-start lg:max-w-[400px]">

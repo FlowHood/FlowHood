@@ -10,19 +10,23 @@ import {
 import SectionIntro from "../../components/SectionIntro";
 import { Container } from "../../components/Container";
 import { Link } from "react-router-dom";
-import { getHighestPriorityRole, getRoleDescription, getRolesDescription } from "../../lib/rol";
+import {
+  getHighestPriorityRole,
+  getRoleDescription,
+  getRolesDescription,
+} from "../../lib/rol";
 import { useAuth } from "../../context/AuthContext";
 import Avatar from "antd/es/avatar/avatar";
 import { Tag } from "antd";
 import { capitalizeWords } from "../../lib/utils";
+import { VIEWS } from "../../lib/views";
 
-const getOptionsByRole = (role) => {
+const getOptionsByRole = (role, logout) => {
   const commonOptions = [
-    { icon: FaUser, text: "Información Personal", to: "/informacion-personal" },
     {
       icon: FaFolderOpen,
       text: "Contacto con administrador",
-      to: "/contacto-administrador",
+      to:  "mailto:galactic.studio23@gmail.com",
     },
   ];
 
@@ -31,23 +35,23 @@ const getOptionsByRole = (role) => {
       {
         icon: FaCalendarAlt,
         text: "Registros de entrada",
-        to: "/registros-entrada",
+        to: VIEWS.request
       },
-      { icon: FaHome, text: "Administrar hogar", to: "/administrar-hogar" },
+      // { icon: FaHome, text: "Administrar hogar", to: VIEWS.houseList},
     ],
     VST: [
-      { icon: FaFolderOpen, text: "Tus invitaciones", to: "/tus-invitaciones" },
+      { icon: FaFolderOpen, text: "Tus invitaciones", to: VIEWS.request },
     ],
   };
 
   const options = commonOptions.concat(roleSpecificOptions[role] || []);
-  options.push({ icon: FaSignOutAlt, text: "Cerrar sesión", to: "/" });
+  options.push({ icon: FaSignOutAlt, text: "Cerrar sesión", action: logout });
 
   return options;
 };
 
-const HouseCard = ({ house, title }) => (
-  <div className="w-full max-w-md rounded-md border bg-white p-4 shadow-md">
+export const HouseCard = ({ house, title }) => (
+  <div className="w-full rounded-md border bg-white p-4 shadow-md">
     <h3 className="mb-2 text-xl font-semibold">{title}</h3>
     <div className="flex items-center justify-between gap-4">
       <p>
@@ -86,7 +90,7 @@ const ResidentAccountView = () => {
 
   const highestRole = getHighestPriorityRole(roles);
   const rolesDescription = getRolesDescription(roles);
-  const options = getOptionsByRole(highestRole); //TODO
+  const options = getOptionsByRole(highestRole, logout); 
 
   const hasHouses = user.houses.length > 0;
   const hasAdmHouses = user.admHouses.length > 0;
@@ -110,25 +114,31 @@ const ResidentAccountView = () => {
       <h2 className="mt-4 text-xl font-semibold text-royal-amethyst">
         {user.name} {user.lastname}
       </h2>
-      <p className="mt-2 font-Inter text-lg text-black">{rolesDescription.join(", ")}</p>
+      <p className="mt-2 font-Inter text-lg text-black">
+        {rolesDescription.join(", ")}
+      </p>
 
       <div className="mt-4 w-full px-8">
         {hasHouses || hasAdmHouses ? (
           <div
             className={`grid justify-items-center gap-4 ${hasAdmHouses && hasHouses ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
           >
-            {hasHouses && (
-              <HouseCard
-                house={user.houses[0]}
-                title="Casa(s) como residente"
-              />
-            )}
-            {hasAdmHouses && (
-              <HouseCard
-                house={user.admHouses[0]}
-                title="Casa(s) como encargado"
-              />
-            )}
+            {hasHouses &&
+              user.houses.map((house) => (
+                <HouseCard
+                  key={house.id}
+                  house={house}
+                  title="Casa(s) como residente"
+                />
+              ))}
+            {hasAdmHouses &&
+              user.admHouses.map((house) => (
+                <HouseCard
+                  key={house.id}
+                  house={house}
+                  title="Casa(s) como encargado"
+                />
+              ))}
           </div>
         ) : (
           <p>No tiene casas asociadas.</p>
@@ -140,12 +150,24 @@ const ResidentAccountView = () => {
         <ul className="leading-[2rem] text-[#495865]">
           {options.map((option, index) => (
             <li key={index}>
-              <Link to={option.to} className="flex items-center gap-4">
-                <option.icon size={20} className="mr-2" />
-                <span className="leading-[2rem] hover:text-[#323f4b]">
-                  {option.text}
-                </span>
-              </Link>
+              {option.action ? (
+                <button
+                  onClick={option.action}
+                  className="flex items-center gap-4 w-full text-left"
+                >
+                  <option.icon size={20} className="mr-2" />
+                  <span className="leading-[2rem] hover:text-[#323f4b]">
+                    {option.text}
+                  </span>
+                </button>
+              ) : (
+                <Link to={option.to} className="flex items-center gap-4">
+                  <option.icon size={20} className="mr-2" />
+                  <span className="leading-[2rem] hover:text-[#323f4b]">
+                    {option.text}
+                  </span>
+                </Link>
+              )}
             </li>
           ))}
         </ul>

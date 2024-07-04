@@ -117,6 +117,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public List<Request> findRequestsByVisitor(User visitor) {
+        return requestRepository.findAllByVisitor(visitor);
+    }
+
+    @Override
     public List<Request> findRequestsByHouseOrAdminHouses(House house, List<House> admHouses) {
         return requestRepository.findAllByHouseOrHouseIn(house, admHouses);
     }
