@@ -34,7 +34,7 @@ function App() {
             <Route path={VIEWS.login} element={<Login />} />
             <Route path={VIEWS.test} element={<PageTest />} />
 
-            <Route path={VIEWS.createQR} element={<CreateQRHome />} />
+            
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
 
             <Route path={VIEWS.loader} element={<Loading />} />
@@ -72,6 +72,7 @@ function App() {
             >
               <Route path={VIEWS.request} element={<AllRequest />} />
               <Route path={VIEWS.requestDetail} element={<RequestDetail />} />
+              <Route path={VIEWS.createQR} element={<CreateQRHome />} />
             </Route>
 
             <Route
