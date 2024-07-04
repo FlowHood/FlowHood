@@ -56,9 +56,9 @@ export default function NavigationBar({ isOwner = false, className = "" }) {
 
       <NavigationBarItem
         textDescription={"Cuenta"}
-        to={VIEWS.test}
-        onClick={() => setCurrentView(VIEWS.test)}
-        isSelected={currentView === VIEWS.test}
+        to={VIEWS.myAccount}
+        onClick={() => setCurrentView(VIEWS.myAccount)}
+        isSelected={currentView === VIEWS.myAccount}
       >
         <MdOutlineManageAccounts className="nb-icon" />
       </NavigationBarItem>

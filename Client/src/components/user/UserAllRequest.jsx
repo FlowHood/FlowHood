@@ -66,10 +66,14 @@ export default function UserAllRequest() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("PEN");
 
+  const isUniqueRolVisitor =
+    user.roles.length === 1 &&
+    user.roles.every((rol) => rol.id === ROL.VISITOR);
+
   useEffect(() => {
     const fetchRequests = async () => {
       let result;
-      if (user.roles.some((rol) => rol.id === ROL.VISITOR)) {
+      if (!isUniqueRolVisitor) {
         result = await getAllRequestsByVisitor();
         setRequests(result);
       } else {
@@ -84,7 +88,7 @@ export default function UserAllRequest() {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      if (!user.roles.some((rol) => rol.id === ROL.VISITOR)) {
+      if (!isUniqueRolVisitor) {
         const filteredRequests = allrequests.filter(
           (request) => request.status === filter,
         );
@@ -130,7 +134,7 @@ export default function UserAllRequest() {
       </div>
       <div className="flex w-full flex-col sm:w-11/12">
         <div className="flex min-h-screen flex-col gap-4">
-          {user.roles.some((rol) => rol.id === ROL.VISITOR) ? (
+          {isUniqueRolVisitor ? (
             <div className="flex flex-col gap-1">
               <h2 className="mt-8 text-center text-lg font-semibold text-royal-amethyst sm:text-3xl">
                 Solicitudes a mi nombre
@@ -158,7 +162,8 @@ export default function UserAllRequest() {
               </div>
             )}
           </div>
-          {!user.roles.some((rol) => rol.id === ROL.VISITOR) && (
+
+          {!isUniqueRolVisitor && (
             <div className="sticky bottom-[4.2rem] flex flex-col items-center justify-center gap-2 bg-white p-3 sm:bottom-0">
               <div className="hidden flex-row items-center justify-center gap-1 text-gray-600 sm:flex">
                 <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
