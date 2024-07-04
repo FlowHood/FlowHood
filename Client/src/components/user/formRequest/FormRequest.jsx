@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Switch, Select } from "antd";
+import {
+  Form,
+  Input,
+  Switch,
+  Select,
+  Card,
+  DatePicker,
+  TimePicker,
+} from "antd";
 import { IoPersonSharp } from "react-icons/io5";
 import { MdCalendarMonth } from "react-icons/md";
 import { toast } from "sonner";
@@ -9,6 +17,7 @@ import GeneralButton from "../../buttons/GeneralButton";
 import { createRequest } from "../../../services/request.service";
 import { capitalizeWords } from "../../../lib/utils";
 import { ROL, getRoleDescription } from "../../../lib/rol";
+import { HouseCard } from "../../../pages/account/ResidentAccountView";
 
 const { Option } = Select;
 
@@ -24,9 +33,11 @@ export default function FormRequest() {
         const data = await fetchUserData();
         console.log(getRoleDescription(ROL.VISITOR));
 
-        const visitors = data.filter(user => user.roles.includes( getRoleDescription(ROL.VISITOR)));
+        const visitors = data.filter((user) =>
+          user.roles.includes(getRoleDescription(ROL.VISITOR)),
+        );
 
-        console.log(data)
+        console.log(data);
         console.log("visitantes", visitors);
 
         setVisitors(visitors);
@@ -41,24 +52,35 @@ export default function FormRequest() {
   }, []);
 
   const onSuccess = async (values) => {
-    const startDateTime = new Date(`${values.startDate}T${values.startTime}:00.000Z`).toISOString();
-    
-    console.log("Start date time:", user);
-    const requestData = {
-      startDate: startDateTime,
-      startTime: values.startTime,
-      visitor: values.visitor,
-      house: user.houses[0].id, // TODO Asumiendo que el usuario solo tiene una casa
-    };
+    let formattedDates;
+    let startTime;
+    let endTime;
 
     if (isPeriodic) {
-      if (values.endDate) {
-        requestData.endDate = values.endDate;
-      }
-      if (values.endTime) {
-        requestData.endTime = values.endTime;
-      }
+      formattedDates = values.dates.map((date) => date.toISOString());
+      startTime = values.startTime.format("HH:mm");
+      endTime = values.endTime?.format("HH:mm") || null;
+    } else {
+      formattedDates = [values.date.toISOString()];
+      startTime = values.startTime.format("HH:mm");
+      endTime = values.endTime?.format("HH:mm") || null;
     }
+
+    const requestData = {
+      dates: formattedDates,
+      startTime: startTime,
+      // endTime: endTime,
+      reason: values.reason || null,
+      resident: user.id, // Assuming the authenticated user's ID is the resident
+      visitor: values.visitor,
+      house: values.house,
+    };
+
+    if (endTime) {
+      requestData.endDate = endTime;
+    }
+
+    console.log("Request data", requestData);
 
     await createRequest(requestData);
   };
@@ -73,9 +95,29 @@ export default function FormRequest() {
     const user = visitors.find((u) => u.id === userId);
     setSelectedUser(user);
   };
+  // Unir dos arrays, el de user.houses y el de user.admhouses
+  const houses = user.houses.concat(user.admHouses);
+  // Filtrar las casas para eliminar las que sean las mismas
+  const myhouses = houses.filter(
+    (house, index, self) => index === self.findIndex((t) => t.id === house.id),
+  );
+
+  if (myhouses.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 p-4">
+        <h1 className="text-2xl font-semibold text-center">
+          No tienes casas asociadas
+        </h1>
+        <p className="text-center">
+          Para poder crear una invitación debes tener una casa asociada a tu
+          cuenta
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex w-full max-w-[1024px] mx-auto flex-col items-center justify-center gap-4 p-4 md:max-w-[75%]">
+    <div className="mx-auto flex w-full max-w-[1024px] flex-col items-center justify-center gap-4 p-4 md:max-w-[75%]">
       <div className="flex flex-col items-center justify-center gap-4 text-center font-Inter">
         <h1 className="text-2xl font-semibold ">
           Crear
@@ -93,10 +135,11 @@ export default function FormRequest() {
         onFinishFailed={onFailed}
       >
         <h2 className="font-medium">Ingresa los siguientes campos</h2>
-        <Form.Item  label="Visitante"
-         name={"visitor"}
-         rules={[{ required: true, message: "Este campo es obligatorio" }]}
-         >
+        <Form.Item
+          label="Visitante"
+          name={"visitor"}
+          rules={[{ required: true, message: "Este campo es obligatorio" }]}
+        >
           <Select
             showSearch
             placeholder="Selecciona un visitante"
@@ -117,8 +160,98 @@ export default function FormRequest() {
           </Select>
         </Form.Item>
 
-        <div className="flex flex-row gap-3">
-          <Form.Item
+        {myhouses.length > 1 ? (
+          <>
+            <Form.Item
+              label="Casa"
+              name={"house"}
+              rules={[{ required: true, message: "Este campo es obligatorio" }]}
+            >
+              <Select placeholder="Selecciona tu casa">
+                {myhouses.map((house) => (
+                  <Option key={house.id} value={house.id}>
+                    {house.address} -{" "}
+                    {house?.responsible?.name || "Sin responsable"}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </>
+        ) : (
+          <HouseCard house={myhouses[0]} title="Mi unica casa asociada es:" />
+        )}
+
+        <div className="flex flex-col gap-3">
+          <div className="mx-auto flex max-w-lg flex-row  items-center justify-center gap-4">
+            <p>Visita programada</p>
+            <Form.Item style={{ marginBottom: 0 }} valuePropName="checked">
+              <Switch onChange={(e) => setIsPeriodic(e)} />
+            </Form.Item>
+          </div>
+          {isPeriodic ? (
+            <>
+              <Form.Item
+                label="Fechas de visita"
+                name="dates"
+                rules={[
+                  { required: true, message: "Este campo es obligatorio" },
+                ]}
+              >
+                <DatePicker multiple className="p-2" format="YYYY-MM-DD" />
+              </Form.Item>
+              <div className="gal-4 flex">
+                <Form.Item
+                  label="Hora de inicio"
+                  name="startTime"
+                  rules={[
+                    { required: true, message: "Este campo es obligatorio" },
+                  ]}
+                >
+                  <TimePicker className="p-2" format="HH:mm" />
+                </Form.Item>
+                <Form.Item label="Hora de fin" name="endTime">
+                  <TimePicker className="p-2" format="HH:mm" />
+                </Form.Item>
+              </div>
+              {/* <Form.Item
+                label="Horas de visita de esos dias"
+                name="times"
+                rules={[
+                  { required: true, message: "Este campo es obligatorio" },
+                ]}
+              >
+                <TimePicker.RangePicker className="p-2" format="HH:mm" />
+              </Form.Item> */}
+            </>
+          ) : (
+            <>
+              <Form.Item
+                label="Fecha de visita"
+                name="date"
+                rules={[
+                  { required: true, message: "Este campo es obligatorio" },
+                ]}
+              >
+                <DatePicker className="p-2" format="YYYY-MM-DD" />
+              </Form.Item>
+              <div className="gal-4 flex">
+                <Form.Item
+                  label="Hora de inicio"
+                  name="startTime"
+                  rules={[
+                    { required: true, message: "Este campo es obligatorio" },
+                  ]}
+                >
+                  <TimePicker className="p-2" format="HH:mm" />
+                </Form.Item>
+                <Form.Item label="Hora de fin" name="endTime">
+                  <TimePicker className="p-2" format="HH:mm" />
+                </Form.Item>
+              </div>
+            </>
+          )}
+
+          {/* <Form.Item
             label="Fecha de visita"
             name={"startDate"}
             rules={[{ required: true, message: "Este campo es obligatorio" }]}
@@ -135,24 +268,17 @@ export default function FormRequest() {
             rules={[{ required: true, message: "Este campo es obligatorio" }]}
           >
             <Input type="time" className="p-2" />
-          </Form.Item>
+          </Form.Item> */}
         </div>
 
-        <div className="flex flex-row items-center justify-between">
-          <p>Visita programada</p>
-          <Form.Item valuePropName="checked">
-            <Switch onChange={(e) => setIsPeriodic(e)} />
-          </Form.Item>
-        </div>
-
-        <div className={`flex-row gap-3 ${isPeriodic ? "flex" : "hidden"}`}>
+        {/* <div className={`flex-row gap-3 ${isPeriodic ? "flex" : "hidden"}`}>
           <Form.Item className="p-2" label="Fecha final" name={"endDate"}>
             <Input type="date" />
           </Form.Item>
           <Form.Item label="Hora final" className="p-2" name={"endTime"}>
             <Input type="time" />
           </Form.Item>
-        </div>
+        </div> */}
         <GeneralButton
           textDescription={"Crear invitación"}
           type="submit"
@@ -163,5 +289,3 @@ export default function FormRequest() {
     </div>
   );
 }
-
-

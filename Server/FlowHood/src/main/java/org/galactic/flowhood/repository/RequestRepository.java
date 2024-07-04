@@ -15,4 +15,5 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findAllByHouse(House house);
     List<Request> findAllByHouseOrHouseIn(House house, List<House> admHouses);
     List<Request> findAllByHouseIn(List<House> houses);
+    List<Request> findAllByVisitor(User visitor);
 }

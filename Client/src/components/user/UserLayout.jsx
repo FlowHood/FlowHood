@@ -16,7 +16,7 @@ export default function UserLayout({
   return (
     <main className="min-h-screen pb-11 md:pb-0">
       <div className="px-4 py-8 text-black">
-        <div className="flex min-h-[2vh] flex-col gap-2 self-start sm:px-7 fixed top-0 p-5">
+        <div className="flex min-h-[2vh] z-30 flex-col gap-2 self-start sm:px-7 fixed top-0 p-5">
           {showLogout && (
             <LogoutButton
               action={() => {

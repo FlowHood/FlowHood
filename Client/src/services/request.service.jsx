@@ -52,13 +52,29 @@ export const getAllRequestsInMyHouse = async () => {
         Authorization: `Bearer ${localStorage.getItem("session")}`,
       },
     });
-    return res.data.data;
+    return res.data;
   } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
     toast.error(errorMessage);
   }
 };
+
+export const getAllRequestsByVisitor = async () => {
+  try {
+    const res = await axios.get("request/my-visitor-requests", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    return res.data.data;
+  }
+  catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+  }
+}
 
 export const getRequestById = async (id) => {
   try {

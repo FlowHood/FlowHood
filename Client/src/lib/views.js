@@ -9,6 +9,7 @@ export const VIEWS = {
   createQR: "/generate-ticket",
   scanQR: "/scan-qr",
   request: "/request",
+  myRequest: "/my-request",
   requestDetail: "/request-detail/:id",
   createRequest: "/create-request",
   myAccount: "/myaccount",
