@@ -10,3 +10,22 @@ export function capitalizeWords(str) {
     return char.toUpperCase();
   });
 }
+
+// Función para obtener el turno basado en la hora actual
+export const getCurrentShift = () => {
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour >= 6 && hour < 14) {
+    return "Turno Matutino";
+  } else if (hour >= 14 && hour < 22) {
+    return "Turno Vespertino";
+  } else {
+    return "Turno Nocturno";
+  }
+};
+
+export const getCurrentTime = () => {
+  const now = new Date();
+  return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};

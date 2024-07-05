@@ -6,8 +6,11 @@ import ScrollToTopButton from "../ScrollToTopButton";
 import Button from "../buttons/Button";
 import { VIEWS } from "../../lib/views";
 import { Link } from "react-router-dom";
-import { getAllRequestsInMyHouse } from "../../services/request.service";
-import Loading from "../Loading";
+import {
+  getAllRequestsByVisitor,
+  getAllRequestsInMyHouse,
+} from "../../services/request.service";
+import Loading, { LoadingComponent } from "../Loading";
 import { useAuth } from "../../context/AuthContext";
 
 const getScreenInformation = (rol) => {
@@ -63,9 +66,19 @@ export default function UserAllRequest() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("PEN");
 
+  const isUniqueRolVisitor =
+    user.roles.length === 1 &&
+    user.roles.every((rol) => rol.id === ROL.VISITOR);
+
   useEffect(() => {
     const fetchRequests = async () => {
-      const result = await getAllRequestsInMyHouse();
+      let result;
+      if (!isUniqueRolVisitor) {
+        result = await getAllRequestsByVisitor();
+        setRequests(result);
+      } else {
+        result = await getAllRequestsInMyHouse();
+      }
       setAllRequests(result);
       setIsLoading(false);
     };
@@ -75,11 +88,14 @@ export default function UserAllRequest() {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const filteredRequests = allrequests.filter(
-        (request) => request.status === filter,
-      );
+      if (!isUniqueRolVisitor) {
+        const filteredRequests = allrequests.filter(
+          (request) => request.status === filter,
+        );
 
-      setRequests(filteredRequests);
+        setRequests(filteredRequests);
+        return;
+      }
     };
 
     fetchRequests();
@@ -91,7 +107,11 @@ export default function UserAllRequest() {
         <UserRequestContainer
           userName={request.visitor.name}
           date={request.startDate.split("T")[0]}
-          time={request.startTime === request.endTime ? request.startTime : `${request.startTime} - ${request.endTime}`}
+          time={
+            request.startTime === request.endTime
+              ? request.startTime
+              : `${request.startTime} - ${request.endTime}`
+          }
           key={request.id}
           to={`${VIEWS.requestDetail.replace("/:id", "")}/${request.id}`}
           address={request.house.address}
@@ -114,43 +134,47 @@ export default function UserAllRequest() {
       </div>
       <div className="flex w-full flex-col sm:w-11/12">
         <div className="flex min-h-screen flex-col gap-4">
-          {/* {rol === ROL.OWNER || rol === ROL.RESIDENT ? (
+          {isUniqueRolVisitor ? (
             <div className="flex flex-col gap-1">
-              <h2 className="text-lg font-semibold text-royal-amethyst sm:text-3xl">
-                Solicitudes pendientes
+              <h2 className="mt-8 text-center text-lg font-semibold text-royal-amethyst sm:text-3xl">
+                Solicitudes a mi nombre
               </h2>
-              <p className="text-[0.75rem] font-light sm:text-base">
-                {subTitle2}
-              </p>4
             </div>
-          ) : null} */}
-          <RequestFilterBar
-            rol={user.roles[0].id}
-            handleChangeSelected={handleChangeSelected}
-          />
-          <div className="grid h-full w-full flex-1 grid-cols-1 grid-rows-[max-content] flex-col justify-start gap-2 pb-8 sm:px-4 md:grid-cols-2">
+          ) : (
+            <RequestFilterBar
+              rol={user.roles[0].id}
+              handleChangeSelected={handleChangeSelected}
+            />
+          )}
+
+          <div className="grid h-full w-full flex-1 grid-cols-1 grid-rows-[max-content] flex-col justify-start gap-2 pb-8 sm:px-4 lg:grid-cols-2">
             {isLoading ? (
-              <Loading />
+              <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center lg:col-span-2">
+                <LoadingComponent />
+              </div>
             ) : listOfItems.length > 0 ? (
               listOfItems
             ) : (
-              <div className="flex flex-col items-center gap-2 text-center">
+              <div className="flex flex-col items-center gap-2 text-center lg:col-span-2">
                 <p className="text-[0.75rem] font-light sm:text-base">
                   No hay solicitudes
                 </p>
               </div>
             )}
           </div>
-          <div className="sticky bottom-[4.2rem] flex flex-col items-center justify-center gap-2 bg-white p-3 sm:bottom-0">
-            <div className="hidden flex-row items-center justify-center gap-1 text-gray-600 sm:flex">
-              <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
-              <p>Ó</p>
-              <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
+
+          {!isUniqueRolVisitor && (
+            <div className="sticky bottom-[4.2rem] flex flex-col items-center justify-center gap-2 bg-white p-3 sm:bottom-0">
+              <div className="hidden flex-row items-center justify-center gap-1 text-gray-600 sm:flex">
+                <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
+                <p>Ó</p>
+                <hr className="h-[0.1rem] w-1/4 min-w-12 bg-gray-400" />
+              </div>
+              <Button as={Link} to={VIEWS.createRequest}>
+                Crear invitación
+              </Button>
             </div>
-            <Button as={Link} to={VIEWS.createRequest}>
-              Crear invitación
-            </Button>
-          </div>
+          )}
         </div>
       </div>
       <ScrollToTopButton scrollClassname="bottom-[4.8rem] right-5" />

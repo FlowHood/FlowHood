@@ -1,5 +1,6 @@
 import React from "react";
 import { ClockIcon } from "../Icons";
+import { getCurrentTime } from "../../lib/utils";
 
 const InfoScheduleCard = ({ turno }) => {
   return (
@@ -13,7 +14,7 @@ const InfoScheduleCard = ({ turno }) => {
             {turno}
           </p>
           <div className="flex flex-col items-center justify-center gap-2">
-            <p className="text-xs text-[#495865]">Entrada Vehicular</p>
+          <p className="text-xs text-[#495865]">{getCurrentTime()}</p>
             <p className="text-[9.474px] font-light text-[#495865]">
               Horario: 9:00 am a 6:00 pm
             </p>

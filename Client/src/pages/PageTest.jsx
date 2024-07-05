@@ -25,7 +25,7 @@ const PageTest = () => {
   );
 };
 
-const TitleComponent = ({ title, data }) => {
+export const TitleComponent = ({ title, data }) => {
   return (
     <div className=" flex flex-col items-start text-[#495865]">
       <p className="text-[1.0625rem] font-semibold uppercase leading-[1.6875rem] ">

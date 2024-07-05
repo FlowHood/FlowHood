@@ -2,13 +2,14 @@ import CreateRequestHome from "../pages/form/CreateRequestHome";
 
 export const VIEWS = {
   login: "/login",
-  securityHome: "/security-home",
+  securityHome: "/",
   dashboard: "/dashboard",
   test: "/test",
   pageNotFound: "*",
   createQR: "/generate-ticket",
   scanQR: "/scan-qr",
   request: "/request",
+  myRequest: "/my-request",
   requestDetail: "/request-detail/:id",
   createRequest: "/create-request",
   myAccount: "/myaccount",

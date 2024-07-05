@@ -195,6 +195,20 @@ public class RequestController {
         }
     }
 
+    // Obtenermis request donde yo salga como visitante
+    @GetMapping("/my-visitor-requests")
+    public ResponseEntity<GeneralResponse> findMyVisitorRequests() {
+        try {
+            UserResDTO user = userService.findUserAuthenticated();
+            User visitor = user.toEntity();
+            List<Request> requests = requestService.findRequestsByVisitor(visitor);
+            List<RequestResDTO> requestResDto = mapper.mapList(requests, RequestResDTO.class);
+            return GeneralResponse.builder().status(HttpStatus.OK).data(requestResDto).message("Requests found").getResponse();
+        } catch (Exception e) {
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
 
     //check if request is from resident or admin
     @DeleteMapping("/{_id}")

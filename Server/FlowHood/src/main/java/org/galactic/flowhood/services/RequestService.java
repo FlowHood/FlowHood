@@ -28,6 +28,7 @@ public interface RequestService {
     List<Request> findRequestsByHouseOrAdminHouses(House house, List<House> admHouses);
 
     List<Request> findAllRequestsByHouses(List<House> houses);
+    List<Request> findRequestsByVisitor(User visitor);
 
     List<Request> findAllByUserAndState(User user, String state);
 
