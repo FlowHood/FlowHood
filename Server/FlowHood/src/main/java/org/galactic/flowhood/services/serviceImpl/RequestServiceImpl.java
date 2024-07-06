@@ -133,7 +133,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public boolean isUserFromRequest(User user, Request request) {
-        return request.getResident().getId().equals(user.getId()) || request.getVisitor().getId().equals(user.getId()) || request.getHouse().getResponsible().getId().equals(user.getId());
+        return request.getResident().getId().equals(user.getId()) || request.getVisitor().getId().equals(user.getId());
     }
 
     @Override

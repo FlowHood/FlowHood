@@ -32,7 +32,7 @@ public class QR {
     private Request request;
 
     public QR(Request request) {
-        this.status = SystemStates.PENDING.getState();
+        this.status = SystemStates.ACTIVE.getState();
         this.lastUpdate = Date.from(Instant.now());
         this.request = request;
     }

@@ -63,4 +63,18 @@ public class Request {
         this.house = house;
         this.createdAt = Date.from(Instant.now());
     }
+
+    public Request(Date startDate, Date endDate, String startTime, String endTime, String status, User resident, User visitor, House house) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + "para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
+        this.status = status;
+        this.qr = null;
+        this.resident = resident;
+        this.visitor = visitor;
+        this.house = house;
+        this.createdAt = Date.from(Instant.now());
+    }
 }

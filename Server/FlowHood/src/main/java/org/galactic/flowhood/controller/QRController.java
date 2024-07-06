@@ -34,35 +34,45 @@ public class QRController {
 
     final EncryptUtil encryptUtil;
 
-    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService) {
+    final HouseService houseService;
+
+    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService, HouseService houseService1) {
         this.qrService = qrService;
         this.requestService = requestService;
         this.userService = userService;
         this.encryptUtil = encryptUtil;
+        this.houseService = houseService1;
     }
 
     //TODO qr generate and update for petition when clicking
-    @PostMapping(value = {"/request-qr", "/request-qr/{_requestId}"})
-    public ResponseEntity<GeneralResponse> refreshQR(@PathVariable(value = "_requestId", required = false) String requestId){
+    @PostMapping(value = {"/request/{_houseId}", "/request-qr/{_requestId}"})
+    public ResponseEntity<GeneralResponse> refreshQR(@PathVariable(value = "_requestId", required = false) String requestId, @PathVariable(value = "_houseId", required = false) String houseId){
         try {
             User user = userService.findUserAuthenticated().toEntity();
             Request request;
 
-            if (requestId == null &&
+            if (requestId == null && houseId != null &&
                     (userService.hasUserRole(user, SystemRoles.ADMINISTRATOR.getRole()) ||
                             userService.hasUserRole(user, SystemRoles.RESIDENT.getRole()) ||
                             userService.hasUserRole(user, SystemRoles.RESPONSIBLE.getRole()))) {
+
                 Date current = Date.from(Instant.now());
                 String time = current.getHours() + ":" + current.getMinutes();
+
+                House house = houseService.getHouseById(UUID.fromString(houseId));
+                if (house == null) {
+                    return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("House not found").getResponse();
+                }
 
                 Request newRequest = new Request(
                         current,
                         current,
                         time,
                         time,
+                        SystemStates.ACTIVE.getState(),
                         user,
                         user,
-                        new House("")
+                        house
                 );
                 request = requestService.createRequest(newRequest);
             } else {
@@ -72,6 +82,11 @@ public class QRController {
             if (request == null) {
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("Request not found").getResponse();
             }
+
+            if (qrService.validateTimePeriod(request)) {
+                return GeneralResponse.builder().message("QR not able to be read").status(HttpStatus.BAD_REQUEST).getResponse();
+            }
+
             if (!requestService.isUserFromRequest(user, request)) {
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("User not allowed").getResponse();
             }
@@ -88,10 +103,11 @@ public class QRController {
                 requestService.save(request);
             } else qr = qrService.refreshQRByRequest(request);
 
-            String data = qr.getId() + "/" + qr.getRequest().getId() + "/" + qr.getLastUpdate();
+            String data = qr.getId() + "/" + qr.getRequest().getId() + "/" + qr.getLastUpdate() + "/" + user.getId();
             return GeneralResponse.builder().data(encryptUtil.encrypt(data)).status(HttpStatus.OK).message("QR generated").getResponse();
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
@@ -117,10 +133,19 @@ public class QRController {
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("QR not valid").getResponse();
             }
             User user = userService.findUserAuthenticated().toEntity();
-            if (!requestService.isUserFromRequest(user, request)) {
+            //TODO
+//            if(user == null || !userService.hasUserRole(user, SystemRoles.VIGILANT.getRole())) return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("User not found").getResponse();
+
+            User visitor = userService.findUserById(UUID.fromString(parts[3]));
+            if (visitor == null) {
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("Visitor not found").getResponse();
+            }
+            
+            if (!requestService.isUserFromRequest(visitor, request)) {
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("User not allowed").getResponse();
             }
-
+            //todo
+            System.out.println(request.getStartDate());
             if (qrService.validateTimePeriod(request)) {
                 return GeneralResponse.builder().message("QR not able to be read").status(HttpStatus.BAD_REQUEST).getResponse();
             }
@@ -132,6 +157,7 @@ public class QRController {
             return GeneralResponse.builder().data(true).status(HttpStatus.OK).message("Able to enter").getResponse();
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
         }
     }
