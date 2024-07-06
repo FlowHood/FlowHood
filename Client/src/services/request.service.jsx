@@ -34,7 +34,9 @@ export const getAllRequests = async () => {
       visitante: request.visitor.name + " " + request.visitor.email,
       residente: request.resident.name + " " + request.resident.email,
       fecha_inicio: request.startDate + " " + request.startTime,
-      fecha_fin: request.end_time ? request.endDate + " " + request.endTime : "N/A",
+      fecha_fin: request.end_time
+        ? request.endDate + " " + request.endTime
+        : "N/A",
       estado_solicitud: request.status,
     }));
     return data;
@@ -43,7 +45,7 @@ export const getAllRequests = async () => {
     console.error(error);
     toast.error(errorMessage);
   }
-}
+};
 
 export const getAllRequestsInMyHouse = async () => {
   try {
@@ -68,13 +70,12 @@ export const getAllRequestsByVisitor = async () => {
       },
     });
     return res.data.data;
-  }
-  catch (error) {
+  } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
     toast.error(errorMessage);
   }
-}
+};
 
 export const getRequestById = async (id) => {
   try {
@@ -95,27 +96,52 @@ export const getRequestById = async (id) => {
 export const updateStatusRequest = async (id, status) => {
   try {
     let res;
-    if (status === "ACT" ) {
-      res = await axios.post(`request/accept/${id}`, {status}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("session")}`,
+    if (status === "ACT") {
+      res = await axios.post(
+        `request/accept/${id}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("session")}`,
+          },
         },
-      });
+      );
       toast.success("Request accepted successfully");
     } else {
-      res = await axios.post(`request/reject/${id}`, {status}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("session")}`,
+      res = await axios.post(
+        `request/reject/${id}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("session")}`,
+          },
         },
-      });
+      );
       toast.success("Request rejected successfully");
     }
     return res.data;
-  }
-  catch (error) {
+  } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
     toast.error(errorMessage);
   }
-}
+};
 
+export const generateQRRequest = async (requestId = null) => {
+  try {
+    const url = requestId ? `qr/request-qr/${requestId}` : "qr/request-qr";
+    const res = await axios.post(url, null, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("QR data:", res);
+    return res.data.data; // Asumiendo que la respuesta tiene el QR data en `data`
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+    throw error;
+  }
+};

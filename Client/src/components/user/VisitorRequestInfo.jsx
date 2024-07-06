@@ -7,12 +7,14 @@ import GeneralButton from "../buttons/GeneralButton";
 
 const { Option } = Select;
 
-export default function VisitorRequestInfo() {
+export default function VisitorRequestInfo({
+  setSelectedActiveRequest,
+  selectedActiveRequest,
+}) {
   const [requests, setRequests] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeRequests, setActiveRequests] = useState([]);
   const [qrAvailableRequests, setQrAvailableRequests] = useState([]);
-  const [selectedActiveRequest, setSelectedActiveRequest] = useState(null);
   const now = moment();
 
   useEffect(() => {
