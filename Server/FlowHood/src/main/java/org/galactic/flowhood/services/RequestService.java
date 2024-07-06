@@ -1,5 +1,6 @@
 package org.galactic.flowhood.services;
 
+import org.galactic.flowhood.domain.dto.request.AnonimRequestReq;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Request;
@@ -16,6 +17,7 @@ public interface RequestService {
     void save(Request request);
 
     void createRequestHandler(RequestReqDTO req, House house, User resident, User visitor, String residentRol) throws ParseException;
+    void createAnonymousRequest(AnonimRequestReq req, User anonymous, House house) throws ParseException;
 
     void deleteRequest(Request request);
 

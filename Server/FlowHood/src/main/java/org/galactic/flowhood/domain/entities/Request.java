@@ -69,11 +69,25 @@ public class Request {
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + "para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
+        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + " para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
         this.status = status;
         this.qr = null;
         this.resident = resident;
         this.visitor = visitor;
+        this.house = house;
+        this.createdAt = Date.from(Instant.now());
+    }    
+    
+    public Request(Date startDate, String startTime, String reason, User anonymous, House house) {
+        this.startDate = startDate;
+        this.endDate = startDate;
+        this.startTime = startTime;
+        this.endTime = startTime;
+        this.reason = reason;
+        this.status = SystemStates.USED.getState();
+        this.qr = null;
+        this.resident = anonymous;
+        this.visitor = anonymous;
         this.house = house;
         this.createdAt = Date.from(Instant.now());
     }

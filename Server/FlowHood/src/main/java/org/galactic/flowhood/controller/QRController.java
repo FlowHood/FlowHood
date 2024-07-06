@@ -112,7 +112,7 @@ public class QRController {
         }
     }
 
-    //TODO read qr ; remember do not valid dates on
+    //TODO add vgilante validation
     @PostMapping("/read")
     public ResponseEntity<GeneralResponse> readQR(@RequestBody ReadQrReqDTO readQrReqDTO) {
         try {
@@ -140,7 +140,7 @@ public class QRController {
             if (visitor == null) {
                 return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("Visitor not found").getResponse();
             }
-            
+
             if (!requestService.isUserFromRequest(visitor, request)) {
                 return GeneralResponse.builder().status(HttpStatus.FORBIDDEN).message("User not allowed").getResponse();
             }
