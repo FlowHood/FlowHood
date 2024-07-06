@@ -12,6 +12,7 @@ import {
 } from "../../services/request.service";
 import Loading, { LoadingComponent } from "../Loading";
 import { useAuth } from "../../context/AuthContext";
+import moment from "moment";
 
 const getScreenInformation = (rol) => {
   let title;
@@ -73,11 +74,17 @@ export default function UserAllRequest() {
   useEffect(() => {
     const fetchRequests = async () => {
       let result;
-      if (!isUniqueRolVisitor) {
+      if (isUniqueRolVisitor) {
         result = await getAllRequestsByVisitor();
         setRequests(result);
       } else {
         result = await getAllRequestsInMyHouse();
+        const filteredRequests = allrequests.filter(
+          (request) => request.status === filter,
+        );
+        console.log("tfilteredRequests", filteredRequests);
+
+        setRequests(filteredRequests);
       }
       setAllRequests(result);
       setIsLoading(false);
@@ -101,8 +108,58 @@ export default function UserAllRequest() {
     fetchRequests();
   }, [allrequests, filter]);
 
+  const now = moment();
+
+  const sortedRequests = requests.sort((a, b) => {
+    const aStart = moment(`${a.startDate.split("T")[0]} ${a.startTime}`);
+    const bStart = moment(`${b.startDate.split("T")[0]} ${b.startTime}`);
+    const aEnd = moment(`${a.endDate.split("T")[0]} ${a.endTime}`);
+    const bEnd = moment(`${b.endDate.split("T")[0]} ${b.endTime}`);
+
+    const aIsActive = now.isBetween(aStart, aEnd);
+    const bIsActive = now.isBetween(bStart, bEnd);
+
+    const aHasPassed = now.isAfter(aEnd);
+    const bHasPassed = now.isAfter(bEnd);
+
+    const aQrAvailable = now.isBetween(
+      aStart.clone().subtract(30, "minutes"),
+      aEnd.clone().add(30, "minutes"),
+    );
+    const bQrAvailable = now.isBetween(
+      bStart.clone().subtract(30, "minutes"),
+      bEnd.clone().add(30, "minutes"),
+    );
+
+    if (aQrAvailable && !bQrAvailable) return -1;
+    if (!aQrAvailable && bQrAvailable) return 1;
+
+    if (aIsActive && !bIsActive) return -1;
+    if (!aIsActive && bIsActive) return 1;
+
+    if (aHasPassed && !bHasPassed) return 1;
+    if (!aHasPassed && bHasPassed) return -1;
+
+    return aStart.diff(bStart);
+  });
+
   const listOfItems =
-    requests.map((request) => {
+    sortedRequests.map((request) => {
+      const startDate = moment(
+        `${request.startDate.split("T")[0]} ${request.startTime}`,
+      );
+      const endDate = moment(
+        `${request.endDate.split("T")[0]} ${request.endTime}`,
+      );
+
+      const isActive = now.isBetween(startDate, endDate);
+      const hasPassed = now.isAfter(endDate);
+
+      const qrAvailable = now.isBetween(
+        startDate.clone().subtract(30, "minutes"),
+        endDate.clone().add(30, "minutes"),
+      );
+
       return (
         <UserRequestContainer
           userName={request.visitor.name}
@@ -117,12 +174,14 @@ export default function UserAllRequest() {
           address={request.house.address}
           reason={request.reason}
           status={request.status}
+          isActive={isActive}
+          hasPassed={hasPassed}
+          qrAvailable={qrAvailable}
         />
       );
     }) || [];
 
   const handleChangeSelected = (selected) => {
-    console.log("Selected:", selected);
     setFilter(selected);
   };
 
@@ -147,20 +206,22 @@ export default function UserAllRequest() {
             />
           )}
 
-          <div className="grid h-full w-full flex-1 grid-cols-1 grid-rows-[max-content] flex-col justify-start gap-2 pb-8 sm:px-4 lg:grid-cols-2">
-            {isLoading ? (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center lg:col-span-2">
-                <LoadingComponent />
-              </div>
-            ) : listOfItems.length > 0 ? (
-              listOfItems
-            ) : (
-              <div className="flex flex-col items-center gap-2 text-center lg:col-span-2">
-                <p className="text-[0.75rem] font-light sm:text-base">
-                  No hay solicitudes
-                </p>
-              </div>
-            )}
+          <div className="h-full w-full ">
+            <div className="grid w-full flex-1 grid-cols-1 grid-rows-[max-content] flex-col justify-start gap-2 pb-8 sm:px-4 lg:grid-cols-2">
+              {isLoading ? (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center lg:col-span-2">
+                  <LoadingComponent />
+                </div>
+              ) : listOfItems.length > 0 ? (
+                listOfItems
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-center lg:col-span-2">
+                  <p className="text-[0.75rem] font-light sm:text-base">
+                    No hay solicitudes
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {!isUniqueRolVisitor && (

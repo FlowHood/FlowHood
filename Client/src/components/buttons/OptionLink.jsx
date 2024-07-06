@@ -8,7 +8,7 @@ const OptionLink = ({ to, texto, Icono }) => {
       className="flex min-h-[11.1875rem] flex-shrink-0 flex-col justify-between rounded-xl bg-[#5d5eef] p-3 text-[#f2f1ff] transition-all hover:bg-[#c7c7f8] hover:text-black"
     >
       <Icono
-        className=" transition-all"
+        className="duration-200 transition-all"
         width={80}
         height={80}
       />

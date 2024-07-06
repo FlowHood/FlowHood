@@ -25,20 +25,17 @@ export default function FormRequest() {
   const [isPeriodic, setIsPeriodic] = useState(false);
   const { user } = useAuth();
   const [visitors, setVisitors] = useState([]);
+  const [selectedHouse, setSelectedHouse] = useState(null);
   const [loadingVisitors, setLoadingVisitors] = useState(true);
 
   useEffect(() => {
     const fetchVisitors = async () => {
       try {
         const data = await fetchUserData();
-        console.log(getRoleDescription(ROL.VISITOR));
 
         const visitors = data.filter((user) =>
           user.roles.includes(getRoleDescription(ROL.VISITOR)),
         );
-
-        console.log(data);
-        console.log("visitantes", visitors);
 
         setVisitors(visitors);
         setLoadingVisitors(false);
@@ -57,11 +54,13 @@ export default function FormRequest() {
     let endTime;
 
     if (isPeriodic) {
-      formattedDates = values.dates.map((date) => date.toISOString());
+      formattedDates = values.dates.map((date) =>
+        date.startOf("day").toISOString(),
+      );
       startTime = values.startTime.format("HH:mm");
       endTime = values.endTime?.format("HH:mm") || null;
     } else {
-      formattedDates = [values.date.toISOString()];
+      formattedDates = [values.date.startOf("day").toISOString()];
       startTime = values.startTime.format("HH:mm");
       endTime = values.endTime?.format("HH:mm") || null;
     }
@@ -69,15 +68,16 @@ export default function FormRequest() {
     const requestData = {
       dates: formattedDates,
       startTime: startTime,
-      // endTime: endTime,
       reason: values.reason || null,
       resident: user.id, // Assuming the authenticated user's ID is the resident
       visitor: values.visitor,
-      house: values.house,
+      house: values.house || selectedHouse.id,
     };
 
+    console.log("Request data", requestData);
+
     if (endTime) {
-      requestData.endDate = endTime;
+      requestData.endTime = endTime;
     }
 
     console.log("Request data", requestData);
@@ -101,6 +101,12 @@ export default function FormRequest() {
   const myhouses = houses.filter(
     (house, index, self) => index === self.findIndex((t) => t.id === house.id),
   );
+
+  useEffect(() => {
+    if (myhouses.length === 1) {
+      setSelectedHouse(myhouses[0]);
+    }
+  }, []);
 
   if (myhouses.length === 0) {
     return (

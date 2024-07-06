@@ -52,7 +52,7 @@ export const getAllRequestsInMyHouse = async () => {
         Authorization: `Bearer ${localStorage.getItem("session")}`,
       },
     });
-    return res.data;
+    return res.data.data;
   } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
