@@ -23,18 +23,19 @@ import RequestDetail from "./pages/request/RequestDetail";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { ROL } from "./lib/rol";
 import CreateHouse from "./pages/admin/CreateHouse";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIEND_ID}>
       <AuthProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path={VIEWS.pageNotFound} element={<PageNotFound />} />
             <Route path={VIEWS.login} element={<Login />} />
             <Route path={VIEWS.test} element={<PageTest />} />
 
-            
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
 
             <Route path={VIEWS.loader} element={<Loading />} />
@@ -78,7 +79,7 @@ function App() {
             <Route
               element={
                 <ProtectedRoute
-                  allowedRoles={[ROL.OWNER, ROL.RESIDENT, ROL.ADMIN]}
+                  allowedRoles={[ROL.OWNER, ROL.RESIDENT, ROL.VIGILANT, ROL.ADMIN]}
                 />
               }
             >

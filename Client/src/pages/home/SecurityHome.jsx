@@ -66,6 +66,7 @@ const HandlerInformationByRol = (roles = [], admHouses) => {
 
 // Definir los componentes que deben mostrarse según los roles
 const getOptionLinksByRoles = (roles) => {
+  console.log(roles);
   const roleComponents = {
     [ROL.VIGILANT]: [
       {
@@ -76,7 +77,7 @@ const getOptionLinksByRoles = (roles) => {
       {
         texto: "Registros a terceros",
         Icono: PeopleIcon,
-        to: VIEWS.scanQR,
+        to: VIEWS.createRequest,
       },
       {
         texto: "Mi Cuenta",
@@ -179,6 +180,7 @@ const getOptionLinksByRoles = (roles) => {
 
 const SecurityHome = () => {
   const { roles, user } = useAuth();
+  console.log(roles, user);
   const optionLinks = getOptionLinksByRoles(roles);
 
   return (

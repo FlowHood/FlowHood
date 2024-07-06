@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllRequestsByVisitor } from "../../services/request.service";
-import { Modal, Button, Select } from "antd";
+import { Modal, Button, Select, Spin } from "antd";
 import UserRequestContainer from "../UserRequestContainer";
 import moment from "moment";
 import GeneralButton from "../buttons/GeneralButton";
+import { LoadingComponent } from "../Loading";
 
 const { Option } = Select;
 
@@ -15,14 +16,17 @@ export default function VisitorRequestInfo({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeRequests, setActiveRequests] = useState([]);
   const [qrAvailableRequests, setQrAvailableRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const now = moment();
 
   useEffect(() => {
     const fetchRequests = async () => {
+      setLoading(true);
       const result = await getAllRequestsByVisitor();
       const sortedRequests = sortRequests(result);
       setRequests(sortedRequests);
       processRequests(sortedRequests);
+      setLoading(false);
     };
 
     fetchRequests();
@@ -136,7 +140,9 @@ export default function VisitorRequestInfo({
 
   return (
     <div className="flex flex-col items-center justify-center p-4">
-      {activeRequests.length > 0 || qrAvailableRequests.length > 0 ? (
+      {loading ? (
+         <LoadingComponent />
+      ) : activeRequests.length > 0 || qrAvailableRequests.length > 0 ? (
         <div className="flex flex-col gap-3 text-center">
           <h2 className="mb-2 mt-4 text-xl font-semibold">
             {getHeaderMessage()}
