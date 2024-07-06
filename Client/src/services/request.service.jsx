@@ -137,7 +137,7 @@ export const generateQRRequest = async (requestId = null) => {
       },
     });
     console.log("QR data:", res);
-    return res.data.data; // Asumiendo que la respuesta tiene el QR data en `data`
+    return res.data.data;
   } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);

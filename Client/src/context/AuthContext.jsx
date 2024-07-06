@@ -36,6 +36,11 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         const user = await getMe();
         setUser(user);
+        if (user && user.roles) {
+          setRoles(user.roles.map((role) => role.id));
+        } else {
+          setRoles([]);
+        }
       }
     },
     onError: (error) => {
