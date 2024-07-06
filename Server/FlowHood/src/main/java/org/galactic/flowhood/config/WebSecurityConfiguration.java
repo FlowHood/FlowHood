@@ -62,7 +62,7 @@ public class WebSecurityConfiguration {
         //Route filter
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
+                        .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/house/responsible").hasAnyAuthority(SystemRoles.RESPONSIBLE.getRole())
                         .requestMatchers("api/users/{_userId}/house-resident/{_homeId}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole())
                         .requestMatchers("api/users/{_userId}/house-resident/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
