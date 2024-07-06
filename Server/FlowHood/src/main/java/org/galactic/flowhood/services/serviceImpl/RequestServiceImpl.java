@@ -2,6 +2,7 @@ package org.galactic.flowhood.services.serviceImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.galactic.flowhood.domain.dto.request.AnonimRequestReq;
 import org.galactic.flowhood.domain.dto.request.RequestReqDTO;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Request;
@@ -9,6 +10,7 @@ import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.repository.RequestRepository;
 import org.galactic.flowhood.services.QrService;
 import org.galactic.flowhood.services.RequestService;
+import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -25,10 +28,13 @@ public class RequestServiceImpl implements RequestService {
     final
     RequestRepository requestRepository;
 
+    final UserService userService;
+
     final QrService qrService;
 
-    public RequestServiceImpl(RequestRepository requestRepository, QrService qrService) {
+    public RequestServiceImpl(RequestRepository requestRepository, UserService userService, QrService qrService) {
         this.requestRepository = requestRepository;
+        this.userService = userService;
         this.qrService = qrService;
     }
 
@@ -72,20 +78,35 @@ public class RequestServiceImpl implements RequestService {
             requests.add(newRequest);
         }
         requestRepository.saveAll(requests);
-//
-//        List<QR> qrs = new ArrayList<>();
-//        for (Request _req : requestsSaved) {
-//            QR newQr = new QR(_req);
-//            newQr.setStatus(SystemStates.ACTIVE.getState());
-//            qrs.add(newQr);
-//        }
-//        List<QR> qrSaved = qrService.generateManyQRCode(qrs);
-//
-//        requestsSaved.forEach(request -> {
-//            request.setQr(qrSaved.stream().filter(qr -> qr.getRequest().getId().equals(request.getId())).findFirst().orElse(null));
-//            requestRepository.save(request);
-//        });
+    }
 
+    @Override
+    @Async
+    @Transactional
+    public void createAnonymousRequest(AnonimRequestReq req, User anonymous, House house) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        Date current = Date.from(Instant.now());
+        String startTime = current.getHours() + ":" + current.getMinutes();
+
+        if(anonymous == null){
+          User user = new User(
+                  req.getBusinessName(),
+                  req.getBusinessName(),
+                  req.getBusinessName(),
+                  "#"
+          );
+          anonymous = userService.createUser(user);
+        }
+
+        Request newAnonimRequest = new Request(
+                dateFormat.parse(current.toString()),
+                startTime,
+                req.getReason(),
+                anonymous,
+                house
+        );
+
+        requestRepository.save(newAnonimRequest);
     }
 
 
