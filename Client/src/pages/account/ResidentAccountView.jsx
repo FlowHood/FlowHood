@@ -61,12 +61,14 @@ export const HouseCard = ({ house, title }) => (
         {house.active ? "Activa" : "Inactiva"}
       </Tag>
     </div>
+    {house.responsible && (
     <div className="flex items-center gap-3">
       <p>
         <strong>Responsable:</strong> {capitalizeWords(house.responsible.name)}
       </p>
       <Avatar src={house.responsible.picture} alt={house.responsible.name} />
     </div>
+    )}
     <div className="flex items-center gap-3">
       <p>
         <strong>Residentes:</strong>

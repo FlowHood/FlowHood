@@ -100,5 +100,16 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
+    .blurred {
+        filter: blur(4px);
+        opacity: 0.5;
+        transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+      
+    .fade-out {
+        filter: blur(0);
+        transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
     
 }
