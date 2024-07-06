@@ -23,7 +23,7 @@ const RequestDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const isUniqueRolVisitor =
-    roles.length === 1 && roles.every((rol) => rol.id === ROL.VISITOR);
+    roles.length === 1 && roles.every((rol) => rol === ROL.VISITOR);
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -61,6 +61,28 @@ const RequestDetail = () => {
     );
   }
 
+  const now = moment();
+  const startDate = moment(`${request.startDate.split("T")[0]} ${request.startTime}`);
+  const endDate = moment(`${request.endDate.split("T")[0]} ${request.endTime}`);
+
+  const qrStartTime = startDate.clone().subtract(30, 'minutes');
+  const qrEndTime = endDate.clone().add(30, 'minutes');
+
+  const isQrAvailable = now.isBetween(qrStartTime, qrEndTime);
+  const timeUntilQrValid = qrStartTime.diff(now, 'minutes');
+  const timeLeftToScan = qrEndTime.diff(now, 'minutes');
+
+  let qrMessage;
+  if (isQrAvailable) {
+    qrMessage = timeLeftToScan > 0 
+      ? `Tiempo restante para escanear el QR: ${timeLeftToScan} minutos` 
+      : 'El tiempo para escanear el QR ha pasado';
+  } else {
+    qrMessage = timeUntilQrValid > 0 
+      ? `El QR será válido en: ${timeUntilQrValid} minutos` 
+      : 'El tiempo para escanear el QR ha pasado';
+  }
+
   const data = {
     nombre: request.resident.name,
     visitante: request.visitor.name,
@@ -68,7 +90,12 @@ const RequestDetail = () => {
     fechaVisita: moment(request.startDate).format(
       "dddd DD [de] MMMM [del] YYYY",
     ),
-    horarioVisita: `${request.startTime} - ${request.endTime}`,
+    horarioVisita: `${moment(request.startDate).format(
+      "dddd DD [de] MMMM [del] YYYY",
+    )} - ${request.startTime}`,
+    horarioSalida: `${moment(request.endDate).format(
+      "dddd DD [de] MMMM [del] YYYY",
+    )} - ${request.endTime}`,
     razonVisita: request.reason,
   };
 
@@ -82,7 +109,11 @@ const RequestDetail = () => {
     <UserLayout showLogout={false}>
       <div className="flex flex-col items-center gap-2 py-8 text-center">
         <SectionIntro
-          title={"Solicitud de visita de " + capitalizeWords(data.nombre)}
+          title={
+            isUniqueRolVisitor
+              ? "Solicitud de visita"
+              : "Detalle de solicitud de " + capitalizeWords(data.visitante)
+          }
           small
           generalClassName="!text-royal-amethyst max-w-[50ch]"
         />
@@ -92,12 +123,14 @@ const RequestDetail = () => {
             title="Estado"
             data={capitalizeWords(request.status)}
           />
+          <TitleComponent title="QR Información" data={qrMessage} />
           <TitleComponent
             title="Residente solicitante"
             data={data.residenteSolicitante}
           />
           <TitleComponent title="Fecha de visita" data={data.fechaVisita} />
           <TitleComponent title="Horario de visita" data={data.horarioVisita} />
+          <TitleComponent title="Horario de salida" data={data.horarioSalida} />
           <TitleComponent title="Razón de visita" data={data.razonVisita} />
         </div>
         {roles.includes(ROL.OWNER) || roles.includes(ROL.ADMIN) ? (
@@ -113,7 +146,6 @@ const RequestDetail = () => {
             </Button>
           </div>
         ) : null}
-        {}
       </div>
     </UserLayout>
   );

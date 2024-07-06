@@ -11,22 +11,20 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Auth provider mounted");
     const checkToken = async () => {
       setLoading(true);
       const token = localStorage.getItem("session");
       if (token) {
         const user = await getMe();
-        console.log(user);
         setUser(user);
-        setRoles(user.roles.map((role) => role.id));
+        if (user && user.roles) setRoles(user.roles.map((role) => role.id));
+        else setRoles([]);
       }
       setLoading(false);
     };
 
     checkToken();
   }, []);
-
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {

@@ -29,7 +29,6 @@ export const fetchUserData = async () => {
       estado: user.state === "ACT" ? "Activo" : "Inactivo",
       roles: user.roles.map(role => role.name).join(", "),
     }));
-    console.log("User data:", data);
     return data;
   } catch (error) {
     const errorMessage = handleError(error);
