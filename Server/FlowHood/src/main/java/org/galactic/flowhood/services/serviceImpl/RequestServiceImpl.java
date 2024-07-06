@@ -84,7 +84,6 @@ public class RequestServiceImpl implements RequestService {
     @Async
     @Transactional
     public void createAnonymousRequest(AnonimRequestReq req, User anonymous, House house) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
         Date current = Date.from(Instant.now());
         String startTime = current.getHours() + ":" + current.getMinutes();
 
@@ -99,7 +98,7 @@ public class RequestServiceImpl implements RequestService {
         }
 
         Request newAnonimRequest = new Request(
-                dateFormat.parse(current.toString()),
+                current,
                 startTime,
                 req.getReason(),
                 anonymous,

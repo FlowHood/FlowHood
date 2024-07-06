@@ -69,7 +69,7 @@ public class Request {
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + "para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
+        this.reason = "Visita solicitada por " + resident.getName() + " " + resident.getLastname() + " para " + visitor.getName() + " " + visitor.getLastname() + " en la casa " + house.getAddress();
         this.status = status;
         this.qr = null;
         this.resident = resident;
