@@ -6,6 +6,6 @@ import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import java.io.IOException;
 
 public interface MessageService {
-    void publish(final String topic, String data, int qos, boolean retained)
+    void publish(final String topic, String data)
             throws MqttPersistenceException, MqttException, IOException, InterruptedException;
 }

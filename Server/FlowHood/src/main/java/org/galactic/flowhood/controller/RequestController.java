@@ -49,6 +49,17 @@ public class RequestController {
         this.messageService = messageService;
     }
 
+    @PostMapping("/sent-message")
+    public ResponseEntity<GeneralResponse> sendMessage() {
+        try {
+            messageService.publish("read/qr", "1");
+            return GeneralResponse.builder().status(HttpStatus.OK).message("message sent").getResponse();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
     //admin only
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllRequest() {
@@ -157,7 +168,7 @@ public class RequestController {
             requestService.createAnonymousRequest(req, anonymous, house);
 
             //sending message to mqtt server
-            messageService.publish("read/qr", "1", 1, true);
+            messageService.publish("read/qr", "1");
             return GeneralResponse.builder().status(HttpStatus.OK).message("request created").getResponse();
         } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();

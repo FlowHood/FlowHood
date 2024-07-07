@@ -17,7 +17,7 @@ public class MessageServiceImpl implements MessageService {
         this.mqttClient = mqttClient;
     }
 
-    public void publish(final String topic, String data, int qos, boolean retained)
+    public void publish(final String topic, String data)
             throws MqttPersistenceException, MqttException, IOException, InterruptedException {
 
         //creating mqtt message
