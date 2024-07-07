@@ -29,14 +29,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
 
-	// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.mqttv5.client
-	implementation 'org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5'
-
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 	compileOnly 'org.projectlombok:lombok'
-	compileOnly "org.springframework.integration:spring-integration-mqtt:6.3.1"
+	implementation "org.springframework.integration:spring-integration-mqtt:6.3.1"
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
@@ -49,6 +46,7 @@ dependencies {
 
 	//modelmapper
 	implementation group: 'org.modelmapper', name: 'modelmapper', version:'3.1.1'
+
 }
 
 tasks.named('test') {

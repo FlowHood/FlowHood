@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/qr")
-@CrossOrigin
+@CrossOrigin("*")
 public class QRController {
 
     final QrService qrService;
@@ -151,7 +151,7 @@ public class QRController {
             qrService.changeQRStatus(qr, SystemStates.USED.getState());
 
             //sent message to mqtt server
-            messageService.publish("read/qr", "1", 1, true);
+            messageService.publish("read/qr", "1");
 
 
             return GeneralResponse.builder().data(true).status(HttpStatus.OK).message("Able to enter").getResponse();

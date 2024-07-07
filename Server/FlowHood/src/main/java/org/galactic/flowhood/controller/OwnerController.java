@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/owners")
-@CrossOrigin
+@CrossOrigin("*")
 public class OwnerController {
     final
     UserService userService;

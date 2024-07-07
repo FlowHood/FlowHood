@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/house")
-@CrossOrigin
+@CrossOrigin("*")
 public class HouseController {
     final
     HouseService houseService;
