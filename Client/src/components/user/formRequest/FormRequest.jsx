@@ -32,13 +32,17 @@ export default function FormRequest() {
   const [houseData, setHouseData] = useState([]);
   const [loadingHouses, setLoadingHouses] = useState(true);
 
+  const isUniqueVigilant =
+    user.roles.length === 1 &&
+    user.roles.every((rol) => rol.id === ROL.VIGILANT);
+
   useEffect(() => {
     const fetchVisitors = async () => {
       try {
         const data = await fetchUserData();
 
         const visitors = data.filter((user) =>
-          user.roles.includes(getRoleDescription(ROL.VISITOR))
+          user.roles.includes(getRoleDescription(ROL.VISITOR)),
         );
 
         setVisitors(visitors);
@@ -54,13 +58,15 @@ export default function FormRequest() {
 
   useEffect(() => {
     const loadHouseData = async () => {
-      try {
-        const data = await fetchHouseData();
-        setHouseData(data);
-      } catch (error) {
-        console.error("Error loading house data:", error);
-      } finally {
-        setLoadingHouses(false);
+      if (isUniqueVigilant) {
+        try {
+          const data = await fetchHouseData();
+          setHouseData(data);
+        } catch (error) {
+          console.error("Error loading house data:", error);
+        } finally {
+          setLoadingHouses(false);
+        }
       }
     };
 
@@ -74,7 +80,7 @@ export default function FormRequest() {
 
     if (isPeriodic) {
       formattedDates = values.dates.map((date) =>
-        date.startOf("day").toISOString()
+        date.startOf("day").toISOString(),
       );
       startTime = values.startTime.format("HH:mm");
       endTime = values.endTime?.format("HH:mm") || null;
@@ -117,7 +123,7 @@ export default function FormRequest() {
   const houses = user.houses.concat(user.admHouses);
   // Filtrar las casas para eliminar las que sean las mismas
   const myhouses = houses.filter(
-    (house, index, self) => index === self.findIndex((t) => t.id === house.id)
+    (house, index, self) => index === self.findIndex((t) => t.id === house.id),
   );
 
   useEffect(() => {
@@ -125,9 +131,6 @@ export default function FormRequest() {
       setSelectedHouse(myhouses[0]);
     }
   }, [myhouses]);
-
-  const isUniqueVisitor =  user.roles.length === 1 &&
-  user.roles.every((rol) => rol.id === ROL.VIGILANT);
 
   if (myhouses.length === 0 && !user.roles.includes(ROL.VIGILANT)) {
     return (
@@ -152,7 +155,7 @@ export default function FormRequest() {
           Invitación
         </h1>
         <p className="w-[80%] text-xs font-light">
-          {isUniqueVisitor ? (
+          {isUniqueVigilant ? (
             <>
               Crea una invitación para que tus visitantes puedan acceder a las
               casas que administras
@@ -187,12 +190,15 @@ export default function FormRequest() {
             placeholder="Selecciona un visitante"
             loading={loadingVisitors}
             onSelect={handleAddUser}
-            filterOption={(input, option) =>
-              option.children
-                .toString()
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              const childrenString = React.Children.map(
+                option.children,
+                (child) => child,
+              )
+                .join("")
+                .toLowerCase();
+              return childrenString.indexOf(input.toLowerCase()) >= 0;
+            }}
           >
             {visitors.map((user) => (
               <Option key={user.id} value={user.id}>
@@ -213,7 +219,9 @@ export default function FormRequest() {
               {houseData.map((house) => (
                 <Option key={house.id} value={house.id}>
                   {house.address} -{" "}
-                  {house?.responsible?.name || "Sin responsable"}
+                  {house?.responsible?.name
+                    ? capitalizeWords(house?.responsible?.name)
+                    : "Sin responsable"}
                 </Option>
               ))}
             </Select>
@@ -224,7 +232,9 @@ export default function FormRequest() {
               <Form.Item
                 label="Casa"
                 name={"house"}
-                rules={[{ required: true, message: "Este campo es obligatorio" }]}
+                rules={[
+                  { required: true, message: "Este campo es obligatorio" },
+                ]}
               >
                 <Select placeholder="Selecciona tu casa">
                   {myhouses.map((house) => (
@@ -236,14 +246,19 @@ export default function FormRequest() {
                 </Select>
               </Form.Item>
             ) : (
-              <HouseCard house={myhouses[0]} title="Mi única casa asociada es:" />
+              <HouseCard
+                house={myhouses[0]}
+                title="Mi única casa asociada es:"
+              />
             )}
           </>
         )}
 
         <div className="flex flex-col gap-3">
-          {!(user.roles.length === 1 &&
-          user.roles.every((rol) => rol.id === ROL.VIGILANT)) && (
+          {!(
+            user.roles.length === 1 &&
+            user.roles.every((rol) => rol.id === ROL.VIGILANT)
+          ) && (
             <div className="mx-auto flex max-w-lg flex-row items-center justify-center gap-4">
               <p>Visita programada</p>
               <Form.Item style={{ marginBottom: 0 }} valuePropName="checked">
@@ -263,7 +278,7 @@ export default function FormRequest() {
               >
                 <DatePicker multiple className="p-2" format="YYYY-MM-DD" />
               </Form.Item>
-              <div className="gap-4 flex">
+              <div className="flex gap-4">
                 <Form.Item
                   label="Hora de inicio"
                   name="startTime"
@@ -289,7 +304,7 @@ export default function FormRequest() {
               >
                 <DatePicker className="p-2" format="YYYY-MM-DD" />
               </Form.Item>
-              <div className="gap-4 flex">
+              <div className="flex gap-4">
                 <Form.Item
                   label="Hora de inicio"
                   name="startTime"
