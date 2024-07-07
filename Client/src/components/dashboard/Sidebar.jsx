@@ -77,7 +77,7 @@ const Sidebar = () => {
                         "h-10 w-10 shrink-0",
                         checkCurrent(item.href)
                           ? "text-indigo-600"
-                          : "text-gray-400 group-hover:text-indigo-600",
+                          : "text-black group-hover:text-indigo-600",
                       )}
                       aria-hidden="true"
                     />
