@@ -39,6 +39,12 @@ export const getMe = async () => {
     });
     
     const user = res.data.data;
+
+    if (user?.state === "INC") {
+      toast.error("El usuario no esta activo");
+      return null;
+    }
+    
     return user;
   } catch (error) {
     const errorMessage = handleError(error);

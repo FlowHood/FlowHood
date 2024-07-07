@@ -4,6 +4,10 @@ import { TableComponent } from "../../components/table/GeneralTable";
 import SectionIntro from "../../components/SectionIntro";
 import { fetchHouseData } from "../../services/house.service";
 import { toast } from "sonner";
+import GeneralButton from "../../components/buttons/GeneralButton";
+import Button from "../../components/buttons/Button";
+import { Link } from "react-router-dom";
+import { VIEWS } from "../../lib/views";
 
 const houseTags = ["owner_name"];
 const houseSearch = ["address", "owner_name"];
@@ -13,7 +17,16 @@ const houseFiltersOn = ["estado"];
 const HouseList = () => {
   return (
     <DashboardLayout>
-      <SectionIntro title="Lista de casas" />
+      <div className="mb-6 flex items-center justify-between">
+        <SectionIntro title="Lista de casas" />
+        <Button
+          as={Link}
+          to={VIEWS.createHouse}
+          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        >
+          Crear casa
+        </Button>
+      </div>
       <div className="rounded-xl bg-white p-6 shadow-card">
         <HouseTable />
       </div>
@@ -50,11 +63,10 @@ export const HouseTable = () => {
     // Lógica para eliminar la casa con el ID proporcionado
   };
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
   return (
     <TableComponent
       data={houseData}

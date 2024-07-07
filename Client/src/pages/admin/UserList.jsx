@@ -3,7 +3,8 @@ import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { TableComponent } from "../../components/table/GeneralTable";
 import SectionIntro from "../../components/SectionIntro";
 import { toast } from "sonner";
-import { fetchUserData } from "../../services/user.service";
+import { fetchUserData, deleteUser } from "../../services/user.service";
+import { Modal, Button, Avatar, List, Tag } from "antd";
 
 const userTags = [];
 const userSearch = ["name", "email"];
@@ -13,7 +14,7 @@ const userFiltersOn = ["state", "roles"];
 const UserList = () => {
   return (
     <DashboardLayout>
-      <SectionIntro title="Lista de usuarios" />
+      <SectionIntro title="Lista de usuarios" /> 
       <div className="rounded-xl bg-white p-6 shadow-card">
         <UsersTable />
       </div>
@@ -23,13 +24,22 @@ const UserList = () => {
 
 export const UsersTable = () => {
   const [userData, setUserData] = useState([]);
+  const [userDataRaw, setUserDataRaw] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const data = await fetchUserData();
-        setUserData(data);
+        setUserDataRaw(data);
+        // a data, quitarle los atributos houses y admHouses
+        const filteredData = data.map((user) => {
+          const { houses, admHouses, ...rest } = user;
+          return rest;
+        });
+        setUserData(filteredData);
       } catch (error) {
         console.error("Error loading user data:", error);
       } finally {
@@ -40,14 +50,25 @@ export const UsersTable = () => {
     loadUserData();
   }, []);
 
-  const handleEdit = (id) => {
-    toast.info(`Editing user with ID: ${id}`);
-    // Lógica para editar el usuario con el ID proporcionado
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("¿Estás seguro de deshabilitar este usuario?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    await deleteUser(id)
+    
   };
 
-  const handleDelete = (id) => {
-    toast.error(`Deleting user with ID: ${id}`);
-    // Lógica para eliminar el usuario con el ID proporcionado
+  const handleView = (id) => {
+    const user = userDataRaw.find((user) => user.id === id);
+    setSelectedUser(user);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setSelectedUser(null);
   };
 
   if (loading) {
@@ -55,15 +76,114 @@ export const UsersTable = () => {
   }
 
   return (
-    <TableComponent
-      data={userData}
-      addTagsOn={userTags}
-      addSearchOn={userSearch}
-      addSortOn={userSorter}
-      addFiltersOn={userFiltersOn}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <TableComponent
+        data={userData}
+        addTagsOn={userTags}
+        addSearchOn={userSearch}
+        addSortOn={userSorter}
+        addFiltersOn={userFiltersOn}
+        onEdit={null} // No enviar función de editar
+        onDelete={handleDelete}
+        onView={handleView} // Agregar función de ver más
+      />
+      <Modal
+        title="User Information"
+        visible={isModalVisible}
+        onCancel={handleModalClose}
+        footer={[
+          <Button key="close" onClick={handleModalClose}>
+            Close
+          </Button>,
+        ]}
+      >
+        {selectedUser && (
+          <div>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <Avatar size={96} src={selectedUser.picture} />
+              <h2>
+                {selectedUser.name} {selectedUser.lastname}
+              </h2>
+              <p>Email: {selectedUser.email}</p>
+              <p>Estado: {selectedUser.estado}</p>
+            </div>
+            <div>
+              <h3>Roles</h3>
+              {selectedUser.roles.split(",").map((role) => (
+                <Tag key={role}>{role}</Tag>
+              ))}
+            </div>
+            <div>
+              <h3 className="mt-8">Casas ({selectedUser.houses.length})</h3>
+              {selectedUser?.houses?.length > 0 ? (
+                <List
+                  itemLayout="horizontal"
+                  dataSource={selectedUser.houses}
+                  renderItem={(house) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        // avatar={<Avatar src={house.responsible.picture} />}
+                        title={house.address}
+                        description={"Email responsable: " + house.responsible.email}
+                      />
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <p>Ninguna casa asignada.</p>
+              )}
+            </div>
+            <div>
+              <h3 className="mt-8">Casas administradas ({selectedUser.admHouses.length})</h3>
+              {selectedUser?.admHouses?.length > 0 ? (
+                <div className="space-y-4">
+                  {selectedUser.admHouses.map((house) => (
+                    <div
+                      key={house.id}
+                      className="rounded-lg border bg-white p-4 shadow-md"
+                    >
+                      <div className="mb-4 flex items-center">
+                        <Avatar
+                          src={house.responsible.picture}
+                          className="mr-3"
+                        />
+                        <div>
+                          <h3 className="text-md font-semibold">
+                            {house.address}
+                          </h3>
+                          <p className="text-gray-600"></p>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="mb-2 font-medium">Residents</h4>
+                        <div className="space-y-2">
+                          {house.residents.map((resident) => (
+                            <div
+                              key={resident.id}
+                              className="flex items-center rounded-lg border bg-gray-50 p-2"
+                            >
+                              <Avatar src={resident.picture} className="mr-3" />
+                              <div>
+                                <h5 className="font-medium">{resident.name}</h5>
+                                <p className="text-gray-500">
+                                  {resident.email}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Ninguna casa administrada.</p>
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
+    </>
   );
 };
 
