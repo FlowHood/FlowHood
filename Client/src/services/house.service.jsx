@@ -70,6 +70,7 @@ export const updateHouse = async (houseData, houseId) => {
       },
     });
     console.log("House updated:", res.data);
+    console.log("House updated:", res.data);
     toast.success("House updated successfully");
     return res.data;
   } catch (error) {

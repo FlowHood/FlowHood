@@ -28,5 +28,5 @@ public interface HouseService {
 
     boolean isResponsibleFromHouse(User user, House house);
 
-    House updateHouse(House house);
+    House updateHouse(House house, List<UUID> residentIds, UUID responsibleId);
 }
