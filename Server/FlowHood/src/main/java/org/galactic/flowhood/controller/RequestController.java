@@ -49,19 +49,6 @@ public class RequestController {
         this.messageService = messageService;
     }
 
-    @PostMapping("/sent-message")
-    public ResponseEntity<GeneralResponse> sentMessage() {
-        //validate if role is vigilant or responsible then request must be automatically approved else it should be pending
-        try {
-            messageService.publish("read/qr", "hola", 0, true);
-            return GeneralResponse.builder().status(HttpStatus.OK).message("message sent mqtt").getResponse();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
-        }
-    }
-
-
     //admin only
     @GetMapping("/")
     public ResponseEntity<GeneralResponse> findAllRequest() {
@@ -169,6 +156,9 @@ public class RequestController {
             User anonymous = userService.findUserByEmail(req.getBusinessName());
 
             requestService.createAnonymousRequest(req, anonymous, house);
+
+            //sending message to mqtt server
+            messageService.publish("read/qr", "1", 1, true);
             return GeneralResponse.builder().status(HttpStatus.OK).message("request created").getResponse();
         } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();

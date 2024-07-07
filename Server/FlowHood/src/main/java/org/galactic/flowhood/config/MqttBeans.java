@@ -17,6 +17,7 @@ public class MqttBeans {
         return new MqttConnectOptions();
     }
 
+    //mqtt configuration to connect on server
     @Bean
     public IMqttClient mqttClient(@Value("${mqtt.clientId}") String clientId,
                                   @Value("${mqtt.host}") String hostname, @Value("${mqtt.port}") int port) throws MqttException {

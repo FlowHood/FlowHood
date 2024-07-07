@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+
 	// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.mqttv5.client
 	implementation 'org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5'
 

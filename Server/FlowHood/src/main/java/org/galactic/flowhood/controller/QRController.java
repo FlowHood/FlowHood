@@ -6,10 +6,7 @@ import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
-import org.galactic.flowhood.services.HouseService;
-import org.galactic.flowhood.services.QrService;
-import org.galactic.flowhood.services.RequestService;
-import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.services.*;
 import org.galactic.flowhood.utils.EncryptUtil;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
@@ -36,12 +33,15 @@ public class QRController {
 
     final HouseService houseService;
 
-    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService, HouseService houseService1) {
+    final MessageService messageService;
+
+    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService, HouseService houseService1, MessageService messageService) {
         this.qrService = qrService;
         this.requestService = requestService;
         this.userService = userService;
         this.encryptUtil = encryptUtil;
         this.houseService = houseService1;
+        this.messageService = messageService;
     }
 
     //TODO qr generate and update for petition when clicking
@@ -152,7 +152,10 @@ public class QRController {
 
             requestService.changeRequestStatus(request, SystemStates.USED.getState());
             qrService.changeQRStatus(qr, SystemStates.USED.getState());
-            //TODO: levantar el pico
+
+            //sent message to mqtt server
+            messageService.publish("read/qr", "1", 1, true);
+
 
             return GeneralResponse.builder().data(true).status(HttpStatus.OK).message("Able to enter").getResponse();
 
