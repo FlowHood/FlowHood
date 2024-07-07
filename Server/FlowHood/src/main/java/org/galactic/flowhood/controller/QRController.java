@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/qr")
-@CrossOrigin
+@CrossOrigin("*")
 public class QRController {
 
     final QrService qrService;

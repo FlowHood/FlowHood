@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/roles")
-@CrossOrigin
+@CrossOrigin("*")
 public class RoleController {
 
     final

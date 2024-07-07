@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/request")
-@CrossOrigin
+@CrossOrigin("*")
 public class RequestController {
     final
     RequestService requestService;

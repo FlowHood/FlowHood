@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/me")
+@CrossOrigin("*")
 public class MeController {
 
     final
