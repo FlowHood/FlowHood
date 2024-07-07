@@ -14,7 +14,7 @@ const userFiltersOn = ["state", "roles"];
 const UserList = () => {
   return (
     <DashboardLayout>
-      <SectionIntro title="Lista de usuarios" /> 
+      <SectionIntro title="Lista de usuarios" />
       <div className="rounded-xl bg-white p-6 shadow-card">
         <UsersTable />
       </div>
@@ -51,13 +51,23 @@ export const UsersTable = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("¿Estás seguro de deshabilitar este usuario?");
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de deshabilitar este usuario?",
+    );
     if (!confirmDelete) {
       return;
     }
 
-    await deleteUser(id)
-    
+    await deleteUser(id);
+
+    // Cambiarle el estado a inactivo
+    const updatedData = userData.map((user) => {
+      if (user.id === id) {
+        return { ...user, estado: "inactivo" };
+      }
+      return user;
+    });
+    setUserData(updatedData);
   };
 
   const handleView = (id) => {
@@ -124,7 +134,9 @@ export const UsersTable = () => {
                       <List.Item.Meta
                         // avatar={<Avatar src={house.responsible.picture} />}
                         title={house.address}
-                        description={"Email responsable: " + house.responsible.email}
+                        description={
+                          "Email responsable: " + house.responsible.email
+                        }
                       />
                     </List.Item>
                   )}
@@ -134,7 +146,9 @@ export const UsersTable = () => {
               )}
             </div>
             <div>
-              <h3 className="mt-8">Casas administradas ({selectedUser.admHouses.length})</h3>
+              <h3 className="mt-8">
+                Casas administradas ({selectedUser.admHouses.length})
+              </h3>
               {selectedUser?.admHouses?.length > 0 ? (
                 <div className="space-y-4">
                   {selectedUser.admHouses.map((house) => (
