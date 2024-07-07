@@ -3,6 +3,7 @@ package org.galactic.flowhood.controller;
 import org.galactic.flowhood.domain.dto.response.DashboardResDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
 import org.galactic.flowhood.domain.dto.response.LastWeekUsedRequestRes;
+import org.galactic.flowhood.domain.dto.response.TodayByForm;
 import org.galactic.flowhood.services.DashboardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,10 @@ public class DashboardController {
             //last week used request
             LastWeekUsedRequestRes lastWeekUsedRequestRes = dashboardService.getLasWeekUsedRequest();
             dashboardResDTO.setLastWeekUsedRequestRes(lastWeekUsedRequestRes);
+
+            //by form
+            TodayByForm todayByForm = dashboardService.getTodayByFormRequest();
+            dashboardResDTO.setTodayByForm(todayByForm);
 
             return GeneralResponse.builder().status(HttpStatus.OK).data(dashboardResDTO).message("found").getResponse();
         } catch (Exception e) {

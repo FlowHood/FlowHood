@@ -6,6 +6,7 @@ import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -19,5 +20,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findAllByHouseOrHouseIn(House house, List<House> admHouses);
     List<Request> findAllByHouseIn(List<House> houses);
     List<Request> findAllByVisitor(User visitor);
-    Integer countAllByStatusAndStartDateBetween(String status, Date start, Date end);
+    int countAllByStatusAndStartDateBetween(String status, Date start, Date end);
+    @Query("SELECT COUNT(r) FROM Request r WHERE r.status = ?1 AND r.visitor.name = r.visitor.email ")
+    int countAllAnonymous(String status);
+
+    @Query("SELECT COUNT(r) FROM Request r WHERE r.status = ?1 AND r.visitor.name != r.visitor.email ")
+    int countAllNormal(String status);
 }

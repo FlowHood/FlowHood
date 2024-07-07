@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DashboardResDTO {
     private LastWeekUsedRequestRes lastWeekUsedRequestRes;
+    private TodayByForm todayByForm;
 }

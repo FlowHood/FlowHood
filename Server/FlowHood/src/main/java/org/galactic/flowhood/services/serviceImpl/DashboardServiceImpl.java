@@ -1,6 +1,7 @@
 package org.galactic.flowhood.services.serviceImpl;
 
 import org.galactic.flowhood.domain.dto.response.LastWeekUsedRequestRes;
+import org.galactic.flowhood.domain.dto.response.TodayByForm;
 import org.galactic.flowhood.repository.RequestRepository;
 import org.galactic.flowhood.services.DashboardService;
 import org.galactic.flowhood.utils.SystemStates;
@@ -80,5 +81,12 @@ public class DashboardServiceImpl implements DashboardService {
         lastWeekUsedRequestRes.setSunday(requestRepository.countAllByStatusAndStartDateBetween(usedState, SundayStart, SundayEnd));
 
         return lastWeekUsedRequestRes;
+    }
+
+    @Override
+    public TodayByForm getTodayByFormRequest() {
+        int requestByAnonymous = requestRepository.countAllAnonymous(SystemStates.USED.getState());
+        int  requestByNormal = requestRepository.countAllNormal(SystemStates.USED.getState());
+        return new TodayByForm(requestByNormal, requestByAnonymous);
     }
 }
