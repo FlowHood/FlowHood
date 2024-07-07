@@ -4,7 +4,7 @@ import { TableComponent } from "../../components/table/GeneralTable";
 import SectionIntro from "../../components/SectionIntro";
 import { deleteHouse, fetchHouseData } from "../../services/house.service";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { VIEWS } from "../../lib/views";
 import { Modal, Avatar, List, Button as AntdButton } from "antd";
 import Button from "../../components/buttons/Button";
@@ -15,6 +15,7 @@ const houseSorter = ["house_number", "residents"];
 const houseFiltersOn = ["estado"];
 
 const HouseList = () => {
+  const navigate = useNavigate();
   const [houseData, setHouseData] = useState([]);
   const [houseDataRaw, setHouseDataRaw] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,8 +54,15 @@ const HouseList = () => {
     setSelectedHouse(null);
   };
 
+  const handleEdit = (id) => {
+    console.log("Edit house with id:", id);
+    navigate(VIEWS.manageHouse.replace(":id", id));
+  };
+
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("¿Estás seguro de deshabilitar esta casa?");
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de deshabilitar esta casa?",
+    );
     if (!confirmDelete) {
       return;
     }
@@ -70,7 +78,7 @@ const HouseList = () => {
     });
 
     setHouseData(updatedData);
-  }
+  };
 
   return (
     <DashboardLayout>
@@ -88,7 +96,12 @@ const HouseList = () => {
         {loading ? (
           <div>Cargando...</div>
         ) : (
-          <HouseTable data={houseData} onView={handleView}  onDelete={handleDelete} />
+          <HouseTable
+            data={houseData}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         )}
       </div>
       <Modal
@@ -115,7 +128,7 @@ const HouseList = () => {
 
               {selectedHouse.responsible ? (
                 <>
-                  <h3 className="font-bold mt-5">Responsable</h3>
+                  <h3 className="mt-5 font-bold">Responsable</h3>
                   <Avatar size={96} src={selectedHouse.responsible.picture} />
                   <h2>{selectedHouse.owner_name}</h2>
                   <p>
@@ -128,7 +141,8 @@ const HouseList = () => {
             </div>
             <div>
               <h3>Residentes</h3>
-              {selectedHouse.residentsData && selectedHouse.residentsData.length > 0 ? (
+              {selectedHouse.residentsData &&
+              selectedHouse.residentsData.length > 0 ? (
                 <List
                   itemLayout="horizontal"
                   dataSource={selectedHouse.residentsData}
@@ -153,7 +167,7 @@ const HouseList = () => {
   );
 };
 
-const HouseTable = ({ data, onView, onDelete }) => {
+const HouseTable = ({ data, onView, onDelete, onEdit }) => {
   return (
     <TableComponent
       data={data}
@@ -162,6 +176,7 @@ const HouseTable = ({ data, onView, onDelete }) => {
       addSortOn={houseSorter}
       addFiltersOn={houseFiltersOn}
       onView={onView}
+      onEdit={onEdit}
       onDelete={onDelete}
     />
   );

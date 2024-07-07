@@ -17,15 +17,15 @@ const actions = [
     href: VIEWS.charts,
   },
   {
-    title: "Crear nueva invitación",
+    title: "Adminitstrar usuarios",
     icon: <InvitationIcon />,
-    href: "/create-invitation",
+    href: VIEWS.userList
   },
 
   {
-    title: "Agregar ",
+    title: "Administrar entradas",
     icon: <PlusIcon />,
-    href: "/",
+    href: VIEWS.requestList,
     className: "md:col-span-2 lg:col-auto",
   },
 ];
