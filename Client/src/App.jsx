@@ -92,7 +92,7 @@ function App() {
 
             <Route element={<ProtectedRoute allowedRoles={[ROL.ADMIN]} />}>
               <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
-              <Route path={VIEWS.createHouse} element={<CreateHouse />} />
+              <Route path={VIEWS.manageHouse} element={<CreateHouse />} />
               <Route path={VIEWS.houseList} element={<HouseList />} />
               <Route path={VIEWS.userList} element={<UserList />} />
               <Route path={VIEWS.requestList} element={<RequestList />} />

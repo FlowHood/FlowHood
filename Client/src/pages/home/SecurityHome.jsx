@@ -91,6 +91,11 @@ const getOptionLinksByRoles = (roles) => {
         to: VIEWS.dashboard,
       },
       {
+        texto: "Registros a terceros",
+        Icono: PeopleIcon,
+        to: VIEWS.createRequest,
+      },
+      {
         texto: "Generar QR de ingreso",
         Icono: QRIcon,
         to: VIEWS.createQR,

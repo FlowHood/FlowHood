@@ -18,14 +18,14 @@ import GeneralButton from "../../buttons/GeneralButton";
 import { createRequest } from "../../../services/request.service";
 import { capitalizeWords } from "../../../lib/utils";
 import { ROL, getRoleDescription } from "../../../lib/rol";
-import { HouseCard } from "../../../pages/account/ResidentAccountView";
 import { fetchHouseData } from "../../../services/house.service";
+import { HouseCard } from "../../../pages/account/ResidentAccountView";
 
 const { Option } = Select;
 
 export default function FormRequest() {
   const [isPeriodic, setIsPeriodic] = useState(false);
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
   const [visitors, setVisitors] = useState([]);
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [loadingVisitors, setLoadingVisitors] = useState(true);
@@ -35,6 +35,9 @@ export default function FormRequest() {
   const isUniqueVigilant =
     user.roles.length === 1 &&
     user.roles.every((rol) => rol.id === ROL.VIGILANT);
+
+  const isAdmin =
+    user.roles.length === 1 && user.roles.every((rol) => rol.id === ROL.ADMIN);
 
   useEffect(() => {
     const fetchVisitors = async () => {
@@ -58,7 +61,7 @@ export default function FormRequest() {
 
   useEffect(() => {
     const loadHouseData = async () => {
-      if (isUniqueVigilant) {
+      if (isUniqueVigilant || isAdmin) {
         try {
           const data = await fetchHouseData();
           setHouseData(data);
@@ -132,7 +135,12 @@ export default function FormRequest() {
     }
   }, [myhouses]);
 
-  if (myhouses.length === 0 && !user.roles.includes(ROL.VIGILANT)) {
+  console.log("My houses", roles, !roles.includes(ROL.VIGILANT));
+  if (
+    myhouses.length === 0 &&
+    !roles.includes(ROL.VIGILANT) &&
+    !roles.includes(ROL.ADMIN)
+  ) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-4">
         <h1 className="text-center text-2xl font-semibold">
@@ -155,7 +163,7 @@ export default function FormRequest() {
           Invitación
         </h1>
         <p className="w-[80%] text-xs font-light">
-          {isUniqueVigilant ? (
+          {isUniqueVigilant || isAdmin ? (
             <>
               Crea una invitación para que tus visitantes puedan acceder a las
               casas que administras
@@ -171,7 +179,7 @@ export default function FormRequest() {
       </div>
 
       <Form
-        className="flex w-full flex-col justify-center gap-2 px-3"
+        className="flex w-full mt-8 !max-w-[624px] flex-col justify-center gap-2 px-3"
         onFinish={onSuccess}
         onFinishFailed={onFailed}
         initialValues={{
@@ -208,8 +216,7 @@ export default function FormRequest() {
           </Select>
         </Form.Item>
 
-        {user.roles.length === 1 &&
-        user.roles.every((rol) => rol.id === ROL.VIGILANT) ? (
+        {isUniqueVigilant || isAdmin ? (
           <Form.Item
             label="Casa"
             name={"house"}
@@ -245,20 +252,23 @@ export default function FormRequest() {
                   ))}
                 </Select>
               </Form.Item>
-            ) : (
+            ) : myhouses.length === 1 ? (
               <HouseCard
                 house={myhouses[0]}
                 title="Mi única casa asociada es:"
               />
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-4 p-4">
+                <h1 className="text-center text-2xl font-semibold">
+                  No tienes casas asociadas
+                </h1>
+              </div>
             )}
           </>
         )}
 
         <div className="flex flex-col gap-3">
-          {!(
-            user.roles.length === 1 &&
-            user.roles.every((rol) => rol.id === ROL.VIGILANT)
-          ) && (
+          {!(isUniqueVigilant || isAdmin) && (
             <div className="mx-auto flex max-w-lg flex-row items-center justify-center gap-4">
               <p>Visita programada</p>
               <Form.Item style={{ marginBottom: 0 }} valuePropName="checked">

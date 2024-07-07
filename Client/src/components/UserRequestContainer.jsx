@@ -100,7 +100,7 @@ export default function UserRequestContainer({
           <Tag
             icon={<CheckCircleOutlined />}
             color="success"
-            className="text-base absolute right-0 top-2"
+            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
           >
             Activa
           </Tag>
@@ -109,7 +109,7 @@ export default function UserRequestContainer({
           <Tag
             icon={<MinusCircleOutlined />}
             color="default"
-            className="text-base absolute right-0 top-2"
+            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
           >
             Pasada
           </Tag>
@@ -118,7 +118,7 @@ export default function UserRequestContainer({
           <Tag
             icon={<QrcodeOutlined />}
             color="gold"
-            className="text-base absolute right-0 top-2"
+            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
           >
             QR Disponible
           </Tag>

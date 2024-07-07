@@ -78,7 +78,7 @@ const HouseList = () => {
         <SectionIntro title="Lista de casas" />
         <Button
           as={Link}
-          to={VIEWS.createHouse}
+          to={VIEWS.manageHouse.replace(":id", "")}
           className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
         >
           Crear casa

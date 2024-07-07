@@ -102,6 +102,65 @@ public class HouseController {
         }
     }
 
+    @PutMapping("/{_id}")
+    public ResponseEntity<GeneralResponse> updateHouse(
+            @PathVariable("_id") String id,
+            @RequestBody @Valid HouseReqDTO req,
+            BindingResult error) {
+        try {
+            if (error.hasErrors()) {
+                return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).data(error.getAllErrors()).message("invalid request").getResponse();
+            }
+
+            UUID _id = UUID.fromString(id);
+            House house = houseService.getHouseById(_id);
+            if (house == null) {
+                return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("not found").getResponse();
+            }
+
+            // Update address
+            house.setAddress(req.getAddress());
+
+            // Update responsible
+            if (req.getResponsibleId() != null) {
+                User newResponsible = userService.findUserById(req.getResponsibleId());
+                if (newResponsible != null) {
+                    houseService.toggleResposible(newResponsible, house);
+                } else {
+                    return GeneralResponse.builder().status(HttpStatus.NOT_FOUND).message("responsible not found").getResponse();
+                }
+            } else {
+                // Remove current responsible if no responsible is provided
+                houseService.toggleResposible(house.getResponsible(), house);
+            }
+
+            // Update residents
+            List<User> currentResidents = house.getResidents();
+            List<User> newResidents = userService.findUsersByIds(req.getResidentIds());
+
+            // Remove residents not in the new list
+            for (User resident : currentResidents) {
+                if (!newResidents.contains(resident)) {
+                    houseService.toggleResident(resident, house);
+                }
+            }
+
+            // Add new residents
+            for (User resident : newResidents) {
+                if (!currentResidents.contains(resident)) {
+                    houseService.toggleResident(resident, house);
+                }
+            }
+
+            house = houseService.updateHouse(house);
+            HousesResDTO houseDTO = HousesResDTO.fromEntity(house);
+            return GeneralResponse.builder().status(HttpStatus.OK).message("house updated").data(houseDTO).getResponse();
+        } catch (Exception e) {
+            System.out.println(e);
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
     //admin only
     @DeleteMapping("/{_id}")
     public ResponseEntity<GeneralResponse> deleteHouseById(@PathVariable("_id") String id) {

@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setLoading(true);
       const { access_token } = tokenResponse;
 
       const token = await loginToApi(access_token);
@@ -42,9 +43,11 @@ export const AuthProvider = ({ children }) => {
           setRoles([]);
         }
       }
+      setLoading(false);
     },
     onError: (error) => {
       console.error("Login failed", error);
+      setLoading(false);
     },
   });
 

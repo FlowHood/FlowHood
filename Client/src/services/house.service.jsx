@@ -60,3 +60,36 @@ export const deleteHouse = async (id) => {
     toast.error(errorMessage);
   }
 };
+
+export const updateHouse = async (houseData, houseId) => {
+  try {
+    const res = await axios.put(`house/${houseId}`, houseData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("House updated:", res.data);
+    toast.success("House updated successfully");
+    return res.data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+  }
+};
+
+export const getHouseById = async (houseId) => {
+  try {
+    const res = await axios.get(`house/${houseId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    return res.data.data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error("Error fetching house data:", error);
+    toast.error(errorMessage);
+  }
+};

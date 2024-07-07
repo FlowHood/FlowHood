@@ -13,6 +13,9 @@ import {
 import Loading, { LoadingComponent } from "../Loading";
 import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
+import { Modal } from "antd";
+import RequestDetail from "../../pages/request/RequestDetail";
+import RequestDetailInModal from "../../pages/request/RequestDetailInModal";
 
 const getScreenInformation = (rol) => {
   let title;
@@ -56,9 +59,42 @@ const getScreenInformation = (rol) => {
   };
 };
 
+const RequestDetailModal = ({ request, visible, onClose }) => {
+  const now = moment();
+  const startDate = moment(
+    `${request.startDate.split("T")[0]} ${request.startTime}`,
+  );
+  const endDate = moment(`${request.endDate.split("T")[0]} ${request.endTime}`);
+
+  const qrStartTime = startDate.clone().subtract(30, "minutes");
+  const qrEndTime = endDate.clone().add(30, "minutes");
+
+  const isQrAvailable = now.isBetween(qrStartTime, qrEndTime);
+  const timeUntilQrValid = qrStartTime.diff(now, "minutes");
+  const timeLeftToScan = qrEndTime.diff(now, "minutes");
+
+  let qrMessage;
+  if (isQrAvailable) {
+    qrMessage =
+      timeLeftToScan > 0
+        ? `Tiempo restante para escanear el QR: ${timeLeftToScan} minutos`
+        : "El tiempo para escanear el QR ha pasado";
+  } else {
+    qrMessage =
+      timeUntilQrValid > 0
+        ? `El QR será válido en: ${timeUntilQrValid} minutos`
+        : "El tiempo para escanear el QR ha pasado";
+  }
+
+  return (
+    <Modal visible={visible} onCancel={onClose} footer={null} width={700}>
+      <RequestDetailInModal request={request} />
+    </Modal>
+  );
+};
+
 export default function UserAllRequest() {
   const { user } = useAuth();
-
   const highestRole = getHighestPriorityRole(user.roles);
 
   let { title, subTitle, subTitle2 } = getScreenInformation(highestRole);
@@ -66,6 +102,8 @@ export default function UserAllRequest() {
   const [allrequests, setAllRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("PEN");
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const isUniqueRolVisitor =
     user.roles.length === 1 &&
@@ -76,14 +114,15 @@ export default function UserAllRequest() {
       let result;
       if (isUniqueRolVisitor) {
         result = await getAllRequestsByVisitor();
-        setRequests(result);
-      } else {
-        result = await getAllRequestsInMyHouse();
-        const filteredRequests = allrequests.filter(
+        const filteredRequests = result.filter(
           (request) => request.status === filter,
         );
-        console.log("tfilteredRequests", filteredRequests);
-
+        setRequests(filteredRequests);
+      } else {
+        result = await getAllRequestsInMyHouse();
+        const filteredRequests = result.filter(
+          (request) => request.status === filter,
+        );
         setRequests(filteredRequests);
       }
       setAllRequests(result);
@@ -94,18 +133,12 @@ export default function UserAllRequest() {
   }, []);
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      if (!isUniqueRolVisitor) {
-        const filteredRequests = allrequests.filter(
-          (request) => request.status === filter,
-        );
-
-        setRequests(filteredRequests);
-        return;
-      }
-    };
-
-    fetchRequests();
+    // if (!isUniqueRolVisitor) {
+    const filteredRequests = allrequests.filter(
+      (request) => request.status === filter,
+    );
+    setRequests(filteredRequests);
+    // }
   }, [allrequests, filter]);
 
   const now = moment();
@@ -161,23 +194,31 @@ export default function UserAllRequest() {
       );
 
       return (
-        <UserRequestContainer
-          userName={request.visitor.name}
-          date={request.startDate.split("T")[0]}
-          time={
-            request.startTime === request.endTime
-              ? request.startTime
-              : `${request.startTime} - ${request.endTime}`
-          }
+        <div
           key={request.id}
-          to={`${VIEWS.requestDetail.replace("/:id", "")}/${request.id}`}
-          address={request.house.address}
-          reason={request.reason}
-          status={request.status}
-          isActive={isActive}
-          hasPassed={hasPassed}
-          qrAvailable={qrAvailable}
-        />
+          onClick={() => {
+            setSelectedRequest(request);
+            setIsModalVisible(true);
+          }}
+        >
+          <UserRequestContainer
+            userName={request.visitor.name}
+            date={request.startDate.split("T")[0]}
+            time={
+              request.startTime === request.endTime
+                ? request.startTime
+                : `${request.startTime} - ${request.endTime}`
+            }
+            // to={`${VIEWS.requestDetail.replace("/:id", "")}/${request.id}`}
+            to="#"
+            address={request.house.address}
+            reason={request.reason}
+            status={request.status}
+            isActive={isActive}
+            hasPassed={hasPassed}
+            qrAvailable={qrAvailable}
+          />
+        </div>
       );
     }) || [];
 
@@ -199,12 +240,11 @@ export default function UserAllRequest() {
                 Solicitudes a mi nombre
               </h2>
             </div>
-          ) : (
-            <RequestFilterBar
-              rol={user.roles[0].id}
-              handleChangeSelected={handleChangeSelected}
-            />
-          )}
+          ) : null}
+          <RequestFilterBar
+            rol={user.roles[0].id}
+            handleChangeSelected={handleChangeSelected}
+          />
 
           <div className="h-full w-full ">
             <div className="grid w-full flex-1 grid-cols-1 grid-rows-[max-content] flex-col justify-start gap-2 pb-8 sm:px-4 lg:grid-cols-2">
@@ -239,6 +279,13 @@ export default function UserAllRequest() {
         </div>
       </div>
       <ScrollToTopButton scrollClassname="bottom-[4.8rem] right-5" />
+      {selectedRequest && (
+        <RequestDetailModal
+          request={selectedRequest}
+          visible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+        />
+      )}
     </div>
   );
 }

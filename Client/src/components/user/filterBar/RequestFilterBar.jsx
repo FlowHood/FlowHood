@@ -20,7 +20,7 @@ export default function RequestFilterBar({ title = "", handleChangeSelected, rol
 
   return (
 
-    <div className=" flex flex-row items-center justify-center gap-3 sticky top-0 bg-white p-2">
+    <div className=" flex flex-row items-center justify-center gap-3 sticky top-0 z-10 bg-white p-2">
       <FilterItem
         text={"Pendiente"}
         action={() => {
@@ -42,17 +42,13 @@ export default function RequestFilterBar({ title = "", handleChangeSelected, rol
         }}
         isSelected={currentSelected === OPTIONS.NOT_ACCEPTED}
       />
-      {/* {rol === ROL.OWNER ? (
-        <FilterItem
-          text={"Verificar"}
-          action={() => {
-            selectedChangeHandler(OPTIONS.TO_CHECK);
-          }}
-          isSelected={currentSelected === OPTIONS.TO_CHECK}
-        />
-      ) : (
-        <></>
-      )} */}
+      <FilterItem
+        text={"Usadas"}
+        action={() => {
+          selectedChangeHandler(OPTIONS.USED);
+        }}
+        isSelected={currentSelected === OPTIONS.USED}
+      />
     </div>
   );
 }
