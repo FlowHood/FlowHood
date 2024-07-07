@@ -33,6 +33,7 @@ export const fetchHouseData = async () => {
         address: house.address,
         owner_name: house.responsible ? capitalizeWords(house.responsible.name) : "N/A",
         residents: house.residents?.length || 0,
+        responsible: house.responsible,
         estado: house.active ? "activo" : "inactivo",
     }));
     return data;

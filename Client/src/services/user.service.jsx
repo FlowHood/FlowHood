@@ -4,7 +4,11 @@ import { handleError } from "../lib/utils/errorHandler";
 
 export const getAllUsers = async () => {
   try {
-    const res = await axios.get("users/");
+    const res = await axios.get("users/", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
 
     return res.data.data;
   } catch (error) {

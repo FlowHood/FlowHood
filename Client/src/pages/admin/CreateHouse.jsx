@@ -31,10 +31,15 @@ export function CreateHouseForm() {
 
   const handleFormSubmit = (values) => {
     setIsSubmitting(true);
+    // quiero filtrar los residentIds, si existe un usuario con el mismo id que el responsable, lo elimino
+    const newSelectedUsers = selectedUsers.filter(
+      (user) => user.id !== responsible,
+    );
+
     const houseData = {
       address: values.address,
       responsibleId: responsible,
-      residentIds: selectedUsers.map((user) => user.id),
+      residentIds: newSelectedUsers.map((user) => user.id),
     };
 
     console.log("House data:", houseData);
@@ -65,12 +70,15 @@ export function CreateHouseForm() {
             showSearch
             placeholder="Buscar usuarios"
             onSelect={handleAddUser}
-            filterOption={(input, option) =>
-              option.children
-                .toString()
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              const childrenString = React.Children.map(
+                option.children,
+                (child) => child,
+              )
+                .join("")
+                .toLowerCase();
+              return childrenString.indexOf(input.toLowerCase()) >= 0;
+            }}
           >
             {users.map((user) => (
               <Option key={user.id} value={user.id}>
