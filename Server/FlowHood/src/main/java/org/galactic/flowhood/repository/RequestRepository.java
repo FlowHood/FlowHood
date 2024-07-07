@@ -3,7 +3,6 @@ package org.galactic.flowhood.repository;
 import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
-import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,9 +20,19 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     List<Request> findAllByHouseIn(List<House> houses);
     List<Request> findAllByVisitor(User visitor);
     int countAllByStatusAndStartDateBetween(String status, Date start, Date end);
+
     @Query("SELECT COUNT(r) FROM Request r WHERE r.status = ?1 AND r.visitor.name = r.visitor.email ")
     int countAllAnonymous(String status);
 
     @Query("SELECT COUNT(r) FROM Request r WHERE r.status = ?1 AND r.visitor.name != r.visitor.email ")
     int countAllNormal(String status);
+
+    @Query("SELECT r.reason, COUNT(r) FROM Request r WHERE r.visitor.name = r.visitor.email GROUP BY r.reason ORDER BY COUNT(r) DESC")
+    List<Object[]> findTopReasonsForAnonymousRequests();
+
+    @Query("SELECT r.house.address, COUNT(r) FROM Request r WHERE r.status = ?1 GROUP BY r.house ORDER BY COUNT(r) DESC")
+    List<Object[]> findTopHousesForUsedRequests(String status);
+
+    @Query("SELECT r.startTime, COUNT(r) FROM Request r GROUP BY r.startTime ORDER BY COUNT(r) DESC")
+    List<Object[]> findTopRequestHours();
 }

@@ -76,8 +76,8 @@ public class Request {
         this.visitor = visitor;
         this.house = house;
         this.createdAt = Date.from(Instant.now());
-    }    
-    
+    }
+
     public Request(Date startDate, String startTime, String reason, User anonymous, House house) {
         this.startDate = startDate;
         this.endDate = startDate;

@@ -30,14 +30,15 @@ export const getAllRequests = async () => {
     });
     const data = res.data.data.map((request) => ({
       id: request.id,
-      razon: request.reason,
       visitante: request.visitor.name + " " + request.visitor.email,
       residente: request.resident.name + " " + request.resident.email,
       fecha_inicio: request.startDate + " " + request.startTime,
-      fecha_fin: request.end_time
-        ? request.endDate + " " + request.endTime
-        : "N/A",
       estado_solicitud: request.status,
+      
+      resident: request.resident,
+      visitor: request.visitor,
+      house: request.house,
+      reason: request.reason,
     }));
     return data;
   } catch (error) {

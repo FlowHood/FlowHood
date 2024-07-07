@@ -33,6 +33,7 @@ export const fetchHouseData = async () => {
         address: house.address,
         owner_name: house.responsible ? capitalizeWords(house.responsible.name) : "N/A",
         residents: house.residents?.length || 0,
+        residentsData: house.residents,
         responsible: house.responsible,
         estado: house.active ? "activo" : "inactivo",
     }));
@@ -40,6 +41,22 @@ export const fetchHouseData = async () => {
   } catch (error) {
     const errorMessage = handleError(error);
     console.error("Error fetching house data:", error);
+    toast.error(errorMessage);
+  }
+};
+
+export const deleteHouse = async (id) => {
+  try {
+    const res = await axios.delete(`house/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("House deleted:", res.data);
+    toast.success("House deleted successfully");
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
     toast.error(errorMessage);
   }
 };

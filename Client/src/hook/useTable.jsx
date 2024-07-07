@@ -6,6 +6,7 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 
 import "../components/table/Table.css";
@@ -16,8 +17,9 @@ export const useTable = (
   addSortOn = [],
   addFilterOn = [],
   addSearchOn = [],
-  onEdit = () => {},
-  onDelete = () => {},
+  onEdit = null,
+  onDelete = null,
+  onView = () => {},
 ) => {
   const [columns, setColumns] = useState([]);
   const [_, setSearchText] = useState("");
@@ -52,12 +54,17 @@ export const useTable = (
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => onEdit(record.id)} />
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            onClick={() => onDelete(record.id)}
-          />
+          {onEdit && (
+            <Button icon={<EditOutlined />} onClick={() => onEdit(record.id)} />
+          )}
+          {onDelete && (
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              onClick={() => onDelete(record.id)}
+            />
+          )}
+          <Button icon={<EyeOutlined />} onClick={() => onView(record.id)} />
         </Space>
       ),
     });

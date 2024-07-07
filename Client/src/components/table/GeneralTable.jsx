@@ -51,14 +51,16 @@ const dummySearch = ["address", "name"];
 const dummySorter = ["age"];
 const dummyFiltersOn = ["tags"];
 
+
 export const TableComponent = ({
   data = dummyData,
   addTagsOn = dummyTags,
   addSearchOn = dummySearch,
   addSortOn = dummySorter,
   addFiltersOn = dummyFiltersOn,
-  onEdit = () => {},
-  onDelete = () => {},
+  onEdit = null,
+  onDelete = null,
+  onView = () => {},
 }) => {
   const { filteredColumns, loading } = useTable(
     data,
@@ -67,7 +69,8 @@ export const TableComponent = ({
     addFiltersOn,
     addSearchOn,
     onEdit,
-    onDelete
+    onDelete,
+    onView
   );
 
   return (
@@ -80,3 +83,5 @@ export const TableComponent = ({
     </div>
   );
 };
+
+export default TableComponent;

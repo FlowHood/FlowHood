@@ -32,6 +32,8 @@ export const fetchUserData = async () => {
       email: user.email,
       estado: user.state === "ACT" ? "Activo" : "Inactivo",
       roles: user.roles.map(role => role.name).join(", "),
+      houses: user.houses,
+      admHouses: user.admHouses,
     }));
     return data;
   } catch (error) {
@@ -40,3 +42,24 @@ export const fetchUserData = async () => {
     toast.error(errorMessage);
   }
 };
+
+export const deleteUser = async (id) => {
+  try {
+    const res = await axios.delete(`users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+
+    toast.success("Usuario deshabilitado correctamente");
+
+    return res.data;
+
+
+  }
+  catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+  }
+}

@@ -14,6 +14,7 @@ import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
 import org.galactic.flowhood.utils.JWTTools;
+import org.galactic.flowhood.utils.SystemStates;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -138,7 +139,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(User user) {
-        userRepository.delete(user);
+        user.setState(SystemStates.INACTIVE.getState());
+        userRepository.save(user);
     }
 
     @Override

@@ -1,19 +1,20 @@
 import React from "react";
 import ActionCard from "./cards/ActionCard";
-import { PlusIcon, InvitationIcon, SimpleHouseIcon } from "./Icons";
+import { PlusIcon, InvitationIcon, SimpleHouseIcon, StatsIcon } from "./Icons";
 import SectionIntro from "./SectionIntro";
+import { VIEWS } from "../lib/views";
 
 const actions = [
   {
     title: "Agregar nueva casa",
     icon: <SimpleHouseIcon />,
-    href: "/add-house",
+    href: VIEWS.createHouse,
     className: "md:row-span-2 lg:row-auto",
   },
   {
-    title: "Agregar nuevo usuario",
-    icon: <PlusIcon />,
-    href: "/add-user",
+    title: "Estadisticas",
+    icon: <StatsIcon />,
+    href: VIEWS.charts
   },
   {
     title: "Crear nueva invitación",
