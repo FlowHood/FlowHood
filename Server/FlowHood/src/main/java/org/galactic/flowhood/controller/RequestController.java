@@ -9,10 +9,7 @@ import org.galactic.flowhood.domain.dto.response.RequestResDTO;
 import org.galactic.flowhood.domain.dto.response.SmallHousesResDTO;
 import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.*;
-import org.galactic.flowhood.services.HouseService;
-import org.galactic.flowhood.services.RequestService;
-import org.galactic.flowhood.services.RoleService;
-import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.services.*;
 import org.galactic.flowhood.utils.MapperUtil;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
@@ -41,13 +38,29 @@ public class RequestController {
 
     final MapperUtil mapper;
 
-    public RequestController(RequestService requestService, UserService userService, RoleService roleService, HouseService houseService, MapperUtil mapper) {
+    final MessageService messageService;
+
+    public RequestController(RequestService requestService, UserService userService, RoleService roleService, HouseService houseService, MapperUtil mapper, MessageService messageService) {
         this.requestService = requestService;
         this.userService = userService;
         this.roleService = roleService;
         this.houseService = houseService;
         this.mapper = mapper;
+        this.messageService = messageService;
     }
+
+    @PostMapping("/sent-message")
+    public ResponseEntity<GeneralResponse> sentMessage() {
+        //validate if role is vigilant or responsible then request must be automatically approved else it should be pending
+        try {
+            messageService.publish("read/qr", "hola", 0, true);
+            return GeneralResponse.builder().status(HttpStatus.OK).message("message sent mqtt").getResponse();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
+        }
+    }
+
 
     //admin only
     @GetMapping("/")
