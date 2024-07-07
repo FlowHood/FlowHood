@@ -6,6 +6,7 @@ import {
   PeopleIcon,
   QRIcon,
   StatsIcon,
+  UserIcon,
 } from "../../components/Icons";
 import InfoScheduleCard from "../../components/cards/InfoScheduleCard";
 import OptionLink from "../../components/buttons/OptionLink";
@@ -75,11 +76,11 @@ const getOptionLinksByRoles = (roles) => {
       {
         texto: "Registros a terceros",
         Icono: PeopleIcon,
-        to: VIEWS.scanQR,
+        to: VIEWS.createRequest,
       },
       {
         texto: "Mi Cuenta",
-        Icono: QRIcon,
+        Icono: UserIcon,
         to: VIEWS.myAccount,
       },
     ],
@@ -96,7 +97,7 @@ const getOptionLinksByRoles = (roles) => {
       },
       {
         texto: "Mi Cuenta",
-        Icono: QRIcon,
+        Icono: UserIcon,
         to: VIEWS.myAccount,
       },
     ],
@@ -113,7 +114,7 @@ const getOptionLinksByRoles = (roles) => {
       },
       {
         texto: "Mi Cuenta",
-        Icono: QRIcon,
+        Icono: UserIcon,
         to: VIEWS.myAccount,
       },
     ],
@@ -135,7 +136,7 @@ const getOptionLinksByRoles = (roles) => {
       },
       {
         texto: "Mi Cuenta",
-        Icono: QRIcon,
+        Icono: UserIcon,
         to: VIEWS.myAccount,
       },
     ],
@@ -152,7 +153,7 @@ const getOptionLinksByRoles = (roles) => {
       },
       {
         texto: "Mi Cuenta",
-        Icono: QRIcon,
+        Icono: UserIcon,
         to: VIEWS.myAccount,
       },
     ],
@@ -178,7 +179,6 @@ const getOptionLinksByRoles = (roles) => {
 
 const SecurityHome = () => {
   const { roles, user } = useAuth();
-  console.log(user);
   const optionLinks = getOptionLinksByRoles(roles);
 
   return (

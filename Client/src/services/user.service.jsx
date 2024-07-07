@@ -4,7 +4,11 @@ import { handleError } from "../lib/utils/errorHandler";
 
 export const getAllUsers = async () => {
   try {
-    const res = await axios.get("users/");
+    const res = await axios.get("users/", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
 
     return res.data.data;
   } catch (error) {
@@ -29,7 +33,6 @@ export const fetchUserData = async () => {
       estado: user.state === "ACT" ? "Activo" : "Inactivo",
       roles: user.roles.map(role => role.name).join(", "),
     }));
-    console.log("User data:", data);
     return data;
   } catch (error) {
     const errorMessage = handleError(error);

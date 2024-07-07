@@ -62,13 +62,15 @@ public class WebSecurityConfiguration {
         //Route filter
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
+                        .requestMatchers("/api/house/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/house/responsible").hasAnyAuthority(SystemRoles.RESPONSIBLE.getRole())
-                        .requestMatchers("api/users/{_userId}/house-resident/{_homeId}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole())
-                        .requestMatchers("api/users/{_userId}/house-resident/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
+                        .requestMatchers("/api/users/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.VIGILANT.getRole(), SystemRoles.RESIDENT.getRole())
+                        .requestMatchers("/api/users/{_userId}/house-resident/{_homeId}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole())
+                        .requestMatchers("/api/users/{_userId}/house-resident/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
                         .requestMatchers("/api/request/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole())
                         .requestMatchers("/api/request/create-anonymous").hasAnyAuthority(SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/request/{_id}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole(), SystemRoles.VISITOR.getRole())
+                        //.requestMatchers("/api/request/create-anonymous").hasAnyAuthority(SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/roles/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
                         //TODO
 //                        .requestMatchers("/api/qr/read").hasAnyAuthority(SystemRoles.VIGILANT.getRole())

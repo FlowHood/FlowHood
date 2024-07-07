@@ -16,9 +16,9 @@ export const getCurrentShift = () => {
   const now = new Date();
   const hour = now.getHours();
 
-  if (hour >= 6 && hour < 14) {
+  if (hour >= 6 && hour < 12) {
     return "Turno Matutino";
-  } else if (hour >= 14 && hour < 22) {
+  } else if (hour >= 12 && hour < 22) {
     return "Turno Vespertino";
   } else {
     return "Turno Nocturno";
