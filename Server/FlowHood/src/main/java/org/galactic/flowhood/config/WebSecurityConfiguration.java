@@ -71,9 +71,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/request/create-anonymous").hasAnyAuthority(SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/request/{_id}").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole(), SystemRoles.RESPONSIBLE.getRole(), SystemRoles.RESIDENT.getRole(), SystemRoles.VISITOR.getRole())
                         .requestMatchers("/api/roles/").hasAnyAuthority(SystemRoles.ADMINISTRATOR.getRole())
-                        //TODO
-//                        .requestMatchers("/api/qr/read").hasAnyAuthority(SystemRoles.VIGILANT.getRole())
-                        .requestMatchers("/api/qr/read").permitAll()
+                        .requestMatchers("/api/qr/read").hasAnyAuthority(SystemRoles.VIGILANT.getRole())
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated());
 

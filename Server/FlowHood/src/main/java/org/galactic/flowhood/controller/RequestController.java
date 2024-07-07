@@ -9,10 +9,7 @@ import org.galactic.flowhood.domain.dto.response.RequestResDTO;
 import org.galactic.flowhood.domain.dto.response.SmallHousesResDTO;
 import org.galactic.flowhood.domain.dto.response.UserResDTO;
 import org.galactic.flowhood.domain.entities.*;
-import org.galactic.flowhood.services.HouseService;
-import org.galactic.flowhood.services.RequestService;
-import org.galactic.flowhood.services.RoleService;
-import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.services.*;
 import org.galactic.flowhood.utils.MapperUtil;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
@@ -41,12 +38,15 @@ public class RequestController {
 
     final MapperUtil mapper;
 
-    public RequestController(RequestService requestService, UserService userService, RoleService roleService, HouseService houseService, MapperUtil mapper) {
+    final MessageService messageService;
+
+    public RequestController(RequestService requestService, UserService userService, RoleService roleService, HouseService houseService, MapperUtil mapper, MessageService messageService) {
         this.requestService = requestService;
         this.userService = userService;
         this.roleService = roleService;
         this.houseService = houseService;
         this.mapper = mapper;
+        this.messageService = messageService;
     }
 
     //admin only
@@ -133,7 +133,6 @@ public class RequestController {
     }
 
   //for vigilante only
-    //TODO only vigilante
     @PostMapping("/create-anonymous")
     public ResponseEntity<GeneralResponse> createAnonymousRequest(@RequestBody @Valid AnonimRequestReq req, BindingResult errors) {
         //validate if role is vigilant or responsible then request must be automatically approved else it should be pending
@@ -156,6 +155,9 @@ public class RequestController {
             User anonymous = userService.findUserByEmail(req.getBusinessName());
 
             requestService.createAnonymousRequest(req, anonymous, house);
+
+            //sending message to mqtt server
+            messageService.publish("read/qr", "1", 1, true);
             return GeneralResponse.builder().status(HttpStatus.OK).message("request created").getResponse();
         } catch (Exception e) {
             return GeneralResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).getResponse();
@@ -268,7 +270,6 @@ public class RequestController {
         }
     }
 
-    //TODO
     @PatchMapping("/{_id}") //getting user validation and status of current request
     public ResponseEntity<GeneralResponse> changeStatus(@PathVariable("_id") String id, @RequestBody RequestStateReqDTO req) {
         try {
@@ -299,11 +300,9 @@ public class RequestController {
             if(!request.getHouse().getResponsible().getId().equals(user.getId()))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to accept this request").getResponse();
 
-            //TODO check all instant know and startDate conditions
-            System.out.println(Date.from(Instant.now()));
-            System.out.println(request.getStartTime());
-            System.out.println(request.getStartDate());
-            if(request.getStartDate().before(Date.from(Instant.now()))){
+            //setting hours
+            Date startDate = requestService.setDateTime(request.getStartDate(), request.getStartTime());
+            if(startDate.before(Date.from(Instant.now()))){
                 request.setStatus(SystemStates.INACTIVE.getState());
                 requestService.save(request);
                 return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("request is expired").getResponse();
@@ -334,7 +333,9 @@ public class RequestController {
             if(!requestService.isUserFromRequest(user, request))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to reject this request").getResponse();
 
-            if(request.getStartDate().before(Date.from(Instant.now()))){
+            Date startDate = requestService.setDateTime(request.getStartDate(), request.getStartTime());
+
+            if(startDate.before(Date.from(Instant.now()))){
                 request.setStatus(SystemStates.INACTIVE.getState());
                 requestService.save(request);
                 return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("request is expired").getResponse();

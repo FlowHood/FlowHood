@@ -6,10 +6,7 @@ import org.galactic.flowhood.domain.entities.House;
 import org.galactic.flowhood.domain.entities.QR;
 import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
-import org.galactic.flowhood.services.HouseService;
-import org.galactic.flowhood.services.QrService;
-import org.galactic.flowhood.services.RequestService;
-import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.services.*;
 import org.galactic.flowhood.utils.EncryptUtil;
 import org.galactic.flowhood.utils.SystemRoles;
 import org.galactic.flowhood.utils.SystemStates;
@@ -36,15 +33,17 @@ public class QRController {
 
     final HouseService houseService;
 
-    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService, HouseService houseService1) {
+    final MessageService messageService;
+
+    public QRController(QrService qrService, RequestService requestService, UserService userService, EncryptUtil encryptUtil, HouseService houseService, HouseService houseService1, MessageService messageService) {
         this.qrService = qrService;
         this.requestService = requestService;
         this.userService = userService;
         this.encryptUtil = encryptUtil;
         this.houseService = houseService1;
+        this.messageService = messageService;
     }
 
-    //TODO qr generate and update for petition when clicking
     @PostMapping(value = {"/request/{_houseId}", "/request-qr/{_requestId}"})
     public ResponseEntity<GeneralResponse> refreshQR(@PathVariable(value = "_requestId", required = false) String requestId, @PathVariable(value = "_houseId", required = false) String houseId){
         try {
@@ -112,7 +111,6 @@ public class QRController {
         }
     }
 
-    //TODO add vgilante validation
     @PostMapping("/read")
     public ResponseEntity<GeneralResponse> readQR(@RequestBody ReadQrReqDTO readQrReqDTO) {
         try {
@@ -133,8 +131,7 @@ public class QRController {
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("QR not valid").getResponse();
             }
             User user = userService.findUserAuthenticated().toEntity();
-            //TODO
-//            if(user == null || !userService.hasUserRole(user, SystemRoles.VIGILANT.getRole())) return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("User not found").getResponse();
+            if(user == null || !userService.hasUserRole(user, SystemRoles.VIGILANT.getRole())) return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("User not found").getResponse();
 
             User visitor = userService.findUserById(UUID.fromString(parts[3]));
             if (visitor == null) {
@@ -152,7 +149,10 @@ public class QRController {
 
             requestService.changeRequestStatus(request, SystemStates.USED.getState());
             qrService.changeQRStatus(qr, SystemStates.USED.getState());
-            //TODO: levantar el pico
+
+            //sent message to mqtt server
+            messageService.publish("read/qr", "1", 1, true);
+
 
             return GeneralResponse.builder().data(true).status(HttpStatus.OK).message("Able to enter").getResponse();
 

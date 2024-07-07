@@ -145,7 +145,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    //TODO: update method to allow non state and state
     @Override
     public List<Request> findAllByUserAndState(User user, String state) {
         return requestRepository.findAllByStatusAndVisitorOrResident(state, user, user);
@@ -161,5 +160,14 @@ public class RequestServiceImpl implements RequestService {
     public void changeRequestStatus(Request request, String state) {
         request.setStatus(state);
         requestRepository.save(request);
+    }
+
+    @Override
+    public Date setDateTime(Date date, String time) throws ParseException {
+        Date newDate = date;
+        String[] timeArray = time.split(":");
+        newDate.setHours(Integer.parseInt(timeArray[0]));
+        newDate.setMinutes(Integer.parseInt(timeArray[1]));
+        return newDate;
     }
 }
