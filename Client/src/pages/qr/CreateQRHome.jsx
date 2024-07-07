@@ -4,15 +4,17 @@ import UserLayout from "../../components/user/UserLayout";
 import UserCreateQR from "../../components/user/UserCreateQR";
 import { useAuth } from "../../context/AuthContext";
 import { ROL } from "../../lib/rol";
+import SecurityCreateQR from "../../components/user/SecurityCreateQR";
 
 export default function CreateQRHome({ qrInformation = "123" }) {
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
 
   if (
     user.houses &&
     user.houses.length === 0 &&
     user.admHouses.length === 0 &&
-    !user.roles.find((role) => role.id === ROL.VISITOR)
+    !user.roles.find((role) => role.id === ROL.VISITOR) &&
+    !user.roles.find((role) => role.id === ROL.ADMIN)
   ) {
     console.log("User has no houses");
     console.log("user.houses =>", user.houses);
@@ -32,10 +34,15 @@ export default function CreateQRHome({ qrInformation = "123" }) {
     );
   }
 
-  //TODO: handle qr code generation
   return (
     <UserLayout>
-      <UserCreateQR qrInformation={qrInformation} />
+      {roles.includes(ROL.VIGILANT) ||
+      roles.includes(ROL.ADMIN) ||
+      roles.includes(ROL.OWNER) ? (
+        <SecurityCreateQR qrInformation={qrInformation} />
+      ) : (
+        <UserCreateQR qrInformation={qrInformation} />
+      )}
     </UserLayout>
   );
 }

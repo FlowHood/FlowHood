@@ -20,13 +20,14 @@ import Avatar from "antd/es/avatar/avatar";
 import { Tag } from "antd";
 import { capitalizeWords } from "../../lib/utils";
 import { VIEWS } from "../../lib/views";
+import UserLayout from "../../components/user/UserLayout";
 
 const getOptionsByRole = (role, logout) => {
   const commonOptions = [
     {
       icon: FaFolderOpen,
       text: "Contacto con administrador",
-      to:  "mailto:galactic.studio23@gmail.com",
+      to: "mailto:galactic.studio23@gmail.com",
     },
   ];
 
@@ -35,13 +36,11 @@ const getOptionsByRole = (role, logout) => {
       {
         icon: FaCalendarAlt,
         text: "Registros de entrada",
-        to: VIEWS.request
+        to: VIEWS.request,
       },
       // { icon: FaHome, text: "Administrar hogar", to: VIEWS.houseList},
     ],
-    VST: [
-      { icon: FaFolderOpen, text: "Tus invitaciones", to: VIEWS.request },
-    ],
+    VST: [{ icon: FaFolderOpen, text: "Tus invitaciones", to: VIEWS.request }],
   };
 
   const options = commonOptions.concat(roleSpecificOptions[role] || []);
@@ -51,48 +50,55 @@ const getOptionsByRole = (role, logout) => {
 };
 
 export const HouseCard = ({ house, title }) => (
-  <div className="w-full rounded-md border bg-white p-4 shadow-md">
-    <h3 className="mb-2 text-xl font-semibold">{title}</h3>
-    <div className="flex items-center justify-between gap-4">
-      <p>
-        <strong>Dirección:</strong> {house.address}
-      </p>
-      <Tag color={house.active ? "green" : "red"}>
-        {house.active ? "Activa" : "Inactiva"}
-      </Tag>
-    </div>
-    {house.responsible && (
-    <div className="flex items-center gap-3">
-      <p>
-        <strong>Responsable:</strong> {capitalizeWords(house.responsible.name)}
-      </p>
-      <Avatar src={house.responsible.picture} alt={house.responsible.name} />
-    </div>
-    )}
-    <div className="flex items-center gap-3">
-      <p>
-        <strong>Residentes:</strong>
-      </p>
-
-      <Avatar.Group max={5}>
-        {house.residents.map((resident) => (
+  console.log("HouseCard", house, title),
+  (
+    <div className="w-full rounded-md border bg-white p-4 shadow-md">
+      <h3 className="mb-2 text-xl font-semibold">{title}</h3>
+      <div className="flex items-center justify-between gap-4">
+        <p>
+          <strong>Dirección:</strong> {house.address}
+        </p>
+        <Tag color={house.active ? "green" : "red"}>
+          {house.active ? "Activa" : "Inactiva"}
+        </Tag>
+      </div>
+      {house.responsible && (
+        <div className="flex items-center gap-3">
+          <p>
+            <strong>Responsable:</strong>{" "}
+            {capitalizeWords(house.responsible.name)}
+          </p>
           <Avatar
-            key={resident.id}
-            src={resident.picture}
-            alt={resident.name}
+            src={house.responsible.picture}
+            alt={house.responsible.name}
           />
-        ))}
-      </Avatar.Group>
+        </div>
+      )}
+      <div className="flex items-center gap-3">
+        <p>
+          <strong>Residentes:</strong>
+        </p>
+
+        <Avatar.Group max={5}>
+          {house.residents.map((resident) => (
+            <Avatar
+              key={resident.id}
+              src={resident.picture}
+              alt={resident.name}
+            />
+          ))}
+        </Avatar.Group>
+      </div>
     </div>
-  </div>
+  )
 );
 
-const ResidentAccountView = () => {
+const ResidentAccountComponent = () => {
   const { user, roles, logout } = useAuth();
 
   const highestRole = getHighestPriorityRole(roles);
   const rolesDescription = getRolesDescription(roles);
-  const options = getOptionsByRole(highestRole, logout); 
+  const options = getOptionsByRole(highestRole, logout);
 
   const hasHouses = user.houses.length > 0;
   const hasAdmHouses = user.admHouses.length > 0;
@@ -143,7 +149,7 @@ const ResidentAccountView = () => {
               ))}
           </div>
         ) : (
-          <p>No tiene casas asociadas.</p>
+          <p className="text-center">No tiene casas asociadas.</p>
         )}
       </div>
 
@@ -155,7 +161,7 @@ const ResidentAccountView = () => {
               {option.action ? (
                 <button
                   onClick={option.action}
-                  className="flex items-center gap-4 w-full text-left"
+                  className="flex w-full items-center gap-4 text-left"
                 >
                   <option.icon size={20} className="mr-2" />
                   <span className="leading-[2rem] hover:text-[#323f4b]">
@@ -175,6 +181,14 @@ const ResidentAccountView = () => {
         </ul>
       </div>
     </Container>
+  );
+};
+
+const ResidentAccountView = () => {
+  return (
+    <UserLayout showLogout={false}>
+      <ResidentAccountComponent />
+    </UserLayout>
   );
 };
 

@@ -15,8 +15,8 @@ export default function UserLayout({
 }) {
   return (
     <main className="">
-      <div className="px-4 py-8 text-black min-h-screen pb-11 md:pb-0">
-        <div className="flex min-h-[2vh] z-30 flex-col gap-2 self-start sm:px-7 fixed top-0 p-5">
+      <div className="min-h-screen px-4 py-8 pb-11 text-black md:pb-0">
+        <div className="fixed top-0 z-30 flex min-h-[2vh] flex-col gap-2 self-start p-5 sm:px-7">
           {showLogout && (
             <LogoutButton
               action={() => {
@@ -25,11 +25,9 @@ export default function UserLayout({
               className="ml-5 leading-normal lg:relative lg:mb-10 lg:ml-10"
             />
           )}
-          {showBack && (
-            <GoBackButton />
-          )}
+          {showBack && <GoBackButton />}
         </div>
-
+        {showBack && <div className="py-10"></div>}
         {children}
       </div>
       <NavigationBar className="fixed bottom-0" />

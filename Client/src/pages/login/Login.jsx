@@ -3,9 +3,10 @@ import LogoImage from "../../assets/images/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
+import { LoadingComponent } from "../../components/Loading";
 
 const Login = () => {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, loading } = useAuth();
   const navigateTo = useNavigate();
 
   useEffect(() => {
@@ -44,6 +45,11 @@ const Login = () => {
           polítcas de privacidad y términos de servicio.
         </Link>
       </p>
+      {loading && (
+        <div className="absolute left-0 top-0 z-50 flex min-h-screen h-full w-full items-center justify-center bg-slate-500/30">
+          <LoadingComponent />
+        </div>
+      )}
     </div>
   );
 };

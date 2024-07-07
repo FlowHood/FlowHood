@@ -146,3 +146,23 @@ export const generateQRRequest = async (requestId = null) => {
     throw error;
   }
 };
+
+
+export const generateQRWithHouse = async (houseId) => {
+  try {
+    const url = `qr/request/${houseId}`;
+    const res = await axios.post(url, null, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("QR data:", res);
+    return res.data.data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error(error);
+    toast.error(errorMessage);
+    throw error;
+  }
+}

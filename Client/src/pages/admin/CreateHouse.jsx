@@ -7,6 +7,7 @@ import { getAllUsers } from "../../services/user.service";
 import { capitalizeWords } from "../../lib/utils";
 import { createHouse } from "../../services/house.service";
 import { toast } from "sonner";
+import SectionIntro from "../../components/SectionIntro";
 
 const { Option } = Select;
 
@@ -54,8 +55,8 @@ export function CreateHouseForm() {
   };
 
   return (
-    <div className="form-container pt-24">
-      <h1>Crear nueva casa</h1>
+    <div className="form-container  max-w-[700px] w-full mx-auto">
+      <SectionIntro title="Crear una nueva casa" />
       <Form layout="vertical" onFinish={handleFormSubmit}>
         <Form.Item
           label="Dirección de la casa"
