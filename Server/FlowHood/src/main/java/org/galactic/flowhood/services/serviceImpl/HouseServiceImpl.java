@@ -160,7 +160,46 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public House updateHouse(House house) {
-        return houseRepository.save(house);
+    public House updateHouse(House house, List<UUID> residentIds, UUID responsibleId) {
+        // Obtener la lista actual de residentes
+        List<User> currentResidents = new ArrayList<>(house.getResidents());
+        List<User> newResidents = userService.findUsersByIds(residentIds);
+
+        // Remover residentes que ya no están en la nueva lista
+        for (User resident : currentResidents) {
+            if (!newResidents.contains(resident)) {
+                house.getResidents().remove(resident);
+                resident.getHouses().remove(house);
+                userService.updateUser(resident);
+            }
+        }
+
+        // Agregar nuevos residentes
+        for (User resident : newResidents) {
+            if (!currentResidents.contains(resident)) {
+                house.getResidents().add(resident);
+                resident.getHouses().add(house);
+                userService.updateUser(resident);
+            }
+        }
+
+        // Actualizar el responsable
+        User currentResponsible = house.getResponsible();
+        if (currentResponsible != null && !currentResponsible.getId().equals(responsibleId)) {
+            house.setResponsible(null);
+            currentResponsible.getAdmHouses().remove(house);
+            userService.updateUser(currentResponsible);
+        }
+
+        if (responsibleId != null) {
+            User newResponsible = userService.findUserById(responsibleId);
+            house.setResponsible(newResponsible);
+            newResponsible.getAdmHouses().add(house);
+            userService.updateUser(newResponsible);
+        }
+
+        houseRepository.save(house);
+        return house;
     }
+
 }

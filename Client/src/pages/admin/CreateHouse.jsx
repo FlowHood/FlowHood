@@ -42,11 +42,15 @@ export function CreateHouseForm() {
         address: house.address,
       });
 
-      const residentsWithResponsible = house.residents.concat(house.responsible) || [];
-      setSelectedUsers(residentsWithResponsible || []);
-      setResponsible(house.responsible ? house.responsible.id : null);  // setResponsible to the responsible's ID
+      console.log("House data:", house);
+      const residents = house.residents || [];
+      const responsible = house.responsible || [];
+      const residentsWithResponsible = residents.concat(responsible);
 
-      console.log("Res:", house.responsible ? house.responsible : null);
+      setSelectedUsers(residentsWithResponsible || []);
+      setResponsible(house.responsible ? house.responsible.id : null); // setResponsible to the responsible's ID
+
+      console.log("Res:", selectedUsers, " ", responsible);
     } catch (error) {
       console.error("Failed to fetch house data:", error);
     } finally {
@@ -55,7 +59,13 @@ export function CreateHouseForm() {
   };
 
   const handleAddUser = (userId) => {
+    console.log("Adding user with ID:", userId);
     const user = users.find((u) => u.id === userId);
+    // Eliminar ususario repetidos:
+    if (selectedUsers.find((u) => u.id === userId)) {
+      console.log("User already added");
+      return;
+    }
     setSelectedUsers([...selectedUsers, user]);
   };
 
@@ -63,9 +73,11 @@ export function CreateHouseForm() {
     setSelectedUsers(selectedUsers.filter((user) => user.id !== userId));
   };
 
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = async (values) => {
     setIsSubmitting(true);
-    const newSelectedUsers = selectedUsers.filter((user) => user.id !== responsible);
+    const newSelectedUsers = selectedUsers.filter(
+      (user) => user.id !== responsible,
+    );
 
     const houseData = {
       address: values.address,
@@ -75,20 +87,21 @@ export function CreateHouseForm() {
 
     if (id) {
       console.log("Updating house with data:", houseData);
-      updateHouse(houseData, id)
-        .then(() => {
-          setIsSubmitting(false);
-          // navigate(VIEWS.houseList);
-        })
-        .catch(() => setIsSubmitting(false));
+      const data = await updateHouse(houseData, id);
+      if (data && data.message === "house updated") {
+        
+        navigate(VIEWS.houseList);
+        toast.success("Casa actualizada exitosamente");
+      }
+      setIsSubmitting(false);
     } else {
       console.log("Creating house with data:", houseData);
-      createHouse(houseData)
-        .then(() => {
-          setIsSubmitting(false);
-          // navigate(VIEWS.houseList);
-        })
-        .catch(() => setIsSubmitting(false));
+      const data = await createHouse(houseData);
+      if (data && data.message === "house created") {
+        navigate(VIEWS.houseList);
+        toast.success("Casa creada exitosamente");
+      }
+      setIsSubmitting(false);
     }
   };
 
@@ -115,7 +128,10 @@ export function CreateHouseForm() {
             placeholder="Buscar usuarios"
             onSelect={handleAddUser}
             filterOption={(input, option) => {
-              const childrenString = React.Children.map(option.children, (child) => child)
+              const childrenString = React.Children.map(
+                option.children,
+                (child) => child,
+              )
                 .join("")
                 .toLowerCase();
               return childrenString.indexOf(input.toLowerCase()) >= 0;
@@ -137,7 +153,7 @@ export function CreateHouseForm() {
               className="selected-user flex items-center gap-4 border-b pb-1 pt-2"
             >
               <span>
-                {capitalizeWords(user.name)} ({user.email})
+                {capitalizeWords(user?.name || "")} ({user?.email})
               </span>
               <Button onClick={() => handleRemoveUser(user.id)}>Remove</Button>
             </div>
@@ -147,7 +163,7 @@ export function CreateHouseForm() {
         <Form.Item label="Usuario responsable de la casa">
           <Select
             placeholder="Seleccionar usuario responsable"
-            value={responsible}  // set the value of the Select to responsible
+            value={responsible}
             onChange={(value) => setResponsible(value)}
           >
             {selectedUsers.map((user) => (
