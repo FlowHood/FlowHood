@@ -156,6 +156,7 @@ public class RequestServiceImpl implements RequestService {
         return request.getResident().getId().equals(user.getId()) || request.getVisitor().getId().equals(user.getId());
     }
 
+
     @Override
     public void changeRequestStatus(Request request, String state) {
         request.setStatus(state);

@@ -54,7 +54,6 @@ public class HouseServiceImpl implements HouseService {
     //Admin only
     @Override
     public House toggleResposible(User user, House house) {
-
         //check if house has no responsible
         if(house.getResponsible() == null) {
             Role role = roleService.findRoleById(SystemRoles.RESPONSIBLE.getRole());
@@ -82,7 +81,7 @@ public class HouseServiceImpl implements HouseService {
             houseRepository.save(house);
             //remove responsible role from user
         }
-
+        userService.toggleRole(user, SystemRoles.VISITOR.getRole());
         return house;
     }
 

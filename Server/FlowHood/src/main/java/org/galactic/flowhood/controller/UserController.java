@@ -10,6 +10,7 @@ import org.galactic.flowhood.domain.entities.User;
 import org.galactic.flowhood.services.HouseService;
 import org.galactic.flowhood.services.RoleService;
 import org.galactic.flowhood.services.UserService;
+import org.galactic.flowhood.utils.SystemRoles;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -116,7 +117,7 @@ public class UserController {
             Role role = roleService.findRoleById(roleId);
             if(role == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
 
-            userService.patchRole(user, role);
+            userService.toggleRole(user, role.getId());
 
             return GeneralResponse.builder().status(HttpStatus.OK).message("User role updated").getResponse();
 
@@ -173,6 +174,7 @@ public class UserController {
             List<User> users = new ArrayList<>();
             for(String userId : usersId){
                 User user = userService.findUserById(UUID.fromString(userId));
+                userService.toggleRole(user, SystemRoles.VISITOR.getRole());
                 if(user == null) return GeneralResponse.builder().message("Not found!").status(HttpStatus.NOT_FOUND).getResponse();
                 users.add(user);
             }
