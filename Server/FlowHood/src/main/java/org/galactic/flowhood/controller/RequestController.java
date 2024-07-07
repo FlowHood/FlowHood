@@ -296,9 +296,13 @@ public class RequestController {
             if (!user.getRoles().contains(role))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to view this content").getResponse();
 
-            if(!requestService.isUserFromRequest(user, request))
+            if(!request.getHouse().getResponsible().getId().equals(user.getId()))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to accept this request").getResponse();
 
+            //TODO check all instant know and startDate conditions
+            System.out.println(Date.from(Instant.now()));
+            System.out.println(request.getStartTime());
+            System.out.println(request.getStartDate());
             if(request.getStartDate().before(Date.from(Instant.now()))){
                 request.setStatus(SystemStates.INACTIVE.getState());
                 requestService.save(request);

@@ -33,8 +33,9 @@ public interface UserService {
 
     User updateUser(User user);
 
-    User patchRole(User user, Role role);
+    User toggleRole(User user, String role);
     User findOneByIdentifier(String identifier);
     void addRole(User user, Role role);
+
     List<User> findUsersByIds(List<UUID> residentIds);
 }

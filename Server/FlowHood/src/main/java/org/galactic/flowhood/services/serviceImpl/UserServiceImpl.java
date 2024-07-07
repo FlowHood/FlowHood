@@ -192,12 +192,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User patchRole(User user, Role role) {
+    public User toggleRole(User user, String role) {
+        Role _role = roleService.findRoleById(role);
         List<Role> roles = user.getRoles();
-        if (!roles.contains(role))
-            roles.add(role);
+        if (!roles.contains(_role))
+            roles.add(_role);
         else
-            roles.remove(role);
+            roles.remove(_role);
 
         user.setRoles(roles);
         return userRepository.save(user);
