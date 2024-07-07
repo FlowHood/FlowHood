@@ -78,14 +78,14 @@ public class QrServiceImpl implements QrService {
         endDate.setHours(Integer.parseInt(endTime[0]));
         endDate.setMinutes(Integer.parseInt(endTime[1]));
 
-        Date actualDate = Date.from(Instant.now());
+        Instant currentDate = Instant.now();
         System.out.println("1" + startDate);
         System.out.println("2" + endDate);
         System.out.println("3" + Instant.now());
         System.out.println("4" + startDate.toInstant().minusMillis(Long.parseLong(qrReadTime)));
         System.out.println("5" + endDate.toInstant().plusMillis(Long.parseLong(qrReadTime)));
 
-        if (!Instant.now().isBefore(startDate.toInstant().minusMillis(Long.parseLong(qrReadTime))) || !Instant.now().isAfter(endDate.toInstant().plusMillis(Long.parseLong(qrReadTime)))) {
+        if (!currentDate.isBefore(startDate.toInstant().minusMillis(Long.parseLong(qrReadTime))) || !currentDate.isAfter(endDate.toInstant().plusMillis(Long.parseLong(qrReadTime)))) {
             return false;
         }
         return true;

@@ -7,6 +7,7 @@ import org.galactic.flowhood.domain.entities.Request;
 import org.galactic.flowhood.domain.entities.User;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,4 +38,6 @@ public interface RequestService {
     boolean isUserFromRequest(User user, Request request);
 
     void changeRequestStatus(Request request, String state);
+
+    Date setDateTime(Date date, String time) throws ParseException;
 }

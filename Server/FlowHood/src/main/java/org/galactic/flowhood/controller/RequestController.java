@@ -133,7 +133,6 @@ public class RequestController {
     }
 
   //for vigilante only
-    //TODO only vigilante
     @PostMapping("/create-anonymous")
     public ResponseEntity<GeneralResponse> createAnonymousRequest(@RequestBody @Valid AnonimRequestReq req, BindingResult errors) {
         //validate if role is vigilant or responsible then request must be automatically approved else it should be pending
@@ -271,7 +270,6 @@ public class RequestController {
         }
     }
 
-    //TODO
     @PatchMapping("/{_id}") //getting user validation and status of current request
     public ResponseEntity<GeneralResponse> changeStatus(@PathVariable("_id") String id, @RequestBody RequestStateReqDTO req) {
         try {
@@ -302,11 +300,9 @@ public class RequestController {
             if(!request.getHouse().getResponsible().getId().equals(user.getId()))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to accept this request").getResponse();
 
-            //TODO check all instant know and startDate conditions
-            System.out.println(Date.from(Instant.now()));
-            System.out.println(request.getStartTime());
-            System.out.println(request.getStartDate());
-            if(request.getStartDate().before(Date.from(Instant.now()))){
+            //setting hours
+            Date startDate = requestService.setDateTime(request.getStartDate(), request.getStartTime());
+            if(startDate.before(Date.from(Instant.now()))){
                 request.setStatus(SystemStates.INACTIVE.getState());
                 requestService.save(request);
                 return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("request is expired").getResponse();
@@ -337,7 +333,9 @@ public class RequestController {
             if(!requestService.isUserFromRequest(user, request))
                 return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("You are not authorized to reject this request").getResponse();
 
-            if(request.getStartDate().before(Date.from(Instant.now()))){
+            Date startDate = requestService.setDateTime(request.getStartDate(), request.getStartTime());
+
+            if(startDate.before(Date.from(Instant.now()))){
                 request.setStatus(SystemStates.INACTIVE.getState());
                 requestService.save(request);
                 return GeneralResponse.builder().status(HttpStatus.CONFLICT).message("request is expired").getResponse();

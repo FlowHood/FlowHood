@@ -44,7 +44,6 @@ public class QRController {
         this.messageService = messageService;
     }
 
-    //TODO qr generate and update for petition when clicking
     @PostMapping(value = {"/request/{_houseId}", "/request-qr/{_requestId}"})
     public ResponseEntity<GeneralResponse> refreshQR(@PathVariable(value = "_requestId", required = false) String requestId, @PathVariable(value = "_houseId", required = false) String houseId){
         try {
@@ -112,7 +111,6 @@ public class QRController {
         }
     }
 
-    //TODO add vgilante validation
     @PostMapping("/read")
     public ResponseEntity<GeneralResponse> readQR(@RequestBody ReadQrReqDTO readQrReqDTO) {
         try {
@@ -133,8 +131,7 @@ public class QRController {
                 return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).message("QR not valid").getResponse();
             }
             User user = userService.findUserAuthenticated().toEntity();
-            //TODO
-//            if(user == null || !userService.hasUserRole(user, SystemRoles.VIGILANT.getRole())) return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("User not found").getResponse();
+            if(user == null || !userService.hasUserRole(user, SystemRoles.VIGILANT.getRole())) return GeneralResponse.builder().status(HttpStatus.UNAUTHORIZED).message("User not found").getResponse();
 
             User visitor = userService.findUserById(UUID.fromString(parts[3]));
             if (visitor == null) {
