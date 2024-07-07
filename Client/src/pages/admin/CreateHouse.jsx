@@ -1,25 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Button, Switch } from "antd";
-import axios from "axios";
+import { Form, Input, Select, Button } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import GeneralButton from "../../components/buttons/GeneralButton";
 import UserLayout from "../../components/user/UserLayout";
 import { getAllUsers } from "../../services/user.service";
 import { capitalizeWords } from "../../lib/utils";
-import { createHouse } from "../../services/house.service";
+import {
+  createHouse,
+  updateHouse,
+  getHouseById,
+} from "../../services/house.service";
 import { toast } from "sonner";
 import SectionIntro from "../../components/SectionIntro";
+import { VIEWS } from "../../lib/views";
+import { LoadingComponent } from "../../components/Loading";
 
 const { Option } = Select;
 
 export function CreateHouseForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [responsible, setResponsible] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     getAllUsers().then((users) => setUsers(users));
-  }, []);
+    if (id) {
+      fetchHouseData(id);
+    }
+  }, [id]);
+
+  const fetchHouseData = async (houseId) => {
+    try {
+      setIsSubmitting(true);
+      const house = await getHouseById(houseId);
+
+      form.setFieldsValue({
+        address: house.address,
+      });
+
+      const residentsWithResponsible = house.residents.concat(house.responsible) || [];
+      setSelectedUsers(residentsWithResponsible || []);
+      setResponsible(house.responsible ? house.responsible.id : null);  // setResponsible to the responsible's ID
+
+      console.log("Res:", house.responsible ? house.responsible : null);
+    } catch (error) {
+      console.error("Failed to fetch house data:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleAddUser = (userId) => {
     const user = users.find((u) => u.id === userId);
@@ -32,10 +65,7 @@ export function CreateHouseForm() {
 
   const handleFormSubmit = (values) => {
     setIsSubmitting(true);
-    // quiero filtrar los residentIds, si existe un usuario con el mismo id que el responsable, lo elimino
-    const newSelectedUsers = selectedUsers.filter(
-      (user) => user.id !== responsible,
-    );
+    const newSelectedUsers = selectedUsers.filter((user) => user.id !== responsible);
 
     const houseData = {
       address: values.address,
@@ -43,21 +73,34 @@ export function CreateHouseForm() {
       residentIds: newSelectedUsers.map((user) => user.id),
     };
 
-    console.log("House data:", houseData);
-
-    createHouse(houseData)
-      .then(() => {
-        setIsSubmitting(false);
-      })
-      .catch(() => {
-        setIsSubmitting(false);
-      });
+    if (id) {
+      console.log("Updating house with data:", houseData);
+      updateHouse(houseData, id)
+        .then(() => {
+          setIsSubmitting(false);
+          // navigate(VIEWS.houseList);
+        })
+        .catch(() => setIsSubmitting(false));
+    } else {
+      console.log("Creating house with data:", houseData);
+      createHouse(houseData)
+        .then(() => {
+          setIsSubmitting(false);
+          // navigate(VIEWS.houseList);
+        })
+        .catch(() => setIsSubmitting(false));
+    }
   };
 
   return (
-    <div className="form-container  max-w-[700px] w-full mx-auto">
-      <SectionIntro title="Crear una nueva casa" />
-      <Form layout="vertical" onFinish={handleFormSubmit}>
+    <div className="form-container  mx-auto w-full max-w-[700px]">
+      {isSubmitting && (
+        <div className="absolute left-0 top-0 z-50 flex h-full min-h-screen w-full items-center justify-center bg-slate-500/30">
+          <LoadingComponent />
+        </div>
+      )}
+      <SectionIntro title={id ? "Actualizar casa" : "Crear una nueva casa"} />
+      <Form layout="vertical" onFinish={handleFormSubmit} form={form}>
         <Form.Item
           label="Dirección de la casa"
           name="address"
@@ -72,10 +115,7 @@ export function CreateHouseForm() {
             placeholder="Buscar usuarios"
             onSelect={handleAddUser}
             filterOption={(input, option) => {
-              const childrenString = React.Children.map(
-                option.children,
-                (child) => child,
-              )
+              const childrenString = React.Children.map(option.children, (child) => child)
                 .join("")
                 .toLowerCase();
               return childrenString.indexOf(input.toLowerCase()) >= 0;
@@ -107,6 +147,7 @@ export function CreateHouseForm() {
         <Form.Item label="Usuario responsable de la casa">
           <Select
             placeholder="Seleccionar usuario responsable"
+            value={responsible}  // set the value of the Select to responsible
             onChange={(value) => setResponsible(value)}
           >
             {selectedUsers.map((user) => (
@@ -119,7 +160,7 @@ export function CreateHouseForm() {
 
         <Form.Item>
           <GeneralButton
-            textDescription={"Create House"}
+            textDescription={id ? "Actualizar Casa" : "Crear Casa"}
             type="submit"
             // loading={isSubmitting}
           />

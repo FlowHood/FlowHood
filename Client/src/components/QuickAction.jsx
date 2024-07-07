@@ -8,20 +8,20 @@ const actions = [
   {
     title: "Agregar nueva casa",
     icon: <SimpleHouseIcon />,
-    href: VIEWS.createHouse,
+    href: VIEWS.manageHouse.replace(":id", ""),
     className: "md:row-span-2 lg:row-auto",
   },
   {
     title: "Estadisticas",
     icon: <StatsIcon />,
-    href: VIEWS.charts
+    href: VIEWS.charts,
   },
   {
     title: "Crear nueva invitación",
     icon: <InvitationIcon />,
     href: "/create-invitation",
   },
- 
+
   {
     title: "Agregar ",
     icon: <PlusIcon />,

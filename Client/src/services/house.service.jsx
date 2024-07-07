@@ -78,3 +78,18 @@ export const updateHouse = async (houseData, houseId) => {
     toast.error(errorMessage);
   }
 };
+
+export const getHouseById = async (houseId) => {
+  try {
+    const res = await axios.get(`house/${houseId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    return res.data.data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error("Error fetching house data:", error);
+    toast.error(errorMessage);
+  }
+};
