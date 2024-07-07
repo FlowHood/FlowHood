@@ -20,8 +20,8 @@ const navigation = [
   { name: "Entradas", href: VIEWS.requestList, icon: EntrancesIcon, current: false },
   { name: "Casas", href: VIEWS.houseList, icon: HouseIcon, current: false },
   { name: "Historial", href: "/history", icon: HistoryIcon, current: false },
-  { name: "Estadísticas", href: "/stats", icon: StatsIcon, current: false },
-  { name: "Cuenta", href: "/account", icon: AccountIcon, current: false },
+  { name: "Estadísticas", href: VIEWS.charts, icon: StatsIcon, current: false },
+  // { name: "Cuenta", href: "/account", icon: AccountIcon, current: false },
 ];
 
 function classNames(...classes) {

@@ -24,6 +24,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { ROL } from "./lib/rol";
 import CreateHouse from "./pages/admin/CreateHouse";
 import ScrollToTop from "./components/ScrollToTop";
+import ChartsPage from "./pages/admin/ChartsPage";
 
 function App() {
   return (
@@ -95,6 +96,7 @@ function App() {
               <Route path={VIEWS.houseList} element={<HouseList />} />
               <Route path={VIEWS.userList} element={<UserList />} />
               <Route path={VIEWS.requestList} element={<RequestList />} />
+              <Route path={VIEWS.charts} element={<ChartsPage />} />
               <Route
                 path={VIEWS.CreateRequestHome}
                 element={<CreateRequestHome />}

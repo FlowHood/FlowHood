@@ -19,5 +19,6 @@ export const VIEWS = {
   houseList: "/listhouse",
   userList: "/users-list",
   requestList: "/requests-list",
+  charts: "/charts",
   CreateRequestHome: "/create-request",
 };

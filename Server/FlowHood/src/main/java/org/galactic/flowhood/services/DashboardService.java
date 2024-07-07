@@ -1,7 +1,8 @@
 package org.galactic.flowhood.services;
 
-import org.galactic.flowhood.domain.dto.response.LastWeekUsedRequestRes;
-import org.galactic.flowhood.domain.dto.response.TodayByForm;
+import org.galactic.flowhood.domain.dto.response.*;
+
+import java.util.List;
 
 public interface DashboardService {
 
@@ -9,4 +10,17 @@ public interface DashboardService {
 
     TodayByForm getTodayByFormRequest();
 
+    CurrentWeekUsedRequestRes getCurrentWeekUsedRequest();
+
+    LastWeekActiveRequestRes getLastWeekActiveRequest();
+
+    CurrentWeekActiveRequestRes getCurrentWeekActiveRequest();
+
+    List<TopReason> getTopReasonsForAnonymousRequests();
+
+    List<TopHouse> getTopHousesForUsedRequests();
+
+    List<TopHour> getTopRequestHours();
+
+    DashboardResDTO getCompleteAnalysis();
 }
