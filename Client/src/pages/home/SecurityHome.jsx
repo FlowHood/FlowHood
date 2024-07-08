@@ -74,7 +74,7 @@ const getOptionLinksByRoles = (roles) => {
         to: VIEWS.scanQR,
       },
       {
-        texto: "Registros a terceros",
+        texto: "Registros de Terceros",
         Icono: PeopleIcon,
         to: VIEWS.createRequest,
       },
@@ -91,7 +91,7 @@ const getOptionLinksByRoles = (roles) => {
         to: VIEWS.dashboard,
       },
       {
-        texto: "Registros a terceros",
+        texto: "Registros de Terceros",
         Icono: PeopleIcon,
         to: VIEWS.createRequest,
       },

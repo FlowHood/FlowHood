@@ -10,7 +10,7 @@ const GoogleLoginButton = ({ login }) => {
     >
       <GoogleIcon width={21} height={21} />
       <span className="text-[.9375rem] font-medium leading-[normal] text-[#1f1f1f]">
-        Sign in with Google
+        Iniciar sesión con Google
       </span>
     </button>
   );

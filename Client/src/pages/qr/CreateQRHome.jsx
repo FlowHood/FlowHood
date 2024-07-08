@@ -24,11 +24,11 @@ export default function CreateQRHome({ qrInformation = "123" }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-4">
         <h1 className="text-center text-2xl font-semibold">
-          No tienes casas asociadas
+          No tienes casas asociadas.
         </h1>
         <p className="text-center">
-          Para poder crear un código QR debes tener una casa asociada a tu
-          cuenta, o bien, ser invitado a una casa.
+          Para poder crear un código QR, debes tener una casa asociada a tu
+          cuenta o ser invitado a una casa.
         </p>
       </div>
     );
@@ -38,6 +38,7 @@ export default function CreateQRHome({ qrInformation = "123" }) {
     <UserLayout>
       {roles.includes(ROL.VIGILANT) ||
       roles.includes(ROL.ADMIN) ||
+      roles.includes(ROL.RESIDENT) ||
       roles.includes(ROL.OWNER) ? (
         <SecurityCreateQR qrInformation={qrInformation} />
       ) : (

@@ -78,13 +78,13 @@ const RequestDetail = () => {
   if (isQrAvailable) {
     qrMessage =
       timeLeftToScan > 0
-        ? `Tiempo restante para escanear el QR: ${timeLeftToScan} minutos`
-        : "El tiempo para escanear el QR ha pasado";
+        ? `Tiempo restante para escanear el QR: ${timeLeftToScan} minutos.`
+        : "El tiempo para escanear el QR ha pasado.";
   } else {
     qrMessage =
       timeUntilQrValid > 0
-        ? `El QR será válido en: ${timeUntilQrValid} minutos`
-        : "El tiempo para escanear el QR ha pasado";
+        ? `El QR será válido en: ${timeUntilQrValid} minutos.`
+        : "El tiempo para escanear el QR ha pasado.";
   }
 
   const data = {

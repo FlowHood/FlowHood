@@ -12,18 +12,25 @@ const userSorter = ["name"];
 const userFiltersOn = ["state", "roles"];
 
 const UserList = () => {
+  const [userData, setUserData] = useState([]);
+  const count = userData.length;
   return (
     <DashboardLayout>
-      <SectionIntro title="Lista de usuarios" />
+      {count === 0 ? (
+        <SectionIntro title="Lista de usuarios" />
+      ) : (
+        <SectionIntro title={`Lista de usuarios &mdash; ${count}`} />
+      )}
+      
       <div className="rounded-xl bg-white p-6 shadow-card">
-        <UsersTable />
+        <UsersTable userData={userData} setUserData={setUserData} />
       </div>
     </DashboardLayout>
   );
 };
 
-export const UsersTable = () => {
-  const [userData, setUserData] = useState([]);
+export const UsersTable = ({userData, setUserData}) => {
+  
   const [userDataRaw, setUserDataRaw] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -169,7 +176,7 @@ export const UsersTable = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="mb-2 font-medium">Residents</h4>
+                        <h4 className="mb-2 font-medium">Residentes</h4>
                         <div className="space-y-2">
                           {house.residents.map((resident) => (
                             <div

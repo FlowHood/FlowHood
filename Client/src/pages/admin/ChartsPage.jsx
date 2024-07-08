@@ -4,13 +4,17 @@ import { fetchDashboardData } from "../../services/dashboard.service";
 import SectionIntro from "../../components/SectionIntro";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 
-const COLOR_ACTUAL = "#ff5733";
+const COLOR_ACTUAL = "#9a6bf1";
 const COLOR_ANTERIOR = "#3335fb";
 const LOADING_TEXT = "Cargando datos...";
 
 const Charts = () => {
-  const [dataAccesosPorSemana, setDataAccesosPorSemana] = useState([["Día", "Semana Anterior", "Semana Actual"]]);
-  const [dataAccesosPorTipo, setDataAccesosPorTipo] = useState([["Tipo de Acceso", "Cantidad"]]);
+  const [dataAccesosPorSemana, setDataAccesosPorSemana] = useState([
+    ["Día", "Semana Anterior"],
+  ]);
+  const [dataAccesosPorTipo, setDataAccesosPorTipo] = useState([
+    ["Tipo de Acceso", "Cantidad"],
+  ]);
   const [dataTopReasons, setDataTopReasons] = useState([["Razón", "Cantidad"]]);
   const [dataTopHouses, setDataTopHouses] = useState([["Casa", "Cantidad"]]);
   const [dataTopHours, setDataTopHours] = useState([["Hora", "Cantidad"]]);
@@ -19,18 +23,46 @@ const Charts = () => {
   useEffect(() => {
     const getDashboardData = async () => {
       const data = await fetchDashboardData();
-      
+
       if (data) {
         // Procesar datos para el gráfico de accesos por semana
         const accesosPorSemana = [
-          ["Día", "Semana Anterior", "Semana Actual"],
-          ["Lunes", data.lastWeekUsedRequestRes.monday, data.currentWeekUsedRequestRes.monday],
-          ["Martes", data.lastWeekUsedRequestRes.tuesday, data.currentWeekUsedRequestRes.tuesday],
-          ["Miércoles", data.lastWeekUsedRequestRes.wednesday, data.currentWeekUsedRequestRes.wednesday],
-          ["Jueves", data.lastWeekUsedRequestRes.thursday, data.currentWeekUsedRequestRes.thursday],
-          ["Viernes", data.lastWeekUsedRequestRes.friday, data.currentWeekUsedRequestRes.friday],
-          ["Sábado", data.lastWeekUsedRequestRes.saturday, data.currentWeekUsedRequestRes.saturday],
-          ["Domingo", data.lastWeekUsedRequestRes.sunday, data.currentWeekUsedRequestRes.sunday],
+          ["Día", "Semana Anterior"],
+          [
+            "Lunes",
+            data.lastWeekUsedRequestRes.monday,
+            // data.currentWeekUsedRequestRes.monday,
+          ],
+          [
+            "Martes",
+            data.lastWeekUsedRequestRes.tuesday,
+            // data.currentWeekUsedRequestRes.tuesday,
+          ],
+          [
+            "Miércoles",
+            data.lastWeekUsedRequestRes.wednesday,
+            // data.currentWeekUsedRequestRes.wednesday,
+          ],
+          [
+            "Jueves",
+            data.lastWeekUsedRequestRes.thursday,
+            // data.currentWeekUsedRequestRes.thursday,
+          ],
+          [
+            "Viernes",
+            data.lastWeekUsedRequestRes.friday,
+            // data.currentWeekUsedRequestRes.friday,
+          ],
+          [
+            "Sábado",
+            data.lastWeekUsedRequestRes.saturday,
+            // data.currentWeekUsedRequestRes.saturday,
+          ],
+          [
+            "Domingo",
+            data.lastWeekUsedRequestRes.sunday,
+            // data.currentWeekUsedRequestRes.sunday,
+          ],
         ];
         setDataAccesosPorSemana(accesosPorSemana);
 
@@ -43,15 +75,30 @@ const Charts = () => {
         setDataAccesosPorTipo(accesosPorTipo);
 
         // Procesar datos para las principales razones de accesos anónimos
-        const topReasons = [["Razón", "Cantidad"], ...data.topReasonsForAnonymousRequests.map(reason => [reason.reason, reason.count])];
+        const topReasons = [
+          ["Razón", "Cantidad"],
+          ...data.topReasonsForAnonymousRequests.map((reason) => [
+            reason.reason,
+            reason.count,
+          ]),
+        ];
         setDataTopReasons(topReasons);
 
         // Procesar datos para las casas con más accesos
-        const topHouses = [["Casa", "Cantidad"], ...data.topHousesForUsedRequests.map(house => [house.houseAddress, house.count])];
+        const topHouses = [
+          ["Casa", "Cantidad"],
+          ...data.topHousesForUsedRequests.map((house) => [
+            house.houseAddress,
+            house.count,
+          ]),
+        ];
         setDataTopHouses(topHouses);
 
         // Procesar datos para las horas con más accesos
-        const topHours = [["Hora", "Cantidad"], ...data.topRequestHours.map(hour => [hour.hour, hour.count])];
+        const topHours = [
+          ["Hora", "Cantidad"],
+          ...data.topRequestHours.map((hour) => [hour.hour, hour.count]),
+        ];
         setDataTopHours(topHours);
       }
 
@@ -62,7 +109,7 @@ const Charts = () => {
   }, []);
 
   const optionsAccesosPorSemana = {
-    title: "Comparación de Accesos por Semana",
+    title: "Accesos",
     hAxis: { title: "Día" },
     vAxis: { title: "Accesos" },
     legend: { position: "bottom" },
@@ -107,7 +154,7 @@ const Charts = () => {
   return (
     <div className="grid gap-4 py-4 md:grid-cols-2">
       {loading ? (
-        <div className="text-center col-span-2">{LOADING_TEXT}</div>
+        <div className="col-span-2 text-center">{LOADING_TEXT}</div>
       ) : (
         <>
           <div className="rounded-xl bg-white p-[1.375rem] shadow-card">
@@ -168,10 +215,10 @@ const Charts = () => {
 const ChartsPage = () => {
   return (
     <DashboardLayout>
-      <SectionIntro title="Gráficos" />
+      <SectionIntro title="Estadísticas" />
       <Charts />
     </DashboardLayout>
-  )
-}
+  );
+};
 
-export default ChartsPage
+export default ChartsPage;
