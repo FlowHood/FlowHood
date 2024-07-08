@@ -1,23 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Input,
-  Select,
-  Button,
-  Radio,
-  Avatar,
-  Tag,
-  Checkbox,
-} from "antd";
+import { Form, Input, Select, Radio, Avatar, Checkbox } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import GeneralButton from "../../components/buttons/GeneralButton";
 import UserLayout from "../../components/user/UserLayout";
 import { fetchUserById, updateUserById } from "../../services/user.service";
-import {
-  createHouse,
-  updateHouse,
-  getHouseById,
-} from "../../services/house.service";
+import { getHouseById } from "../../services/house.service";
 import { toast } from "sonner";
 import SectionIntro from "../../components/SectionIntro";
 import { VIEWS } from "../../lib/views";
@@ -28,27 +15,34 @@ const { Option } = Select;
 const options = [
   { label: "Administrador", value: ROL.ADMIN },
   { label: "Vigilante", value: ROL.VIGILANT },
-  { label: "Responsable", value: ROL.OWNER },
-  { label: "Residente", value: ROL.RESIDENT },
+  { label: "Responsable", value: ROL.OWNER, disabled: true },
+  { label: "Residente", value: ROL.RESIDENT, disabled: true },
   { label: "Visitante", value: ROL.VISITOR },
 ];
 
 export function UpdateUserForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [responsible, setResponsible] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form] = Form.useForm();
   const [selectedRole, setSelectedRole] = useState(null);
   const [userStatus, setUserStatus] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [hasUserHouse, setHasUserHouse] = useState(false);
 
   useEffect(() => {
     fetchUserById(id).then((user) => {
       if (user) {
         setSelectedUser(user);
         setSelectedRole(user.roles);
+        const role = user.roles.find(
+          (role) => role === ROL.OWNER || role === ROL.RESIDENT,
+        );
+
+        if (role && role.length > 0) {
+          setHasUserHouse(true);
+        }
+
         setUserStatus(user.estado);
         form.setFieldsValue({
           name: user.name,
@@ -60,31 +54,6 @@ export function UpdateUserForm() {
       }
     });
   }, [id]);
-
-  const fetchuserData = async (userId) => {
-    try {
-      setIsSubmitting(true);
-      const house = await getHouseById(userId);
-
-      form.setFieldsValue({
-        name: house.name,
-      });
-
-      console.log("House data:", house);
-      const residents = house.residents || [];
-      const responsible = house.responsible || [];
-      const residentsWithResponsible = residents.concat(responsible);
-
-      setSelectedUsers(residentsWithResponsible || []);
-      setResponsible(house.responsible ? house.responsible.id : null); // setResponsible to the responsible's ID
-
-      console.log("Res:", selectedUsers, " ", responsible);
-    } catch (error) {
-      console.error("Failed to fetch house data:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleFormSubmit = async (values) => {
     setIsSubmitting(true);
@@ -174,6 +143,7 @@ export function UpdateUserForm() {
 
         <Form.Item label="Roles del usuario" name={"roles"}>
           <Checkbox.Group
+            disabled={hasUserHouse}
             options={options}
             onChange={onRoleChange}
             className="gap-3"
@@ -181,11 +151,7 @@ export function UpdateUserForm() {
         </Form.Item>
 
         <Form.Item>
-          <GeneralButton
-            textDescription={"Actualizar Usuario"}
-            type="submit"
-            // loading={isSubmitting}
-          />
+          <GeneralButton textDescription={"Actualizar Usuario"} type="submit" />
         </Form.Item>
       </Form>
     </div>
