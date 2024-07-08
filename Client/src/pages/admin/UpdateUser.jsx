@@ -3,7 +3,11 @@ import { Form, Input, Select, Radio, Avatar, Checkbox } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import GeneralButton from "../../components/buttons/GeneralButton";
 import UserLayout from "../../components/user/UserLayout";
-import { fetchUserById, updateUserById } from "../../services/user.service";
+import {
+  fetchUserById,
+  toggleRole,
+  updateUserById,
+} from "../../services/user.service";
 import { getHouseById } from "../../services/house.service";
 import { toast } from "sonner";
 import SectionIntro from "../../components/SectionIntro";
@@ -69,6 +73,14 @@ export function UpdateUserForm() {
     if (id) {
       console.log("Updating user with data:", userData);
       const data = await updateUserById(id, userData);
+      selectedRole.forEach((roleId) => {
+        if (roleId === ROL.OWNER || roleId === ROL.RESIDENT) {
+          return;
+        }
+        toggleRole(id, selectedRole).then((data) => {
+          console.log("Role updated:", data);
+        });
+      });
       console.log("Data:", data);
       if (data && data.message === "updated") {
         navigate(VIEWS.userList);
