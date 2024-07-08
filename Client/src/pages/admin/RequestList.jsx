@@ -5,7 +5,14 @@ import SectionIntro from "../../components/SectionIntro";
 import { getAllRequests } from "../../services/request.service";
 import { Modal, Button, Avatar, List, Tag } from "antd";
 
-const requestTags = ["razon", "visitante", "residente", "fecha_inicio", "fecha_fin", "estado_solicitud"];
+const requestTags = [
+  "razon",
+  "visitante",
+  "residente",
+  "fecha_inicio",
+  "fecha_fin",
+  "estado_solicitud",
+];
 const requestSearch = ["razon", "visitante", "residente"];
 const requestSorter = ["fecha_inicio", "fecha_fin"];
 const requestFiltersOn = ["estado_solicitud"];
@@ -22,7 +29,6 @@ const RequestList = () => {
       const data = await getAllRequests();
       setRequestDataRaw(data);
       const filteredData = data.map((request) => {
-
         // a data, quitarle los atributos resident,visitor,house y reason
         const { resident, visitor, house, reason, ...rest } = request;
         return rest;
@@ -45,9 +51,14 @@ const RequestList = () => {
     setSelectedRequest(null);
   };
 
+  const count = requestData.length;
   return (
     <DashboardLayout>
-      <SectionIntro title="Lista de solicitudes" />
+      {count === 0 ? (
+        <SectionIntro title="Lista de solicitudes" />
+      ) : (
+        <SectionIntro title={`Lista de solicitudes &mdash; ${count}`} />
+      )}
       <div className="rounded-xl bg-white p-6 shadow-card">
         {loading ? (
           <span>Cargando...</span>
@@ -67,20 +78,27 @@ const RequestList = () => {
       >
         {selectedRequest && (
           <div>
-            <div style={{ textAlign: "center", marginBottom: "20px", marginTop: "41px" }}>
-            <p>Razón: {selectedRequest.reason}</p>
-              <h2>{selectedRequest.resident.name}</h2> 
+            <div
+              style={{
+                textAlign: "center",
+                marginBottom: "20px",
+                marginTop: "41px",
+              }}
+            >
+              <p>Razón: {selectedRequest.reason}</p>
+              <h2>{selectedRequest.resident.name}</h2>
               <p>Email visitante: {selectedRequest.visitor.email}</p>
               <p>Fecha de inicio: {selectedRequest.fecha_inicio}</p>
               {/* <p>Fecha de fin: {selectedRequest.fecha_fin}</p> */}
               <p>Estado de la solicitud: {selectedRequest.estado_solicitud}</p>
-              
             </div>
             <div>
               <h3>Casa</h3>
               <p>Dirección: {selectedRequest.house.address}</p>
               <p>Responsable: {selectedRequest.house.responsible.name}</p>
-              <p>Email del responsable: {selectedRequest.house.responsible.email}</p>
+              <p>
+                Email del responsable: {selectedRequest.house.responsible.email}
+              </p>
               <div>
                 <h4>Residentes</h4>
                 <List

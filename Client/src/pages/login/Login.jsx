@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
 import { LoadingComponent } from "../../components/Loading";
+import { VIEWS } from "../../lib/views";
 
 const Login = () => {
   const { login, isAuthenticated, loading } = useAuth();
@@ -40,7 +41,7 @@ const Login = () => {
       <GoogleLoginButton login={login} />
       <p className="text-base font-medium leading-[1.4375rem]">
         Antes de usar esta aplicación, puedes revisar los
-        <Link to="/" className="text-[#4880ff]">
+        <Link to={VIEWS.policy} className="text-[#4880ff]">
           {" "}
           polítcas de privacidad y términos de servicio.
         </Link>

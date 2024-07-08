@@ -1,31 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import { fetchDashboardData } from "../../services/dashboard.service";
+import SectionIntro from "../SectionIntro";
 
-const COLOR_ACTUAL = "#ff5733";
+const COLOR_ACTUAL = "#9a6bf1";
 const COLOR_ANTERIOR = "#3335fb";
 const LOADING_TEXT = "Cargando datos...";
 
 const ChartsContainer = () => {
-  const [dataAccesosPorSemana, setDataAccesosPorSemana] = useState([["Día", "Semana Anterior", "Semana Actual"]]);
-  const [dataAccesosPorTipo, setDataAccesosPorTipo] = useState([["Tipo de Acceso", "Cantidad"]]);
+  const [dataAccesosPorSemana, setDataAccesosPorSemana] = useState([
+    ["Día", "Semana Anterior"],
+  ]);
+  const [dataAccesosPorTipo, setDataAccesosPorTipo] = useState([
+    ["Tipo de Acceso", "Cantidad"],
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getDashboardData = async () => {
       const data = await fetchDashboardData();
-      
+
       if (data) {
         // Procesar datos para el gráfico de accesos por semana
         const accesosPorSemana = [
-          ["Día", "Semana Anterior", "Semana Actual"],
-          ["Lunes", data.lastWeekUsedRequestRes.monday, data.currentWeekUsedRequestRes.monday],
-          ["Martes", data.lastWeekUsedRequestRes.tuesday, data.currentWeekUsedRequestRes.tuesday],
-          ["Miércoles", data.lastWeekUsedRequestRes.wednesday, data.currentWeekUsedRequestRes.wednesday],
-          ["Jueves", data.lastWeekUsedRequestRes.thursday, data.currentWeekUsedRequestRes.thursday],
-          ["Viernes", data.lastWeekUsedRequestRes.friday, data.currentWeekUsedRequestRes.friday],
-          ["Sábado", data.lastWeekUsedRequestRes.saturday, data.currentWeekUsedRequestRes.saturday],
-          ["Domingo", data.lastWeekUsedRequestRes.sunday, data.currentWeekUsedRequestRes.sunday],
+          ["Día", "Semana"],
+          [
+            "Lunes",
+            data.lastWeekUsedRequestRes.monday,
+            // data.currentWeekUsedRequestRes.monday,
+          ],
+          [
+            "Martes",
+            data.lastWeekUsedRequestRes.tuesday,
+            // data.currentWeekUsedRequestRes.tuesday,
+          ],
+          [
+            "Miércoles",
+            data.lastWeekUsedRequestRes.wednesday,
+            // data.currentWeekUsedRequestRes.wednesday,
+          ],
+          [
+            "Jueves",
+            data.lastWeekUsedRequestRes.thursday,
+            // data.currentWeekUsedRequestRes.thursday,
+          ],
+          [
+            "Viernes",
+            data.lastWeekUsedRequestRes.friday,
+            // data.currentWeekUsedRequestRes.friday,
+          ],
+          [
+            "Sábado",
+            data.lastWeekUsedRequestRes.saturday,
+            // data.currentWeekUsedRequestRes.saturday,
+          ],
+          [
+            "Domingo",
+            data.lastWeekUsedRequestRes.sunday,
+            // data.currentWeekUsedRequestRes.sunday,
+          ],
         ];
         setDataAccesosPorSemana(accesosPorSemana);
 
@@ -45,7 +78,7 @@ const ChartsContainer = () => {
   }, []);
 
   const optionsAccesosPorSemana = {
-    title: "Comparación de Accesos por Semana",
+    title: "Accesos",
     hAxis: { title: "Día" },
     vAxis: { title: "Accesos" },
     legend: { position: "bottom" },
@@ -64,9 +97,12 @@ const ChartsContainer = () => {
   };
 
   return (
-    <div className="grid gap-4 py-4 md:grid-cols-2">
+    <div className="grid gap-4 py-4 lg:grid-cols-2">
+      <div className="col-span-full">
+        <SectionIntro title="Registros Históricos" />
+      </div>
       {loading ? (
-        <div className="text-center col-span-2">{LOADING_TEXT}</div>
+        <div className="col-span-full text-center">{LOADING_TEXT}</div>
       ) : (
         <>
           <div className="rounded-xl bg-white p-[1.375rem] shadow-card">

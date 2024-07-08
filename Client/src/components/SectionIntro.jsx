@@ -16,9 +16,8 @@ const SectionIntro = ({
     <div className={cn("py-8 leading-[normal] text-black", generalClassName)}>
       <TitleComponent
         className={cn("font-semibold", titleClassName, titleSize)}
-      >
-        {title}
-      </TitleComponent>
+        dangerouslySetInnerHTML={{ __html: title }}
+      />
       {subtitle && (
         <SubtitleComponent className={cn(subTitleClassName, "mt-3 font-light")}>
           {subtitle}

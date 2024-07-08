@@ -12,7 +12,7 @@ export const createHouse = async (houseData) => {
       },
     });
     console.log("House created:", res.data);
-    toast.success("House created successfully");
+    toast.success("Casas creada correctamente");
     return res.data;
   } catch (error) {
     const errorMessage = handleError(error);
@@ -53,7 +53,7 @@ export const deleteHouse = async (id) => {
       },
     });
     console.log("House deleted:", res.data);
-    toast.success("House deleted successfully");
+    toast.success("Casas eliminada correctamente");
   } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
@@ -71,7 +71,7 @@ export const updateHouse = async (houseData, houseId) => {
     });
     console.log("House updated:", res.data);
     console.log("House updated:", res.data);
-    toast.success("House updated successfully");
+    toast.success("Casa actualizada correctamente");
     return res.data;
   } catch (error) {
     const errorMessage = handleError(error);
