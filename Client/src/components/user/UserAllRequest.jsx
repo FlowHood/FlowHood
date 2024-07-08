@@ -16,6 +16,7 @@ import moment from "moment";
 import { Modal } from "antd";
 import RequestDetail from "../../pages/request/RequestDetail";
 import RequestDetailInModal from "../../pages/request/RequestDetailInModal";
+import { toast } from "sonner";
 
 const getScreenInformation = (rol) => {
   let title;
@@ -40,15 +41,15 @@ const getScreenInformation = (rol) => {
     case ROL.VISITOR:
       title = "Tus Invitaciones de visitas";
       subTitle =
-        "Administra las solicitudes de invitaciones para residentes enviadas por los integrantes de tu hogar o crea la tuya propia.";
+        "Administra las solicitudes de invitaciones que te han enviado";
 
       break;
     default:
       title = "Invitaciones de visitantes a tu hogar";
       subTitle =
-        "Administra las solicitudes de invitaciones para residentes enviadas de tu hogar o crea una nueva.";
+        "Administra las solicitudes de invitaciones para residentes enviadas.";
       subTitle2 =
-        "Gestiona las solicitudes de invitación de los integrantes de tu hogar.";
+        "Gestiona las solicitudes de invitación.";
       break;
   }
 
@@ -114,12 +115,28 @@ export default function UserAllRequest() {
       let result;
       if (isUniqueRolVisitor) {
         result = await getAllRequestsByVisitor();
+
+        if (!result) {
+          toast.error("No se han encontrado solicitudes.");
+          setRequests([]);
+          setIsLoading(false);
+          return;
+        }
+
         const filteredRequests = result.filter(
           (request) => request.status === filter,
         );
         setRequests(filteredRequests);
       } else {
         result = await getAllRequestsInMyHouse();
+
+        if (!result) {
+          toast.error("No se han encontrado solicitudes.");
+          setRequests([]);
+          setIsLoading(false);
+          return;
+        }
+
         const filteredRequests = result.filter(
           (request) => request.status === filter,
         );

@@ -217,6 +217,9 @@ export default function VisitorRequestInfo({
         footer={<Button onClick={handleModalClose}>Cerrar</Button>}
       >
         <div className="flex flex-col gap-4">
+          {requests.length === 0 && (
+            <p className="text-center">No tienes solicitudes</p>
+          )}
           {requests.map((request) => {
             const startDate = moment(
               `${request.startDate.split("T")[0]} ${request.startTime}`,

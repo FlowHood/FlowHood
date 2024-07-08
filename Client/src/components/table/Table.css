@@ -22,10 +22,10 @@
     @apply bg-gray-300 text-gray-700;
   }
   .circle-state-chip.active {
-    @apply bg-green-300;
+    @apply bg-[#efffe0] text-[#389e0d] border border-[#b7eb8f];
   }
   .circle-state-chip.inactive {
-    @apply bg-red-300;
+    @apply bg-[#ffede2] text-[#d4380d] border border-[#ffbb96];
   }
   .circle-state-chip.none {
     @apply hidden;

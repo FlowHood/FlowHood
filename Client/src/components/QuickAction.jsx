@@ -1,6 +1,6 @@
 import React from "react";
 import ActionCard from "./cards/ActionCard";
-import { PlusIcon, InvitationIcon, SimpleHouseIcon, StatsIcon } from "./Icons";
+import { PlusIcon, InvitationIcon, SimpleHouseIcon, StatsIcon, UserIcon } from "./Icons";
 import SectionIntro from "./SectionIntro";
 import { VIEWS } from "../lib/views";
 
@@ -17,14 +17,14 @@ const actions = [
     href: VIEWS.charts,
   },
   {
-    title: "Adminitstrar usuarios",
-    icon: <InvitationIcon />,
+    title: "Administrar usuarios",
+    icon: <UserIcon />,
     href: VIEWS.userList
   },
 
   {
     title: "Administrar entradas",
-    icon: <PlusIcon />,
+    icon: <InvitationIcon />,
     href: VIEWS.requestList,
     className: "md:col-span-2 lg:col-auto",
   },

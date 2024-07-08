@@ -1,5 +1,3 @@
-import CreateRequestHome from "../pages/form/CreateRequestHome";
-
 export const VIEWS = {
   login: "/login",
   securityHome: "/",
@@ -22,4 +20,5 @@ export const VIEWS = {
   requestList: "/requests-list",
   charts: "/charts",
   CreateRequestHome: "/create-request",
+  policy: "/policy", 
 };

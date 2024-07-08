@@ -73,14 +73,14 @@ export default function UserRequestContainer({
       <div
         className={`w-[11px] rounded-bl-md rounded-tl-md border-r-2 border-black ${
           status === OPTIONS_ARRAY.NO_FILTER
-          ? "bg-slate-700"
-          : status === OPTIONS_ARRAY.ACCEPTED
-            ? "bg-tanzanite"
-            : status === OPTIONS_ARRAY.NOT_ACCEPTED
-              ? "bg-red-500"
-              : status === OPTIONS_ARRAY.TO_CHECK
-                ? "bg-orange-500"
-                : "bg-slate-700"
+            ? "bg-slate-700"
+            : status === OPTIONS_ARRAY.ACCEPTED
+              ? "bg-tanzanite"
+              : status === OPTIONS_ARRAY.NOT_ACCEPTED
+                ? "bg-red-500"
+                : status === OPTIONS_ARRAY.TO_CHECK
+                  ? "bg-orange-500"
+                  : "bg-slate-700"
         } ${hasPassed && !isActive && !qrAvailable ? "opacity-35" : ""} sm:w-[17px]`}
       ></div>
       <div className="flex w-11/12 flex-col p-2">
@@ -96,11 +96,11 @@ export default function UserRequestContainer({
         <p className="mt-3 text-[0.65rem] text-gray-600 sm:text-base">
           Dirección: {address}
         </p>
-        {isActive && (
+        {isActive && status === OPTIONS_ARRAY.ACCEPTED && (
           <Tag
             icon={<CheckCircleOutlined />}
             color="success"
-            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
+            className="absolute right-0 top-1 text-[0.5rem] md:top-2 md:text-base"
           >
             Activa
           </Tag>
@@ -109,16 +109,16 @@ export default function UserRequestContainer({
           <Tag
             icon={<MinusCircleOutlined />}
             color="default"
-            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
+            className="absolute right-0 top-1 text-[0.5rem] md:top-2 md:text-base"
           >
             Pasada
           </Tag>
         )}
-        {qrAvailable && !isActive && (
+        {qrAvailable && !isActive && status === OPTIONS_ARRAY.ACCEPTED && (
           <Tag
             icon={<QrcodeOutlined />}
             color="gold"
-            className="text-[0.5rem] md:text-base absolute right-0 top-1 md:top-2"
+            className="absolute right-0 top-1 text-[0.5rem] md:top-2 md:text-base"
           >
             QR Disponible
           </Tag>

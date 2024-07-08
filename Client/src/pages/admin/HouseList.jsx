@@ -80,10 +80,15 @@ const HouseList = () => {
     setHouseData(updatedData);
   };
 
+  const count = houseData.length;
   return (
     <DashboardLayout>
       <div className="mb-6 flex items-center justify-between">
+        {count === 0 ? (
         <SectionIntro title="Lista de casas" />
+      ) : (
+        <SectionIntro title={`Lista de casas &mdash; ${count}`} />
+      )}
         <Button
           as={Link}
           to={VIEWS.manageHouse.replace(":id", "")}

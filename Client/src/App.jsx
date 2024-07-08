@@ -26,6 +26,7 @@ import CreateHouse from "./pages/admin/CreateHouse";
 import ScrollToTop from "./components/ScrollToTop";
 import ChartsPage from "./pages/admin/ChartsPage";
 import UpdateUser from "./pages/admin/UpdateUser";
+import Policy from "./pages/home/Policy";
 
 function App() {
   return (
@@ -36,12 +37,10 @@ function App() {
           <Routes>
             <Route path={VIEWS.pageNotFound} element={<PageNotFound />} />
             <Route path={VIEWS.login} element={<Login />} />
-            <Route path={VIEWS.test} element={<PageTest />} />
+            <Route path={VIEWS.policy} element={<Policy />} />
 
             <Route path={VIEWS.scanQR} element={<ScanQR />} />
 
-            <Route path={VIEWS.loader} element={<Loading />} />
-            <Route path={VIEWS.modal} element={<ModalTest />} />
             {/* Rutas publicas para usuarios logeados */}
             <Route
               element={
