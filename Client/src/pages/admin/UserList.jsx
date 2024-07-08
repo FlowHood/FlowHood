@@ -176,7 +176,7 @@ export const UsersTable = ({userData, setUserData}) => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="mb-2 font-medium">Residents</h4>
+                        <h4 className="mb-2 font-medium">Residentes</h4>
                         <div className="space-y-2">
                           {house.residents.map((resident) => (
                             <div

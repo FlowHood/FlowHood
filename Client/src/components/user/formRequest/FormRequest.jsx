@@ -182,10 +182,10 @@ export default function FormRequest() {
         className="flex w-full mt-8 !max-w-[624px] flex-col justify-center gap-2 px-3"
         onFinish={onSuccess}
         onFinishFailed={onFailed}
-        initialValues={{
-          startTime: moment(),
-          date: moment(),
-        }}
+        // initialValues={{
+        //   startTime: moment(),
+        //   date: moment(),
+        // }}
       >
         <h2 className="font-medium">Ingresa los siguientes campos</h2>
         <Form.Item

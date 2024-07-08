@@ -38,6 +38,7 @@ export default function CreateQRHome({ qrInformation = "123" }) {
     <UserLayout>
       {roles.includes(ROL.VIGILANT) ||
       roles.includes(ROL.ADMIN) ||
+      roles.includes(ROL.RESIDENT) ||
       roles.includes(ROL.OWNER) ? (
         <SecurityCreateQR qrInformation={qrInformation} />
       ) : (

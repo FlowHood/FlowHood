@@ -17,7 +17,7 @@ const actions = [
     href: VIEWS.charts,
   },
   {
-    title: "Adminitstrar usuarios",
+    title: "Administrar usuarios",
     icon: <UserIcon />,
     href: VIEWS.userList
   },

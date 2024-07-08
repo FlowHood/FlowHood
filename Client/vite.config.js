@@ -20,7 +20,7 @@ export default defineConfig({
           "Flow Hood es una solución tecnológica para mejorar el control de acceso y la seguridad en comunidades residenciales.",
         icons: [
           {
-            src: "/android-chrome-192x192",
+            src: "/android-chrome-192x192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",

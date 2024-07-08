@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
     <div className="container mx-auto p-6">
       <h1 className="mb-4 text-3xl font-bold">Política de Privacidad</h1>
       <p className="mb-4">
-        En [Nombre de la Compañía], valoramos su privacidad y nos comprometemos
+        En FlowHood, valoramos su privacidad y nos comprometemos
         a proteger su información personal. Esta política de privacidad explica
         cómo recopilamos, usamos, y compartimos su información.
       </p>
@@ -42,7 +42,7 @@ const PrivacyPolicy = () => {
       </p>
       <p className="mb-4">
         Si tiene alguna pregunta sobre nuestra política de privacidad, por favor
-        contáctenos en [correo electrónico de contacto].
+        contáctenos en galactic.studio23@gmail.com.
       </p>
     </div>
   );
@@ -53,7 +53,7 @@ const TermsOfService = () => {
     <div className="container mx-auto p-6">
       <h1 className="mb-4 text-3xl font-bold">Términos de Servicio</h1>
       <p className="mb-4">
-        Bienvenido a [Nombre de la Compañía]. Al utilizar nuestros servicios,
+        Bienvenido a FlowHood. Al utilizar nuestros servicios,
         usted acepta cumplir con los siguientes términos y condiciones.
       </p>
       <h2 className="mb-2 text-2xl font-semibold">Uso de los Servicios</h2>
@@ -64,7 +64,7 @@ const TermsOfService = () => {
       <h2 className="mb-2 text-2xl font-semibold">Cuentas de Usuario</h2>
       <p className="mb-4">
         Usted es responsable de mantener la confidencialidad de su cuenta y
-        contraseña, y acepta notificar de inmediato a [Nombre de la Compañía] de
+        contraseña, y acepta notificar de inmediato a FlowHood de
         cualquier uso no autorizado de su cuenta.
       </p>
       <h2 className="mb-2 text-2xl font-semibold">Propiedad Intelectual</h2>
@@ -88,7 +88,7 @@ const TermsOfService = () => {
       </p>
       <p className="mb-4">
         Si tiene alguna pregunta sobre nuestros términos de servicio, por favor
-        contáctenos en [correo electrónico de contacto].
+        contáctenos en galactic.studio23@gmail.com.
       </p>
     </div>
   );
