@@ -30,6 +30,7 @@ export function UpdateUserForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form] = Form.useForm();
   const [selectedRole, setSelectedRole] = useState(null);
+  const [prevSelectedRole, setPrevSelectedRole] = useState(null);
   const [userStatus, setUserStatus] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [hasUserHouse, setHasUserHouse] = useState(false);
@@ -39,6 +40,7 @@ export function UpdateUserForm() {
       if (user) {
         setSelectedUser(user);
         setSelectedRole(user.roles);
+        setPrevSelectedRole(user.roles);
         const role = user.roles.find(
           (role) => role === ROL.OWNER || role === ROL.RESIDENT,
         );
@@ -73,15 +75,18 @@ export function UpdateUserForm() {
     if (id) {
       console.log("Updating user with data:", userData);
       const data = await updateUserById(id, userData);
-      selectedRole.forEach((roleId) => {
-        if (roleId === ROL.OWNER || roleId === ROL.RESIDENT) {
-          return;
+
+      const addedRoles = selectedRole.filter(role => !prevSelectedRole.includes(role));
+      const removedRoles = prevSelectedRole.filter(role => !selectedRole.includes(role));
+
+      const updatedRoles = [...new Set([...addedRoles, ...removedRoles])];
+      
+      for (const roleId of updatedRoles) {
+        if (roleId !== ROL.OWNER && roleId !== ROL.RESIDENT) {
+          await toggleRole(id, roleId);
         }
-        toggleRole(id, selectedRole).then((data) => {
-          console.log("Role updated:", data);
-        });
-      });
-      console.log("Data:", data);
+      }
+      
       if (data && data.message === "updated") {
         navigate(VIEWS.userList);
         toast.success("Usuario actualizada exitosamente");
