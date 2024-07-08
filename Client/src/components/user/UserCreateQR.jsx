@@ -41,8 +41,8 @@ export default function UserCreateQR({ qrInformation = "" }) {
   console.log("selectedActiveRequest", selectedActiveRequest?.id);
 
   return (
-    <div className="flex flex-col items-center justify-start p-4 text-black sm:gap-20 md:gap-10 lg:gap-12">
-      <div className="flex w-full flex-col items-center justify-center lg:flex-row lg:justify-around lg:gap-10">
+    <div className="flex flex-col items-center justify-start p-4 pb-8 pt-0 text-black sm:gap-20 md:gap-10 lg:gap-12">
+      <div className="flex w-full flex-col-reverse items-center justify-center lg:flex-row lg:justify-around lg:gap-10">
         <div className="flex flex-col items-center justify-center gap-8">
           <div className="relative flex flex-col items-center justify-center gap-8 font-Inter leading-[1.8125rem] sm:gap-9">
             <h1 className=" w-3/4 min-w-44 text-center text-[2rem] font-bold sm:text-4xl">
@@ -90,7 +90,7 @@ export default function UserCreateQR({ qrInformation = "" }) {
             action={generateQR}
           />
         </div>
-        <div className="mt-10 flex flex-col items-center justify-center gap-8 lg:mt-0">
+        <div className="mt-10 flex flex-col items-center justify-center gap-8 pb-8 sm:pb-0 lg:mt-0">
           <h2 className="text-center text-[2rem] font-semibold">
             Solicitudes de entrada disponibles
           </h2>
