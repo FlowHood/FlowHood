@@ -1,6 +1,7 @@
 package org.galactic.flowhood.controller;
 
 import jakarta.validation.Valid;
+import org.galactic.flowhood.domain.dto.request.UpdateUserReqDTO;
 import org.galactic.flowhood.domain.dto.response.GeneralResponse;
 import org.galactic.flowhood.domain.dto.response.UserRegisterDTO;
 import org.galactic.flowhood.domain.dto.response.UserResDTO;
@@ -71,7 +72,7 @@ public class UserController {
 
     //Admin only
     @PostMapping("/{_id}")
-    public ResponseEntity<GeneralResponse> updateUserById(@PathVariable("_id") String id, @RequestBody @Valid UserRegisterDTO req, BindingResult error){
+    public ResponseEntity<GeneralResponse> updateUserById(@PathVariable("_id") String id, @RequestBody @Valid UpdateUserReqDTO req, BindingResult error){
         try{
             if(error.hasErrors()) return GeneralResponse.builder().status(HttpStatus.BAD_REQUEST).data(error.getAllErrors()).getResponse();
             UUID userId = UUID.fromString(id);
@@ -80,6 +81,7 @@ public class UserController {
             user.setEmail(req.getEmail());
             user.setLastname(req.getLastname());
             user.setName(req.getName());
+            user.setState(req.getState());
             userService.updateUser(user);
 
             return GeneralResponse.builder().status(HttpStatus.OK).message("updated").getResponse();
