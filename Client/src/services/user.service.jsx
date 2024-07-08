@@ -71,6 +71,23 @@ export const fetchUserById = async (id) => {
   }
 };
 
+export const updateUserById = async (id, data) => {
+  try {
+    const res = await axios.put(`users/${id}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    console.log("User updated:", res.data);
+    toast.success("Usuario actualizado correctamente");
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error("Error fetching user data:", error);
+    toast.error(errorMessage);
+  }
+};
+
 export const deleteUser = async (id) => {
   try {
     const res = await axios.delete(`users/${id}`, {

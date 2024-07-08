@@ -12,7 +12,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import GeneralButton from "../../components/buttons/GeneralButton";
 import UserLayout from "../../components/user/UserLayout";
-import { fetchUserById } from "../../services/user.service";
+import { fetchUserById, updateUserById } from "../../services/user.service";
 import {
   createHouse,
   updateHouse,
@@ -61,7 +61,7 @@ export function UpdateUserForm() {
     });
   }, [id]);
 
-  const fetchHouseData = async (userId) => {
+  const fetchuserData = async (userId) => {
     try {
       setIsSubmitting(true);
       const house = await getHouseById(userId);
@@ -88,30 +88,21 @@ export function UpdateUserForm() {
 
   const handleFormSubmit = async (values) => {
     setIsSubmitting(true);
-    const newSelectedUsers = selectedUsers.filter(
-      (user) => user.id !== responsible,
-    );
 
-    const houseData = {
+    const userData = {
       name: values.name,
-      responsibleId: responsible,
-      residentIds: newSelectedUsers.map((user) => user.id),
+      lastname: values.lastname,
+      state: values.state,
+      picture: selectedUser ? selectedUser.picture || "#" : "#",
+      email: values.email,
     };
 
     if (id) {
-      console.log("Updating house with data:", houseData);
-      const data = await updateHouse(houseData, id);
+      console.log("Updating user with data:", userData);
+      const data = await updateUserById(id, userData);
       if (data && data.message === "house updated") {
-        navigate(VIEWS.houseList);
+        navigate(VIEWS.userList);
         toast.success("Casa actualizada exitosamente");
-      }
-      setIsSubmitting(false);
-    } else {
-      console.log("Creating house with data:", houseData);
-      const data = await createHouse(houseData);
-      if (data && data.message === "house created") {
-        navigate(VIEWS.houseList);
-        toast.success("Casa creada exitosamente");
       }
       setIsSubmitting(false);
     }
