@@ -31,10 +31,38 @@ export const fetchUserData = async () => {
       name: user.name,
       email: user.email,
       estado: user.state === "ACT" ? "Activo" : "Inactivo",
-      roles: user.roles.map(role => role.name).join(", "),
+      roles: user.roles.map((role) => role.name).join(", "),
       houses: user.houses,
       admHouses: user.admHouses,
     }));
+    return data;
+  } catch (error) {
+    const errorMessage = handleError(error);
+    console.error("Error fetching user data:", error);
+    toast.error(errorMessage);
+  }
+};
+
+export const fetchUserById = async (id) => {
+  try {
+    const response = await axios.get(`users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("session")}`,
+      },
+    });
+    const data = {
+      id: response.data.data.id,
+      picture: response.data.data.picture,
+      name: response.data.data.name,
+      lastname: response.data.data.lastname,
+      email: response.data.data.email,
+      estado: response.data.data.state,
+      roles: response.data.data.roles.map((role) => role.id),
+      houses: response.data.data.houses,
+      admHouses: response.data.data.admHouses,
+    };
+    console.log({ data });
+
     return data;
   } catch (error) {
     const errorMessage = handleError(error);
@@ -54,12 +82,9 @@ export const deleteUser = async (id) => {
     toast.success("Usuario deshabilitado correctamente");
 
     return res.data;
-
-
-  }
-  catch (error) {
+  } catch (error) {
     const errorMessage = handleError(error);
     console.error(error);
     toast.error(errorMessage);
   }
-}
+};

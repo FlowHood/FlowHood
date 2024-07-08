@@ -5,6 +5,8 @@ import SectionIntro from "../../components/SectionIntro";
 import { toast } from "sonner";
 import { fetchUserData, deleteUser } from "../../services/user.service";
 import { Modal, Button, Avatar, List, Tag } from "antd";
+import { VIEWS } from "../../lib/views";
+import { useNavigate } from "react-router-dom";
 
 const userTags = [];
 const userSearch = ["name", "email"];
@@ -23,6 +25,7 @@ const UserList = () => {
 };
 
 export const UsersTable = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
   const [userDataRaw, setUserDataRaw] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,6 +73,11 @@ export const UsersTable = () => {
     setUserData(updatedData);
   };
 
+  const handleEdit = (id) => {
+    console.log("Edit user with id:", id);
+    navigate(VIEWS.manageUser.replace(":id", id));
+  };
+
   const handleView = (id) => {
     const user = userDataRaw.find((user) => user.id === id);
     setSelectedUser(user);
@@ -93,7 +101,7 @@ export const UsersTable = () => {
         addSearchOn={userSearch}
         addSortOn={userSorter}
         addFiltersOn={userFiltersOn}
-        onEdit={null} // No enviar función de editar
+        onEdit={handleEdit} // No enviar función de editar
         onDelete={handleDelete}
         onView={handleView} // Agregar función de ver más
       />

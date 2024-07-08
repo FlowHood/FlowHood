@@ -25,6 +25,7 @@ import { ROL } from "./lib/rol";
 import CreateHouse from "./pages/admin/CreateHouse";
 import ScrollToTop from "./components/ScrollToTop";
 import ChartsPage from "./pages/admin/ChartsPage";
+import UpdateUser from "./pages/admin/UpdateUser";
 
 function App() {
   return (
@@ -80,7 +81,12 @@ function App() {
             <Route
               element={
                 <ProtectedRoute
-                  allowedRoles={[ROL.OWNER, ROL.RESIDENT, ROL.VIGILANT, ROL.ADMIN]}
+                  allowedRoles={[
+                    ROL.OWNER,
+                    ROL.RESIDENT,
+                    ROL.VIGILANT,
+                    ROL.ADMIN,
+                  ]}
                 />
               }
             >
@@ -93,6 +99,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={[ROL.ADMIN]} />}>
               <Route path={VIEWS.dashboard} element={<AdminDashboard />} />
               <Route path={VIEWS.manageHouse} element={<CreateHouse />} />
+              <Route path={VIEWS.manageUser} element={<UpdateUser />} />
               <Route path={VIEWS.houseList} element={<HouseList />} />
               <Route path={VIEWS.userList} element={<UserList />} />
               <Route path={VIEWS.requestList} element={<RequestList />} />
