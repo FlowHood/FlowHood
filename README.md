@@ -142,7 +142,7 @@ Asegúrate de tener PostgreSQL corriendo en tu máquina.
 
 El manual de usuario de Flow Hood es una guía completa y detallada diseñada para ayudar a los usuarios a familiarizarse con las funcionalidades y características de la aplicación. Este manual proporciona instrucciones claras y paso a paso sobre cómo utilizar cada parte del sistema, desde la generación de códigos QR y la gestión de invitaciones hasta el monitoreo en tiempo real. Además, incluye capturas de pantalla y descripciones detalladas para facilitar la comprensión y el uso efectivo de Flow Hood. A través del siguiente enlace, puedes acceder al manual de usuario completo para obtener toda la información necesaria:
 
-[Manual de usuario](https://docs.google.com/document/d/1JW3Yr2TU5ZEaJOoONNMen8uhpnPhz2b1CJAfUF1lF0w/edit?usp=drive_link)
+[Manual de usuario](https://www.canva.com/design/DAGKUJscX_g/sAJH3Q9YVpsaDGjgEK6RFw/view?utm_content=DAGKUJscX_g&utm_campaign=designshare&utm_medium=link&utm_source=editor)
 
 ## Usuarios de prueba
 
