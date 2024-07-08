@@ -100,9 +100,10 @@ export function UpdateUserForm() {
     if (id) {
       console.log("Updating user with data:", userData);
       const data = await updateUserById(id, userData);
-      if (data && data.message === "house updated") {
+      console.log("Data:", data);
+      if (data && data.message === "updated") {
         navigate(VIEWS.userList);
-        toast.success("Casa actualizada exitosamente");
+        toast.success("Usuario actualizada exitosamente");
       }
       setIsSubmitting(false);
     }

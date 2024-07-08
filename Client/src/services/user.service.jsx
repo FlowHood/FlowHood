@@ -73,7 +73,7 @@ export const fetchUserById = async (id) => {
 
 export const updateUserById = async (id, data) => {
   try {
-    const res = await axios.put(`users/${id}`, data, {
+    const res = await axios.post(`users/${id}`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("session")}`,
@@ -81,6 +81,7 @@ export const updateUserById = async (id, data) => {
     });
     console.log("User updated:", res.data);
     toast.success("Usuario actualizado correctamente");
+    return res.data;
   } catch (error) {
     const errorMessage = handleError(error);
     console.error("Error fetching user data:", error);
